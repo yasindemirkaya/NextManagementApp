@@ -13,13 +13,14 @@ export default NextAuth({
                             email: credentials.email,
                             password: credentials.password,
                         })
-                        console.log(response)
 
                         if (response.message == 'Success') {
                             return {
-                                user: response.user,
-                                message: response.message,
-                                token: response.token
+                                id: response.user.id,
+                                email: response.user.email,
+                                first_name: response.user.first_name,
+                                last_name: response.user.last_name,
+                                token: response.token,
                             }
                         } else {
                             return null
@@ -48,4 +49,26 @@ export default NextAuth({
             },
         }),
     ],
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id;
+                token.email = user.email;
+                token.first_name = user.first_name;
+                token.last_name = user.last_name;
+                token.token = user.token;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            session.user = {
+                id: token.id,
+                email: token.email,
+                first_name: token.first_name,
+                last_name: token.last_name,
+            };
+            session.token = token.token;
+            return session;
+        },
+    }
 })
