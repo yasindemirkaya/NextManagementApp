@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from './index.module.scss';
 import InputMask from 'react-input-mask';
+import axios from '@/utils/axios'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
     const router = useRouter();
@@ -16,6 +19,9 @@ const SignUp = () => {
     const [password, setPassword] = useState('');
     const [mobile, setMobile] = useState('');
     const [errors, setErrors] = useState({});
+    const [registerSuccess, setRegisterSuccess] = useState(null);
+    const [registerError, setRegisterError] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // METHODS
     const validateField = (name, value) => {
@@ -124,13 +130,44 @@ const SignUp = () => {
     };
 
     // Form submit
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setRegisterError({});
+        setRegisterSuccess(null);
+        setIsSubmitting(true)
 
-        // Form valid ise inputları temizle ve submit et
-        if (validateForm()) {
-            clearFieldsAfterFormSubmit();
-            console.log('Form submitted successfully');
+        // Validation başarısız ise işleme devam etme.
+        if (!validateForm()) {
+            setIsSubmitting(false)
+            return;
+        }
+
+        const payload = {
+            firstName,
+            lastName,
+            email,
+            password,
+            mobile,
+        };
+
+        // Register api call
+        try {
+            const response = await axios.post('/public/register', payload)
+
+            if (response.result) {
+                setRegisterSuccess(response.message);
+                toast.success(registerSuccess);
+                clearFieldsAfterFormSubmit();
+
+                setTimeout(() => {
+                    router.push('/login');
+                }, 2000);
+            }
+        } catch (error) {
+            setRegisterError(error.response.message || 'Error when creating new user.')
+            toast.error(registerError)
+        } finally {
+            setIsSubmitting(false); // Gönderim işlemi tamamlandı
         }
     };
 
@@ -225,8 +262,8 @@ const SignUp = () => {
                         </Button>
                     </Col>
                     <Col>
-                        <Button variant="primary" type="submit" className="w-100">
-                            Sign Up
+                        <Button variant="primary" type="submit" className="w-100" disabled={isSubmitting}>
+                            {isSubmitting ? 'Signing Up...' : 'Sign Up'}
                         </Button>
                     </Col>
                 </Row>

@@ -46,7 +46,11 @@ export default async function handler(req, res) {
                 role: 0 // Standart kullanıcı rolü
             });
 
-            res.status(201).json({ message: 'User registered successfully', user: newUser });
+            res.status(201).json({
+                result: true,
+                message: 'User registered successfully',
+                user: email
+            });
         } catch (error) {
             console.error('Error in registration:', error);
             res.status(500).json({ message: 'An error occurred during registration', error: error.message });
