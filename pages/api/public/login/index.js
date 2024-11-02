@@ -1,3 +1,12 @@
+// --------------------------------
+// |
+// | Service Name: Login
+// | Description: Service that logs user in.
+// | Endpoint: /api/public/login
+// |
+// ------------------------------
+
+
 import sequelize from '@/config/db';
 import { sign } from 'jsonwebtoken'
 

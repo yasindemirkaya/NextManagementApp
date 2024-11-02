@@ -8,6 +8,7 @@
 // | /api/public/users/get-users?is_verified=true
 // | /api/public/users/get-users?status=1
 // | /api/public/users/get-users?is_active=true&is_verified=true&status=2
+// |
 // ------------------------------
 
 import sequelize from '@/config/db';
