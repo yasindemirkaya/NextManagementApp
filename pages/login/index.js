@@ -7,6 +7,9 @@ import styles from './index.module.scss';
 import { getSession, signIn } from 'next-auth/react';
 import { setLogin } from '/redux/page'
 
+import toast from '@/utils/toastify'
+import { ToastContainer } from 'react-toastify';
+
 const Login = () => {
     const router = useRouter();
     const dispatch = useDispatch()
@@ -94,7 +97,6 @@ const Login = () => {
         e.preventDefault();
 
         if (validateForm()) {
-            clearFieldsAfterFormSubmit();
             setLoading(true);
 
             try {
@@ -104,9 +106,13 @@ const Login = () => {
                     email: email,
                     password: password,
                 })
-                setLoading(false)
 
                 if (login.ok) {
+                    setLoading(false)
+                    clearFieldsAfterFormSubmit();
+
+                    toast('SUCCESS', 'Welcome. Redirecting to Dashboard...');
+
                     const session = await getSession();
 
                     dispatch(setLogin({
@@ -115,10 +121,14 @@ const Login = () => {
                     }));
 
                     localStorage.setItem('token', session?.token); // Doğru token alanını kontrol edin
-                    router.push('/dashboard');
+
+                    setTimeout(() => {
+                        router.push('/dashboard');
+                    }, 2000);
                 } else {
                     if (login.status === 401) {
-                        alert("ERROR: Email or password is not correct.");
+                        setLoading(false)
+                        toast("ERROR", "Email or password is not correct.");
                     }
                 }
             } catch (error) {
@@ -128,80 +138,84 @@ const Login = () => {
     };
 
     return (
-        <Container className={`mt-5 ${styles.loginContainer}`}>
-            <h2>Login</h2>
-            <Form onSubmit={handleSubmit}>
-                {/* Email */}
-                <Form.Group controlId="formBasicEmail" className="mt-1">
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control
-                        type="email"
-                        name="email"
-                        placeholder="Enter email"
-                        value={email}
-                        onChange={handleChange}
-                        isInvalid={!!errors.email}
-                    />
-                    <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-                </Form.Group>
+        <>
+            <Container className={`mt-5 ${styles.loginContainer}`}>
+                <h2>Login</h2>
+                <Form onSubmit={handleSubmit}>
+                    {/* Email */}
+                    <Form.Group controlId="formBasicEmail" className="mt-1">
+                        <Form.Label>Email Address</Form.Label>
+                        <Form.Control
+                            type="email"
+                            name="email"
+                            placeholder="Enter email"
+                            value={email}
+                            onChange={handleChange}
+                            isInvalid={!!errors.email}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                    </Form.Group>
 
-                {/* Password */}
-                <Form.Group controlId="formBasicPassword" className="mt-1">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type="password"
-                        name="password"
-                        placeholder="Enter password"
-                        value={password}
-                        onChange={handleChange}
-                        isInvalid={!!errors.password}
-                    />
-                    <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
-                </Form.Group>
+                    {/* Password */}
+                    <Form.Group controlId="formBasicPassword" className="mt-1">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                            type="password"
+                            name="password"
+                            placeholder="Enter password"
+                            value={password}
+                            onChange={handleChange}
+                            isInvalid={!!errors.password}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+                    </Form.Group>
+
+                    <Row className="mt-3">
+                        <Col>
+                            {/* Back Button */}
+                            <Button variant="secondary" onClick={handleBack} className="w-100">
+                                Back
+                            </Button>
+                        </Col>
+                        <Col>
+                            {/* Login Button */}
+                            <Button variant="primary" type="submit" disabled={loading} className="w-100">
+                                {loading ? (
+                                    <>
+                                        <Spinner
+                                            as="span"
+                                            animation="border"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                            className='text-white me-2'
+                                        />
+                                        Logging In...
+                                    </>
+                                ) : (
+                                    <>Login</>
+                                )}
+                            </Button>
+                        </Col>
+                    </Row>
+                </Form>
 
                 <Row className="mt-3">
-                    <Col>
-                        {/* Back Button */}
-                        <Button variant="secondary" onClick={handleBack} className="w-100">
-                            Back
-                        </Button>
-                    </Col>
-                    <Col>
-                        {/* Login Button */}
-                        <Button variant="primary" type="submit" disabled={loading} className="w-100">
-                            {loading ? (
-                                <>
-                                    <Spinner
-                                        as="span"
-                                        animation="border"
-                                        size="sm"
-                                        role="status"
-                                        aria-hidden="true"
-                                        className='text-white me-2'
-                                    />
-                                    Logging In...
-                                </>
-                            ) : (
-                                <>Login</>
-                            )}
-                        </Button>
-                    </Col>
+                    <p>
+                        Don't have an account?{' '}
+                        <Link href="/register" className={styles.link}>Sign up now!</Link>
+                    </p>
                 </Row>
-            </Form>
 
-            <Row className="mt-3">
-                <p>
-                    Don't have an account?{' '}
-                    <Link href="/register" className={styles.link}>Sign up now!</Link>
-                </p>
-            </Row>
+                <Row>
+                    <p>
+                        Back to <Link href="/" className={styles.link}>Homepage</Link>
+                    </p>
+                </Row>
+            </Container>
+            <ToastContainer />
+        </>
 
-            <Row>
-                <p>
-                    Back to <Link href="/" className={styles.link}>Homepage</Link>
-                </p>
-            </Row>
-        </Container>
     );
 };
 

@@ -82,6 +82,12 @@ const SignUp = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
+        // Name surname capital case format
+        let formattedValue = value;
+        if (name === 'firstName' || name === 'lastName') {
+            formattedValue = value.charAt(0).toUpperCase() + value.slice(1);
+        }
+
         // Mobile format
         let cleanValue = value;
         if (name === 'mobile') {
@@ -91,10 +97,10 @@ const SignUp = () => {
 
         switch (name) {
             case 'firstName':
-                setFirstName(value);
+                setFirstName(formattedValue);
                 break;
             case 'lastName':
-                setLastName(value);
+                setLastName(formattedValue);
                 break;
             case 'email':
                 setEmail(value);
@@ -110,7 +116,7 @@ const SignUp = () => {
         }
 
         // Validasyonu çağır
-        validateField(name, name !== 'mobile' ? value : cleanValue);
+        validateField(name, name !== 'mobile' ? formattedValue : cleanValue);
     };
 
     // Form submission sonrası inputları temizle
@@ -152,7 +158,7 @@ const SignUp = () => {
             const response = await axios.post('/public/register', payload)
 
             if (response.result) {
-                toast('SUCCESS', response.message + '. ', 'Redirecting to Login Page...');
+                toast('SUCCESS', response.message);
                 clearFieldsAfterFormSubmit();
 
                 setTimeout(() => {
