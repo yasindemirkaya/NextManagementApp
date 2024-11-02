@@ -13,10 +13,13 @@ export default NextAuth({
                             email: credentials.email,
                             password: credentials.password,
                         })
+                        console.log(response)
 
                         if (response.message == 'Success') {
                             return {
-                                name: response.data
+                                user: response.user,
+                                message: response.message,
+                                token: response.token
                             }
                         } else {
                             return null

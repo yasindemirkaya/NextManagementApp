@@ -107,16 +107,21 @@ const Login = () => {
                 setLoading(false)
 
                 if (login.ok) {
-                    const session = await getSession()
-                    dispatch(setLogin({
-                        username: session?.user.name.username,
-                        loginStatus: true
-                    }))
+                    const session = await getSession();
 
-                    localStorage.setItem('token', session?.user.name.email)
-                    router.push('/dashboard')
+                    console.log(session)
+
+                    dispatch(setLogin({
+                        username: session?.user?.email,
+                        loginStatus: true
+                    }));
+
+                    localStorage.setItem('token', session?.token); // Doğru token alanını kontrol edin
+                    router.push('/dashboard');
                 } else {
-                    if (login.status == 401) alert("ERROR", "Email or password is not correct.")
+                    if (login.status === 401) {
+                        alert("ERROR: Email or password is not correct.");
+                    }
                 }
             } catch (error) {
                 console.error('Login failed. ', error)
