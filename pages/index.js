@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Card, Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
-import styles from './index.module.scss'; // SCSS style file import
+import styles from './index.module.scss';
 
 const Home = () => {
   const router = useRouter();
