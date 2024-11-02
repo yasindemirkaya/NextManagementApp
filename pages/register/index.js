@@ -5,8 +5,9 @@ import { useRouter } from 'next/router';
 import styles from './index.module.scss';
 import InputMask from 'react-input-mask';
 import axios from '@/utils/axios'
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast from '@/utils/toastify'
+import { ToastContainer } from 'react-toastify';
+
 
 const SignUp = () => {
     const router = useRouter();
@@ -19,8 +20,6 @@ const SignUp = () => {
     const [password, setPassword] = useState('');
     const [mobile, setMobile] = useState('');
     const [errors, setErrors] = useState({});
-    const [registerSuccess, setRegisterSuccess] = useState(null);
-    const [registerError, setRegisterError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // METHODS
@@ -132,8 +131,6 @@ const SignUp = () => {
     // Form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setRegisterError({});
-        setRegisterSuccess(null);
         setIsSubmitting(true)
 
         // Validation başarısız ise işleme devam etme.
@@ -155,8 +152,7 @@ const SignUp = () => {
             const response = await axios.post('/public/register', payload)
 
             if (response.result) {
-                setRegisterSuccess(response.message);
-                toast.success(registerSuccess);
+                toast('SUCCESS', response.message + '. ', 'Redirecting to Login Page...');
                 clearFieldsAfterFormSubmit();
 
                 setTimeout(() => {
@@ -164,126 +160,128 @@ const SignUp = () => {
                 }, 2000);
             }
         } catch (error) {
-            setRegisterError(error.response.message || 'Error when creating new user.')
-            toast.error(registerError)
+            toast('ERROR', error.response?.data?.message)
         } finally {
-            setIsSubmitting(false); // Gönderim işlemi tamamlandı
+            setIsSubmitting(false);
         }
     };
 
     return (
-        <Container className={`mt-5 ${styles.signupContainer}`}>
-            <h2>Register</h2>
-            <Form onSubmit={handleSubmit}>
+        <>
+            <Container className={`mt-5 ${styles.signupContainer}`}>
+                <h2>Register</h2>
+                <Form onSubmit={handleSubmit}>
 
-                {/* First Name */}
-                <Form.Group controlId="formBasicName" className="mt-1">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="firstName"
-                        placeholder="Enter your first name"
-                        value={firstName}
-                        onChange={handleChange}
-                        isInvalid={!!errors.firstName}
-                    />
-                    <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
-                </Form.Group>
+                    {/* First Name */}
+                    <Form.Group controlId="formBasicName" className="mt-1">
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="firstName"
+                            placeholder="Enter your first name"
+                            value={firstName}
+                            onChange={handleChange}
+                            isInvalid={!!errors.firstName}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
+                    </Form.Group>
 
-                {/* Last Name */}
-                <Form.Group controlId="formBasicLastName" className="mt-1">
-                    <Form.Label>Surname</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="lastName"
-                        placeholder="Enter your last name"
-                        value={lastName}
-                        onChange={handleChange}
-                        isInvalid={!!errors.lastName}
-                    />
-                    <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
-                </Form.Group>
+                    {/* Last Name */}
+                    <Form.Group controlId="formBasicLastName" className="mt-1">
+                        <Form.Label>Surname</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="lastName"
+                            placeholder="Enter your last name"
+                            value={lastName}
+                            onChange={handleChange}
+                            isInvalid={!!errors.lastName}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
+                    </Form.Group>
 
-                {/* Email */}
-                <Form.Group controlId="formBasicEmail" className="mt-1">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control
-                        type="email"
-                        name="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={handleChange}
-                        isInvalid={!!errors.email}
-                    />
-                    <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-                </Form.Group>
+                    {/* Email */}
+                    <Form.Group controlId="formBasicEmail" className="mt-1">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={handleChange}
+                            isInvalid={!!errors.email}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                    </Form.Group>
 
-                {/* Password */}
-                <Form.Group controlId="formBasicPassword" className="mt-1">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type="password"
-                        name="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={handleChange}
-                        isInvalid={!!errors.password}
-                    />
-                    <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
-                </Form.Group>
+                    {/* Password */}
+                    <Form.Group controlId="formBasicPassword" className="mt-1">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                            type="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={handleChange}
+                            isInvalid={!!errors.password}
+                        />
+                        <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+                    </Form.Group>
 
-                {/* Mobile */}
-                <Form.Group controlId="formBasicMobile" className="mt-1">
-                    <Form.Label>Mobile</Form.Label>
-                    <InputMask
-                        mask="(999) 999-9999"
-                        value={mobile}
-                        onChange={handleChange}
-                    >
-                        {(inputProps) => (
-                            <Form.Control
-                                type="tel"
-                                name="mobile"
-                                placeholder="Enter your mobile number"
-                                isInvalid={!!errors.mobile}
-                                ref={mobileInputRef} // Ref'i burada ekle
-                                {...inputProps}
-                            />
-                        )}
-                    </InputMask>
-                    <Form.Control.Feedback type="invalid">{errors.mobile}</Form.Control.Feedback>
-                </Form.Group>
+                    {/* Mobile */}
+                    <Form.Group controlId="formBasicMobile" className="mt-1">
+                        <Form.Label>Mobile</Form.Label>
+                        <InputMask
+                            mask="(999) 999-9999"
+                            value={mobile}
+                            onChange={handleChange}
+                        >
+                            {(inputProps) => (
+                                <Form.Control
+                                    type="tel"
+                                    name="mobile"
+                                    placeholder="Enter your mobile number"
+                                    isInvalid={!!errors.mobile}
+                                    ref={mobileInputRef} // Ref'i burada ekle
+                                    {...inputProps}
+                                />
+                            )}
+                        </InputMask>
+                        <Form.Control.Feedback type="invalid">{errors.mobile}</Form.Control.Feedback>
+                    </Form.Group>
 
-                {/* Buttons */}
-                <Row className="mt-3">
-                    <Col>
-                        <Button variant="secondary" onClick={handleBack} className="w-100">
-                            Back
-                        </Button>
-                    </Col>
-                    <Col>
-                        <Button variant="primary" type="submit" className="w-100" disabled={isSubmitting}>
-                            {isSubmitting ? 'Signing Up...' : 'Sign Up'}
-                        </Button>
-                    </Col>
-                </Row>
+                    {/* Buttons */}
+                    <Row className="mt-3">
+                        <Col>
+                            <Button variant="secondary" onClick={handleBack} className="w-100">
+                                Back
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Button variant="primary" type="submit" className="w-100" disabled={isSubmitting}>
+                                {isSubmitting ? 'Signing Up...' : 'Sign Up'}
+                            </Button>
+                        </Col>
+                    </Row>
 
-                {/* Login redirect */}
-                <Row className="mt-3">
-                    <p>
-                        Already have an account?{' '}
-                        <Link href="/login" className={styles.link}>Login now!</Link>
-                    </p>
-                </Row>
+                    {/* Login redirect */}
+                    <Row className="mt-3">
+                        <p>
+                            Already have an account?{' '}
+                            <Link href="/login" className={styles.link}>Login now!</Link>
+                        </p>
+                    </Row>
 
-                {/* Homepage redirect */}
-                <Row>
-                    <p>
-                        Back to <Link href="/" className={styles.link}>Homepage</Link>
-                    </p>
-                </Row>
-            </Form>
-        </Container>
+                    {/* Homepage redirect */}
+                    <Row>
+                        <p>
+                            Back to <Link href="/" className={styles.link}>Homepage</Link>
+                        </p>
+                    </Row>
+                </Form>
+            </Container>
+            <ToastContainer />
+        </>
     );
 };
 

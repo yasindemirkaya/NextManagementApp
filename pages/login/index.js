@@ -109,8 +109,6 @@ const Login = () => {
                 if (login.ok) {
                     const session = await getSession();
 
-                    console.log(session)
-
                     dispatch(setLogin({
                         username: session?.user?.email,
                         loginStatus: true
