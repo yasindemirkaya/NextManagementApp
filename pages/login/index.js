@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Spinner } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux'
 import styles from './index.module.scss';
+import { getSession, signIn } from 'next-auth/react';
+import { setLogin } from '/redux/page'
 
 const Login = () => {
     const router = useRouter();
+    const dispatch = useDispatch()
 
     // DATA
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
 
     // METHODS
     const validateField = (name, value) => {
@@ -85,13 +90,37 @@ const Login = () => {
     };
 
     // Form submit
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Form valid ise inputları temizle ve submit et
         if (validateForm()) {
             clearFieldsAfterFormSubmit();
-            console.log('Form submitted successfully');
+            setLoading(true);
+
+            try {
+                const login = await signIn('credentials', {
+                    redirect: false,
+                    type: 'signin',
+                    email: email,
+                    password: password,
+                })
+                setLoading(false)
+
+                if (login.ok) {
+                    const session = await getSession()
+                    dispatch(setLogin({
+                        username: session?.user.name.username,
+                        loginStatus: true
+                    }))
+
+                    localStorage.setItem('token', session?.user.name.email)
+                    router.push('/dashboard')
+                } else {
+                    if (login.status == 401) alert("ERROR", "Email or password is not correct.")
+                }
+            } catch (error) {
+                console.error('Login failed. ', error)
+            }
         }
     };
 
@@ -136,8 +165,22 @@ const Login = () => {
                     </Col>
                     <Col>
                         {/* Login Button */}
-                        <Button variant="primary" type="submit" className="w-100">
-                            Login
+                        <Button variant="primary" type="submit" disabled={loading} className="w-100">
+                            {loading ? (
+                                <>
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                        className='text-white me-2'
+                                    />
+                                    Logging In...
+                                </>
+                            ) : (
+                                <>Login</>
+                            )}
                         </Button>
                     </Col>
                 </Row>
