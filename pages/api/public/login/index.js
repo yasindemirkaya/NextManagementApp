@@ -9,6 +9,7 @@
 
 import sequelize from '@/config/db';
 import { sign } from 'jsonwebtoken'
+import comparePassword from '@/helpers/hash';
 
 // Kullanıcıyı veritabanından bulup doğrulama işlemi
 const findUserByEmail = async (email) => {
@@ -28,7 +29,9 @@ export default async function handler(req, res) {
 
             if (user) {
                 // Kullanıcının şifresini kontrol et
-                if (user.password === password) {
+                const isPasswordValid = await comparePassword(password, user.password); // Hashlenmiş şifre ile karşılaştır
+
+                if (isPasswordValid) {
                     // Başarılı giriş, JWT oluştur
                     const token = sign({
                         userId: user.id,

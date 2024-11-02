@@ -8,7 +8,7 @@
 // ------------------------------
 
 import User from '@/models/User';
-import bcrypt from 'bcrypt';
+import hashPassword from '@/helpers/hash';
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
             }
 
             // Şifreyi hash'le
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await hashPassword(password, 10);
 
             // Yeni kullanıcı oluştur
             const newUser = await User.create({
