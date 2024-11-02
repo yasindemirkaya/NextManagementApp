@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from './index.module.scss';
+import InputMask from 'react-input-mask';
 
 const SignUp = () => {
     const router = useRouter();
+    const mobileInputRef = useRef(null);
 
     // DATA
     const [firstName, setFirstName] = useState('');
@@ -75,6 +77,13 @@ const SignUp = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
+        // Mobile format
+        let cleanValue = value;
+        if (name === 'mobile') {
+            // Remove every non-digit characters
+            cleanValue = value.replace(/\D/g, '');
+        }
+
         switch (name) {
             case 'firstName':
                 setFirstName(value);
@@ -89,13 +98,14 @@ const SignUp = () => {
                 setPassword(value);
                 break;
             case 'mobile':
-                setMobile(value);
+                setMobile(cleanValue);
                 break;
             default:
                 break;
         }
 
-        validateField(name, value);
+        // Validasyonu çağır
+        validateField(name, name !== 'mobile' ? value : cleanValue);
     };
 
     // Form submission sonrası inputları temizle
@@ -188,14 +198,22 @@ const SignUp = () => {
                 {/* Mobile */}
                 <Form.Group controlId="formBasicMobile" className="mt-1">
                     <Form.Label>Mobile</Form.Label>
-                    <Form.Control
-                        type="tel"
-                        name="mobile"
-                        placeholder="Enter your mobile number"
+                    <InputMask
+                        mask="(999) 999-9999"
                         value={mobile}
                         onChange={handleChange}
-                        isInvalid={!!errors.mobile}
-                    />
+                    >
+                        {(inputProps) => (
+                            <Form.Control
+                                type="tel"
+                                name="mobile"
+                                placeholder="Enter your mobile number"
+                                isInvalid={!!errors.mobile}
+                                ref={mobileInputRef} // Ref'i burada ekle
+                                {...inputProps}
+                            />
+                        )}
+                    </InputMask>
                     <Form.Control.Feedback type="invalid">{errors.mobile}</Form.Control.Feedback>
                 </Form.Group>
 
