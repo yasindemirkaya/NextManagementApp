@@ -1,0 +1,16 @@
+.footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    color: #6c757d;
+
+    .links {
+        a {
+            color: #6c757d;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
