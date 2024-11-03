@@ -6,6 +6,12 @@ import styles from './index.module.scss';
 const Header = () => {
     const { data: session } = useSession();
 
+    //    Logout user
+    const handleLogout = async () => {
+        await signOut({ callbackUrl: '/' });
+        localStorage.removeItem('token');
+    }
+
     // Session yoksa Headerı gösterme. Sadece login kullanıcılar için Header gösterilmeli.
     if (!session) return null;
 
@@ -25,7 +31,12 @@ const Header = () => {
                     </Nav>
                     <Nav className="ms-auto">
                         {session ? (
-                            <Nav.Link onClick={() => signOut({ callbackUrl: '/' })}>
+                            <Nav.Link as={Link} href="/profile">My Profile</Nav.Link>
+                        ) : (
+                            ''
+                        )}
+                        {session ? (
+                            <Nav.Link onClick={handleLogout}>
                                 Logout
                             </Nav.Link>
                         ) : (
