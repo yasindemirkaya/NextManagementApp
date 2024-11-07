@@ -7,9 +7,9 @@ import styles from './index.module.scss';
 const DefaultLayout = ({ children }) => {
     return (
         <div className={styles.layout}>
-            <Header />
+            <Header className={styles.header} />
             <main className={styles.mainContent}>{children}</main>
-            <Footer />
+            <Footer className={styles.footer} />
         </div>
     );
 };

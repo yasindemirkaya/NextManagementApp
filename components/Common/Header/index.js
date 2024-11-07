@@ -18,9 +18,9 @@ const Header = () => {
     return (
         <Navbar bg="light" expand="lg" className={styles.header}>
             <Container>
-                <Navbar.Brand as={Link} href="/">
+                {/* <Navbar.Brand as={Link} href="/">
                     Your Company
-                </Navbar.Brand>
+                </Navbar.Brand> */}
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
