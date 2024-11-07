@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux'
 import styles from './index.module.scss';
-import { getSession, signIn } from 'next-auth/react';
 import { setLogin } from '/redux/page'
+import axios from "@/utils/axios"
 
 import toast from '@/utils/toastify'
 import { ToastContainer } from 'react-toastify';
@@ -100,39 +100,39 @@ const Login = () => {
             setLoading(true);
 
             try {
-                const login = await signIn('credentials', {
-                    redirect: false,
-                    type: 'signin',
-                    email: email,
-                    password: password,
-                })
+                // API'ye giriş isteği gönder
+                const response = await axios.post('/public/login', {
+                    email,
+                    password
+                });
 
-                if (login.ok) {
-                    setLoading(false)
+                if (response.message === 'Success') {
+                    setLoading(false);
                     clearFieldsAfterFormSubmit();
 
                     toast('SUCCESS', 'Welcome. Redirecting to Dashboard...');
 
-                    const session = await getSession();
-
+                    // Kullanıcı bilgilerini Redux'a kaydet
                     dispatch(setLogin({
-                        username: session?.user?.email,
+                        username: response.user.email,
                         loginStatus: true
                     }));
 
-                    localStorage.setItem('token', session?.token); // Doğru token alanını kontrol edin
+                    // Token'ı localStorage'a kaydet
+                    localStorage.setItem('token', response.token);
 
+                    // Dashboard'a yönlendir
                     setTimeout(() => {
                         router.push('/dashboard');
                     }, 2000);
                 } else {
-                    if (login.status === 401) {
-                        setLoading(false)
-                        toast("ERROR", "Email or password is not correct.");
-                    }
+                    setLoading(false);
+                    toast('ERROR', response.message || 'Email or password is incorrect');
                 }
             } catch (error) {
-                console.error('Login failed. ', error)
+                setLoading(false);
+                console.error('Login failed: ', error);
+                toast('ERROR', 'An error occurred. Please try again.');
             }
         }
     };

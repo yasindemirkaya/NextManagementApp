@@ -35,8 +35,6 @@ export default async function handler(req, res) {
                     // Başarılı giriş, JWT oluştur
                     const token = sign({
                         userId: user.id,
-                        name: user.first_name,
-                        surname: user.last_name,
                         email: user.email
                     }, process.env.JWT_SECRET, {
                         expiresIn: '1h' // Token süresi
@@ -50,7 +48,7 @@ export default async function handler(req, res) {
                 } else {
                     // Şifre yanlış
                     return res.status(401).json({
-                        message: 'Invalid credentials'
+                        message: 'Invalid credentials. Please check your email or password.'
                     });
                 }
             } else {
