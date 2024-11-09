@@ -18,29 +18,29 @@ const Header = () => {
     }
 
     return (
-        <Navbar bg="light" expand="lg" className={styles.header}>
-            <Container>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="me-auto">
-                        <Nav.Link as={Link} href="/">Home</Nav.Link>
-                        <Nav.Link as={Link} href="/about">About Us</Nav.Link>
-                        <Nav.Link as={Link} href="/contact">Contact</Nav.Link>
-                        <Nav.Link as={Link} href="/privacy">Privacy Policy</Nav.Link>
-                    </Nav>
-                    <Nav className="ms-auto">
-                        {token ? (
-                            <Nav.Link as="span" onClick={handleLogout} className={styles.logout}>
-                                Log Out
-                            </Nav.Link>
-                        ) : (
-                            <Nav.Link as={Link} href="/login">Log In</Nav.Link>
-                        )}
-                        <Nav.Link as={Link} href="/profile">Profile</Nav.Link>
-                    </Nav>
-                </Navbar.Collapse>
-            </Container>
-        </Navbar>
+        <>
+            <Navbar bg="light" expand="lg" className={styles.header}>
+                <Container>
+                    <Navbar.Brand as={Link} href="/">MyApp</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="me-auto">
+                            <Nav.Link as={Link} href="/">Home</Nav.Link>
+                        </Nav>
+                        <Nav className="ms-auto">
+                            {token ? (<Nav.Link as={Link} href="/profile">Profile</Nav.Link>) : null}
+                            {token ? (
+                                <Nav.Link as="span" onClick={handleLogout} className={styles.logout}>
+                                    Log Out
+                                </Nav.Link>
+                            ) : (
+                                <Nav.Link as={Link} href="/login">Log In</Nav.Link>
+                            )}
+                        </Nav>
+                    </Navbar.Collapse>
+                </Container>
+            </Navbar>
+        </>
     );
 };
 

@@ -12,7 +12,7 @@ export const useAuthRedirect = () => {
         }
 
         // Eğer login sayfasına gidiliyorsa ve kullanıcı zaten giriş yaptıysa dashboard'a yönlendir
-        if (pathname === '/login' && token) {
+        if (pathname === '/login' || pathname === '/' && token) {
             router.push('/dashboard');
         }
     };
