@@ -30,7 +30,9 @@ const Header = () => {
                     </Nav>
                     <Nav className="ms-auto">
                         {token ? (
-                            <Nav.Link as="button" onClick={handleLogout}>Log Out</Nav.Link>
+                            <Nav.Link as="span" onClick={handleLogout} className={styles.logout}>
+                                Log Out
+                            </Nav.Link>
                         ) : (
                             <Nav.Link as={Link} href="/login">Log In</Nav.Link>
                         )}
