@@ -206,12 +206,6 @@ const Login = () => {
                         <Link href="/register" className={styles.link}>Sign up now!</Link>
                     </p>
                 </Row>
-
-                <Row>
-                    <p>
-                        Back to <Link href="/" className={styles.link}>Homepage</Link>
-                    </p>
-                </Row>
             </Container>
             <ToastContainer />
         </>
