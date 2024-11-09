@@ -1,0 +1,32 @@
+.notFoundContainer {
+    height: 100vh;
+    text-align: center;
+}
+
+.heading {
+    font-size: 5rem;
+    font-weight: bold;
+    // color: #ff6f61;
+    /* Canlı kırmızı, farklı bir renk de seçebilirsiniz */
+}
+
+.subheading {
+    font-size: 2rem;
+    color: #333;
+    margin-top: 10px;
+}
+
+.description {
+    font-size: 1.2rem;
+    color: #555;
+    margin-top: 20px;
+}
+
+.buttonClass {
+    margin-top: 30px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    // background-color: #ff6f61;
+    // border-color: #ff6f61;
+    transition: background-color 0.3s ease;
+}
