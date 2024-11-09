@@ -127,7 +127,7 @@ const Login = () => {
                     }, 2000);
                 } else {
                     setLoading(false);
-                    toast('ERROR', response.message || 'Email or password is incorrect');
+                    toast('ERROR', response.message);
                 }
             } catch (error) {
                 setLoading(false);

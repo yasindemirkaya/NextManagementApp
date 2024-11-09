@@ -9,7 +9,7 @@
 
 import sequelize from '@/config/db';
 import { sign } from 'jsonwebtoken'
-import comparePassword from '@/helpers/hash';
+import { compare } from 'bcrypt'
 
 // Kullanıcıyı veritabanından bulup doğrulama işlemi
 const findUserByEmail = async (email) => {
@@ -29,32 +29,39 @@ export default async function handler(req, res) {
 
             if (user) {
                 // Kullanıcının şifresini kontrol et
-                const isPasswordValid = await comparePassword(password, user.password); // Hashlenmiş şifre ile karşılaştır
+                const isPasswordValid = await compare(password, user.password); // Hashlenmiş şifre ile karşılaştır
 
                 if (isPasswordValid) {
                     // Başarılı giriş, JWT oluştur
                     const token = sign({
-                        userId: user.id,
-                        email: user.email
+                        id: user.id,
+                        email: user.email,
+                        role: user.role,
                     }, process.env.JWT_SECRET, {
                         expiresIn: '1h' // Token süresi
                     });
 
                     return res.status(200).json({
                         message: 'Success',
-                        user: user,
+                        code: 1,
+                        user: {
+                            id: user.id,
+                            email: user.email
+                        },
                         token,
                     });
                 } else {
                     // Şifre yanlış
-                    return res.status(401).json({
-                        message: 'Invalid credentials. Please check your email or password.'
+                    return res.status(200).json({
+                        message: 'Invalid credentials. Please check your email or password.',
+                        code: 0
                     });
                 }
             } else {
                 // Kullanıcı bulunamadı
-                return res.status(404).json({
-                    message: 'User not found'
+                return res.status(200).json({
+                    message: 'User not found',
+                    code: 0,
                 });
             }
         } else {
@@ -65,7 +72,8 @@ export default async function handler(req, res) {
     } catch (error) {
         res.status(503).json({
             message: error.message,
-            data: []
+            data: [],
+            code: 0
         })
     }
 
