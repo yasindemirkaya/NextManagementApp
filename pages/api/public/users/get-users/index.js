@@ -18,7 +18,7 @@ const handler = async (req, res) => {
         const { is_active, is_verified, status } = req.query;
 
         // Base query
-        let query = 'SELECT id, first_name, last_name, email, mobile, is_active, is_verified, role, created_at, updated_at FROM users WHERE 1=1';
+        let query = 'SELECT id, first_name, last_name, email, mobile, is_active, is_verified, role, createdAt, updatedAt FROM users WHERE 1=1';
         const replacements = [];
 
         // is_active 
