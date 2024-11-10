@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Card, Button, Spinner } from 'react-bootstrap';
 import styles from './index.module.scss';
-import axios from 'axios'; // Axios kullanarak API çağrısı yapıyoruz
+import axios from 'axios';
+import { mobileFormatter } from '@/helpers/mobileFormatter';
+
 
 const ProfileCard = ({ onEdit }) => {
     const [user, setUser] = useState(null);
@@ -86,7 +88,7 @@ const ProfileCard = ({ onEdit }) => {
                     <p><strong>Name:</strong> {user.first_name}</p>
                     <p><strong>Surname:</strong> {user.last_name}</p>
                     <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Mobile:</strong> {user.mobile}</p>
+                    <p><strong>Mobile:</strong> {mobileFormatter(user.mobile)}</p>
                     <p><strong>Account Status:</strong> {formatAccountStatus(user.is_active)}</p>
                     <p><strong>Verification Status:</strong> {formatAccountVerification(user.is_active)}</p>
                     <p><strong>Account Role:</strong> {formatAccountRole(user.role)}</p>
