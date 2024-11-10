@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, Button, Form, Row } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router'
@@ -10,6 +10,8 @@ import styles from './index.module.scss';
 const EditProfileCard = ({ userData, onCancel }) => {
     const dispatch = useDispatch()
     const router = useRouter()
+    const mobileInputRef = useRef(null);
+
     // DATA
     const [firstName, setFirstName] = useState(userData.first_name);
     const [lastName, setLastName] = useState(userData.last_name);
@@ -134,7 +136,8 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         <Form.Control
                             type="email"
                             name="email"
-                            value={email} onChange={(e) => setEmail(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             isInvalid={!!errors.email}
                         />
                         <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
@@ -142,13 +145,21 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     {/* Mobile */}
                     <Form.Group className="mb-3">
                         <Form.Label>Mobile</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="mobile"
+                        <InputMask
+                            mask="(999) 999-9999"
                             value={mobile}
                             onChange={(e) => setMobile(e.target.value)}
-                            isInvalid={!!errors.mobile}
-                        />
+                        >
+                            {(inputProps) => (
+                                <Form.Control
+                                    type="tel"
+                                    name="mobile"
+                                    ref={mobileInputRef}
+                                    isInvalid={!!errors.mobile}
+                                    {...inputProps}
+                                />
+                            )}
+                        </InputMask>
                         <Form.Control.Feedback type="invalid">{errors.mobile}</Form.Control.Feedback>
                     </Form.Group>
                     {/* Account Status */}
