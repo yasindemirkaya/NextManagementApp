@@ -90,7 +90,7 @@ const ProfileCard = ({ onEdit }) => {
                     <p><strong>Email:</strong> {user.email}</p>
                     <p><strong>Mobile:</strong> {mobileFormatter(user.mobile)}</p>
                     <p><strong>Account Status:</strong> {formatAccountStatus(user.is_active)}</p>
-                    <p><strong>Verification Status:</strong> {formatAccountVerification(user.is_active)}</p>
+                    <p><strong>Verification Status:</strong> {formatAccountVerification(user.is_verified)}</p>
                     <p><strong>Account Role:</strong> {formatAccountRole(user.role)}</p>
                 </div>
                 <Button variant="primary" onClick={onEdit}>Edit</Button>
