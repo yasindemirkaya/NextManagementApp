@@ -2,108 +2,143 @@ import { useState } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 import styles from './index.module.scss';
 
-const ProfileEditCard = ({ user, onSave, onCancel }) => {
-    const [formData, setFormData] = useState({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        isActive: user.isActive,
-        isVerified: user.isVerified,
-        role: user.role,
+const EditProfileCard = ({ userData, onCancel }) => {
+    // DATA
+    const [firstName, setFirstName] = useState(userData.first_name);
+    const [lastName, setLastName] = useState(userData.last_name);
+    const [email, setEmail] = useState(userData.email);
+    const [mobile, setMobile] = useState(userData.mobile);
+    const [isActive, setIsActive] = useState(userData.is_active === 1);
+
+    const [errors, setErrors] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        mobile: ''
     });
 
-    const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value,
-        });
+    // METHODS
+    const validateField = (name, value) => {
+        let error = '';
+
+        switch (name) {
+            case 'firstName':
+                if (!value.trim()) error = 'Name is required';
+                else if (value.length < 2) error = 'Name must be at least 2 characters';
+                else if (/[^a-zA-Z\s]/.test(value)) error = 'Name cannot contain numeric characters';
+                break;
+            case 'lastName':
+                if (!value.trim()) error = 'Surname is required';
+                else if (value.length < 2) error = 'Surname must be at least 2 characters';
+                else if (/[^a-zA-Z\s]/.test(value)) error = 'Surname cannot contain numeric characters';
+                break;
+            case 'email':
+                if (!value) error = 'Email is required';
+                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = 'Invalid email format';
+                break;
+            case 'mobile':
+                if (!value) error = 'Mobile number is required';
+                else if (!/^\d+$/.test(value)) error = 'Mobile number should contain only digits';
+                break;
+            default:
+                break;
+        }
+
+        setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
     };
 
-    const handleSubmit = () => {
-        // Kaydetme işlemini burada yapacağız (API çağrısı vb.)
-        onSave(formData);
-    };
+    const handleSave = () => {
+        // Form validation before saving
+        validateField('firstName', firstName);
+        validateField('lastName', lastName);
+        validateField('email', email);
+        validateField('mobile', mobile);
+
+        // If there are no errors, proceed with save
+        if (!Object.values(errors).some(error => error !== '')) {
+            const updatedData = {
+                first_name: firstName,
+                last_name: lastName,
+                email: email,
+                mobile: mobile,
+                is_active: isActive ? 1 : 0
+            };
+
+            // Save updated data (API call or other logic)
+            console.log("Updated Data:", updatedData);
+        }
+    }
 
     return (
         <Card className={styles.profileEditCard}>
             <Card.Body>
-                <Card.Title>Profil Düzenle</Card.Title>
+                <Card.Title>Edit Profile</Card.Title>
                 <Form>
+                    {/* Name */}
                     <Form.Group className="mb-3">
-                        <Form.Label>Ad</Form.Label>
+                        <Form.Label>Name</Form.Label>
                         <Form.Control
                             type="text"
                             name="firstName"
-                            value={formData.firstName}
-                            onChange={handleInputChange}
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            isInvalid={!!errors.firstName}
                         />
+                        <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
                     </Form.Group>
+                    {/* Suraname */}
                     <Form.Group className="mb-3">
-                        <Form.Label>Soyad</Form.Label>
+                        <Form.Label>Surname</Form.Label>
                         <Form.Control
                             type="text"
                             name="lastName"
-                            value={formData.lastName}
-                            onChange={handleInputChange}
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            isInvalid={!!errors.lastName}
                         />
+                        <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
                     </Form.Group>
+                    {/* Email */}
                     <Form.Group className="mb-3">
                         <Form.Label>Email</Form.Label>
                         <Form.Control
                             type="email"
                             name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
+                            value={email} onChange={(e) => setEmail(e.target.value)}
+                            isInvalid={!!errors.email}
                         />
+                        <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                     </Form.Group>
+                    {/* Mobile */}
                     <Form.Group className="mb-3">
-                        <Form.Label>Telefon Numarası</Form.Label>
+                        <Form.Label>Mobile</Form.Label>
                         <Form.Control
                             type="text"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleInputChange}
+                            name="mobile"
+                            value={mobile}
+                            onChange={(e) => setMobile(e.target.value)}
+                            isInvalid={!!errors.mobile}
                         />
+                        <Form.Control.Feedback type="invalid">{errors.mobile}</Form.Control.Feedback>
                     </Form.Group>
+                    {/* Account Status */}
                     <Form.Group className="mb-3">
+                        <Form.Label>Account Status</Form.Label>
                         <Form.Check
-                            type="checkbox"
-                            label="Hesap Aktif"
+                            type="switch"
+                            id="isActive"
                             name="isActive"
-                            checked={formData.isActive}
-                            onChange={handleInputChange}
+                            checked={isActive}
+                            onChange={(e) => setIsActive(e.target.checked)}
                         />
                     </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Check
-                            type="checkbox"
-                            label="Hesap Doğrulandı"
-                            name="isVerified"
-                            checked={formData.isVerified}
-                            onChange={handleInputChange}
-                        />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Rol</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="role"
-                            value={formData.role}
-                            onChange={handleInputChange}
-                        />
-                    </Form.Group>
-                    <Button variant="primary" onClick={handleSubmit}>
-                        Kaydet
-                    </Button>
-                    <Button variant="secondary" onClick={onCancel} className="ms-2">
-                        İptal
-                    </Button>
+                    {/* Buttons */}
+                    <Button variant="primary" onClick={handleSave}>Save</Button>
+                    <Button variant="secondary" className="ms-2" onClick={onCancel}>Cancel</Button>
                 </Form>
             </Card.Body>
         </Card>
     );
 };
 
-export default ProfileEditCard;
+export default EditProfileCard;

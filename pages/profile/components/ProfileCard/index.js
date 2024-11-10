@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser, setLoading, setError } from '@/redux/user';
 import { Card, Button, Spinner, Alert } from 'react-bootstrap';
@@ -6,13 +6,17 @@ import styles from './index.module.scss';
 import axios from "@/utils/axios"
 import { mobileFormatter } from '@/helpers/mobileFormatter';
 
-const ProfileCard = ({ onEdit }) => {
+import EditProfileCard from '../EditProfile/index';
+
+const ProfileCard = () => {
     const dispatch = useDispatch();
 
     // Get user info from user store
     const user = useSelector(state => state.user.user);
     const loading = useSelector(state => state.user.loading);
     const error = useSelector(state => state.user.error);
+
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         // If user data is not available in the Redux store, send a request to the service.
@@ -35,6 +39,16 @@ const ProfileCard = ({ onEdit }) => {
             }
         }
     }, [user, dispatch]); // Only fetch data if user is not already in the store
+
+    // Activate edit mode
+    const handleEditClick = () => {
+        setIsEditing(true);
+    };
+
+    // Deactivate edit mode
+    const handleCancelClick = () => {
+        setIsEditing(false);
+    };
 
     // Format user account role
     const formatAccountRole = (role) => {
@@ -92,21 +106,31 @@ const ProfileCard = ({ onEdit }) => {
     }
 
     return (
-        <Card className={styles.profileCard}>
-            <Card.Body>
-                <Card.Title>Profile Information</Card.Title>
-                <div className={styles.profileInfo}>
-                    <p><strong>Name:</strong> {user.first_name}</p>
-                    <p><strong>Surname:</strong> {user.last_name}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Mobile:</strong> {mobileFormatter(user.mobile)}</p>
-                    <p><strong>Account Status:</strong> {formatAccountStatus(user.is_active)}</p>
-                    <p><strong>Verification Status:</strong> {formatAccountVerification(user.is_verified)}</p>
-                    <p><strong>Account Role:</strong> {formatAccountRole(user.role)}</p>
+        <div className={styles.profileContainer}>
+            {!isEditing && (
+                <Card className={styles.profileCard}>
+                    <Card.Body>
+                        <Card.Title>Profile Information</Card.Title>
+                        <div className={styles.profileInfo}>
+                            <p><strong>Name:</strong> {user.first_name}</p>
+                            <p><strong>Surname:</strong> {user.last_name}</p>
+                            <p><strong>Email:</strong> {user.email}</p>
+                            <p><strong>Mobile:</strong> {mobileFormatter(user.mobile)}</p>
+                            <p><strong>Account Status:</strong> {formatAccountStatus(user.is_active)}</p>
+                            <p><strong>Verification Status:</strong> {formatAccountVerification(user.is_verified)}</p>
+                            <p><strong>Account Role:</strong> {formatAccountRole(user.role)}</p>
+                        </div>
+                        <Button variant="primary" onClick={handleEditClick}>Edit</Button>
+                    </Card.Body>
+                </Card>
+            )}
+
+            {isEditing && (
+                <div className={styles.editProfileContainer}>
+                    <EditProfileCard userData={user} onCancel={handleCancelClick} />
                 </div>
-                <Button variant="primary" onClick={onEdit}>Edit</Button>
-            </Card.Body>
-        </Card>
+            )}
+        </div>
     );
 };
 
