@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^2.1.0",
+    "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",

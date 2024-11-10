@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux'
 import styles from './index.module.scss';
-import { setLogin } from '/redux/page'
 import axios from "@/utils/axios"
 
 import toast from '@/utils/toastify'
@@ -111,12 +110,6 @@ const Login = () => {
                     clearFieldsAfterFormSubmit();
 
                     toast('SUCCESS', 'Welcome. Redirecting to Dashboard...');
-
-                    // Kullanıcı bilgilerini Redux'a kaydet
-                    dispatch(setLogin({
-                        username: response.user.email,
-                        loginStatus: true
-                    }));
 
                     // Token'ı localStorage'a kaydet
                     localStorage.setItem('token', response.token);

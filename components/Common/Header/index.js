@@ -1,14 +1,18 @@
 import Link from 'next/link';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
+import { clearUser } from '@/redux/user';
 import styles from './index.module.scss';
 
 const Header = () => {
+    const dispatch = useDispatch();
     const router = useRouter();
     const token = localStorage.getItem('token');
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        dispatch(clearUser())
         router.push('/login');
     };
 

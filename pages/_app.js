@@ -5,9 +5,8 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 
 import { Provider } from "react-redux";
-import { persistor } from "@/redux/config";
 import { PersistGate } from 'redux-persist/integration/react';
-import store from "@/redux/store";
+import { store, persistor } from "@/redux/store"; // store ve persistor'ı import ediyoruz
 
 import { useRouter } from 'next/router';
 import { useAuthRedirect } from '@/utils/authGuard';

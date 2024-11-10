@@ -5,16 +5,6 @@ import { Container, Row, Col } from 'react-bootstrap';
 import styles from './index.module.scss';
 
 const Profile = () => {
-    const [user, setUser] = useState({
-        firstName: "John",
-        lastName: "Doe",
-        email: "johndoe@example.com",
-        phone: "555-1234",
-        isActive: true,
-        isVerified: true,
-        role: "Admin"
-    });
-
     const [isEditing, setIsEditing] = useState(false);
 
     const handleEdit = () => {
@@ -34,12 +24,11 @@ const Profile = () => {
         <Container className={styles.profilePage}>
             <Row>
                 <Col md={4}>
-                    <ProfileCard user={user} onEdit={handleEdit} />
+                    <ProfileCard onEdit={handleEdit} />
                 </Col>
                 <Col md={8}>
                     {isEditing && (
                         <EditProfile
-                            user={user}
                             onSave={handleSave}
                             onCancel={handleCancel}
                         />

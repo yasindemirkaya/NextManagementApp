@@ -1,72 +1,78 @@
-import { useEffect, useState } from 'react';
-import { Card, Button, Spinner } from 'react-bootstrap';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser, setLoading, setError } from '@/redux/user';
+import { Card, Button, Spinner, Alert } from 'react-bootstrap';
 import styles from './index.module.scss';
-import axios from 'axios';
+import axios from "@/utils/axios"
 import { mobileFormatter } from '@/helpers/mobileFormatter';
 
-
 const ProfileCard = ({ onEdit }) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+
+    // Get user info from user store
+    const user = useSelector(state => state.user.user);
+    const loading = useSelector(state => state.user.loading);
+    const error = useSelector(state => state.user.error);
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await axios.get('/api/public/users/get-user', {
+        // If user data is not available in the Redux store, send a request to the service.
+        if (!user) {
+            dispatch(setLoading(true));
+            const token = localStorage.getItem('token');
+
+            if (token) {
+                axios.get('/private/users/get-user', {
                     headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                        Authorization: `Bearer ${token}`
+                    }
+                }).then(response => {
+                    dispatch(setUser(response.user));
+                    dispatch(setLoading(false));
+                }).catch(error => {
+                    dispatch(setError(error.message));
+                    dispatch(setLoading(false));
                 });
-
-                setUser(response.data.user);
-                setLoading(false);
-            } catch (err) {
-                setError('Kullanıcı verileri alınırken bir hata oluştu.');
-                setLoading(false);
             }
-        };
+        }
+    }, [user, dispatch]); // Only fetch data if user is not already in the store
 
-        fetchUserData();
-    }, []);
-
-    // Format user account
+    // Format user account role
     const formatAccountRole = (role) => {
         switch (role) {
             case 0:
-                return 'Standard User'
+                return 'Standard User';
             case 1:
-                return 'Admin'
+                return 'Admin';
             case 2:
-                return 'Super Admin'
+                return 'Super Admin';
             default:
-                return 'Undefined Role'
+                return 'Undefined Role';
         }
-    }
+    };
 
+    // Format user status
     const formatAccountStatus = (status) => {
         switch (status) {
             case 0:
-                return 'Not Active'
+                return 'Not Active';
             case 1:
-                return 'Active'
+                return 'Active';
             default:
-                return 'Undefined Status'
+                return 'Undefined Status';
         }
-    }
+    };
 
+    // Format user verification status
     const formatAccountVerification = (verification) => {
         switch (verification) {
             case 0:
-                return 'Not Verified'
+                return 'Not Verified';
             case 1:
-                return 'Verified'
+                return 'Verified';
             default:
-                return 'Undefined Verification'
+                return 'Undefined Verification';
         }
-    }
-
+    };
 
     if (loading) {
         return (
@@ -76,8 +82,13 @@ const ProfileCard = ({ onEdit }) => {
         );
     }
 
-    if (error) {
-        return <p>{error}</p>;
+    // Check if user is null or undefined before trying to access user data
+    if (!user || error) {
+        return (
+            <Alert variant="warning">
+                User data is not available. Please try again later.
+            </Alert>
+        );
     }
 
     return (
