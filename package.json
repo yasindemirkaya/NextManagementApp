@@ -29,7 +29,8 @@
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "sass": "^1.80.5",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "sweetalert2": "^11.14.5"
   },
   "devDependencies": {
     "eslint": "^8",

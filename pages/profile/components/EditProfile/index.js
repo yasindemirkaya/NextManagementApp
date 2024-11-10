@@ -1,8 +1,14 @@
 import { useState } from 'react';
-import { Card, Button, Form } from 'react-bootstrap';
+import { Card, Button, Form, Row } from 'react-bootstrap';
+import Swal from 'sweetalert2';
+import { useRouter } from 'next/router'
+import { useDispatch } from 'react-redux';
+import { clearUser } from '@/redux/user';
 import styles from './index.module.scss';
 
 const EditProfileCard = ({ userData, onCancel }) => {
+    const dispatch = useDispatch()
+    const router = useRouter()
     // DATA
     const [firstName, setFirstName] = useState(userData.first_name);
     const [lastName, setLastName] = useState(userData.last_name);
@@ -67,7 +73,30 @@ const EditProfileCard = ({ userData, onCancel }) => {
             // Save updated data (API call or other logic)
             console.log("Updated Data:", updatedData);
         }
-    }
+    };
+
+    const handleDeleteAccount = () => {
+        Swal.fire({
+            title: 'Are you sure you want to permanently delete your account?',
+            text: "This action cannot be reverted.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire('Your account has been deleted.', 'Your account has been permanently deleted.', 'success');
+
+                localStorage.removeItem('token')
+
+                dispatch(clearUser())
+                router.push('/')
+                // Burada API'ye istek gönderebiliriz
+            }
+        });
+    };
 
     return (
         <Card className={styles.profileEditCard}>
@@ -136,6 +165,11 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     <Button variant="primary" onClick={handleSave}>Save</Button>
                     <Button variant="secondary" className="ms-2" onClick={onCancel}>Cancel</Button>
                 </Form>
+                <Row className="mt-3">
+                    <div onClick={handleDeleteAccount} className={styles.deleteAccount}>
+                        <p className="text-danger">I want to delete my account.</p>
+                    </div>
+                </Row>
             </Card.Body>
         </Card>
     );
