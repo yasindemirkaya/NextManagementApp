@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser, setLoading, setError } from '@/redux/user';
-import { Card, Button, Spinner, Alert } from 'react-bootstrap';
+import { Card, Button, Spinner, Alert, Badge } from 'react-bootstrap';
 import styles from './index.module.scss';
 import axios from "@/utils/axios"
 import { mobileFormatter } from '@/helpers/mobileFormatter';
@@ -54,13 +54,13 @@ const ProfileCard = () => {
     const formatAccountRole = (role) => {
         switch (role) {
             case 0:
-                return 'Standard User';
+                return <Badge bg="primary">Standard User</Badge>;
             case 1:
-                return 'Admin';
+                return <Badge bg="success">Admin</Badge>;
             case 2:
-                return 'Super Admin';
+                return <Badge bg="danger">Super Admin</Badge>;
             default:
-                return 'Undefined Role';
+                return <Badge bg="secondary">Undefined Role</Badge>;
         }
     };
 
@@ -68,11 +68,11 @@ const ProfileCard = () => {
     const formatAccountStatus = (status) => {
         switch (status) {
             case 0:
-                return 'Not Active';
+                return <Badge bg="danger">Not Active</Badge>;
             case 1:
-                return 'Active';
+                return <Badge bg="success">Active</Badge>;
             default:
-                return 'Undefined Status';
+                return <Badge bg="secondary">Undefined Status</Badge>;
         }
     };
 
@@ -80,11 +80,11 @@ const ProfileCard = () => {
     const formatAccountVerification = (verification) => {
         switch (verification) {
             case 0:
-                return 'Not Verified';
+                return <Badge bg="danger">Not Verified</Badge>;
             case 1:
-                return 'Verified';
+                return <Badge bg="success">Verified</Badge>;
             default:
-                return 'Undefined Verification';
+                return <Badge bg="secondary">Verification Unknown</Badge>;
         }
     };
 

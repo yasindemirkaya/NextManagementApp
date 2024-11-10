@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux';
 import { clearUser } from '@/redux/user';
+import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
 
 const EditProfileCard = ({ userData, onCancel }) => {
