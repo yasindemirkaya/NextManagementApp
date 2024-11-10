@@ -3,9 +3,10 @@ import { Card, Button, Form, Row } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux';
-import { clearUser } from '@/redux/user';
+import { clearUser, updateUser } from '@/redux/user';
 import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
+import axios from '@/utils/axios'
 
 const EditProfileCard = ({ userData, onCancel }) => {
     const dispatch = useDispatch()
@@ -56,25 +57,54 @@ const EditProfileCard = ({ userData, onCancel }) => {
         setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
+        const formattedMobile = mobile.replace(/\D/g, '');
+
         // Form validation before saving
         validateField('firstName', firstName);
         validateField('lastName', lastName);
         validateField('email', email);
-        validateField('mobile', mobile);
+        validateField('mobile', formattedMobile);
 
         // If there are no errors, proceed with save
         if (!Object.values(errors).some(error => error !== '')) {
             const updatedData = {
-                first_name: firstName,
-                last_name: lastName,
+                firstName: firstName,
+                lastName: lastName,
                 email: email,
-                mobile: mobile,
-                is_active: isActive ? 1 : 0
+                mobile: formattedMobile,
+                isActive: isActive ? 1 : 0
             };
 
-            // Save updated data (API call or other logic)
-            console.log("Updated Data:", updatedData);
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.put('/private/users/update-user', updatedData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+
+                if (response.code === 1) {
+                    Swal.fire({
+                        title: response.message,
+                        icon: 'success'
+                    })
+
+                    dispatch(updateUser(updatedData))
+                } else {
+                    Swal.fire({
+                        title: response.message,
+                        icon: 'error',
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating user data:', error);
+                Swal.fire({
+                    title: 'User could not be updated.',
+                    icon: 'error',
+                    text: 'An error occured. Please try again.'
+                });
+            }
         }
     };
 
@@ -175,7 +205,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     </Form.Group>
                     {/* Buttons */}
                     <Button variant="primary" onClick={handleSave}>Save</Button>
-                    <Button variant="secondary" className="ms-2" onClick={onCancel}>Cancel</Button>
+                    <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
                 </Form>
                 <Row className="mt-3">
                     <div onClick={handleDeleteAccount} className={styles.deleteAccount}>

@@ -60,7 +60,7 @@ const ProfileCard = () => {
             case 2:
                 return <Badge bg="danger">Super Admin</Badge>;
             default:
-                return <Badge bg="secondary">Undefined Role</Badge>;
+                return <Badge bg="warning">Undefined Role</Badge>;
         }
     };
 
@@ -72,7 +72,7 @@ const ProfileCard = () => {
             case 1:
                 return <Badge bg="success">Active</Badge>;
             default:
-                return <Badge bg="secondary">Undefined Status</Badge>;
+                return <Badge bg="warning">Undefined Status</Badge>;
         }
     };
 
@@ -84,7 +84,7 @@ const ProfileCard = () => {
             case 1:
                 return <Badge bg="success">Verified</Badge>;
             default:
-                return <Badge bg="secondary">Verification Unknown</Badge>;
+                return <Badge bg="warning">Verification Unknown</Badge>;
         }
     };
 

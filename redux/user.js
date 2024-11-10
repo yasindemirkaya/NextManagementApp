@@ -15,22 +15,30 @@ const userSlice = createSlice({
         setUser: (state, action) => {
             state.user = action.payload;
         },
+        clearUser: (state) => {
+            state.user = null;
+            state.loading = false;
+            state.error = null;
+        },
+        updateUser: (state, action) => {
+            if (state.user) {
+                state.user = {
+                    ...state.user,  // Keep existing user data
+                    ...action.payload,  // Override only the fields passed in the payload
+                };
+            }
+        },
         setLoading: (state, action) => {
             state.loading = action.payload;
         },
         setError: (state, action) => {
             state.error = action.payload;
         },
-        clearUser: (state) => {
-            state.user = null;
-            state.loading = false;
-            state.error = null;
-        },
     },
 });
 
 // Export actions
-export const { setUser, setLoading, setError, clearUser } = userSlice.actions;
+export const { setUser, setLoading, setError, clearUser, updateUser } = userSlice.actions;
 
 // Export the reducer to be used in the store
 export default userSlice.reducer;
