@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Card, Button, Form, Row } from 'react-bootstrap';
+import { Card, Button, Form, Row, Col } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux';
@@ -155,6 +155,11 @@ const EditProfileCard = ({ userData, onCancel }) => {
         });
     };
 
+    // Change password
+    const handleChangePassword = () => {
+
+    }
+
     return (
         <Card className={styles.profileEditCard}>
             <Card.Body>
@@ -232,9 +237,19 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
                 </Form>
                 <Row className="mt-3">
-                    <div onClick={handleDeleteAccount} className={styles.deleteAccount}>
-                        <p className="text-danger">I want to delete my account.</p>
-                    </div>
+                    <Col md={12}>
+                        <div onClick={handleChangePassword} className={styles.link}>
+                            <p className="text-primary">I want to change my password.</p>
+                        </div>
+                    </Col>
+                    <Col md={12}>
+                        <div onClick={handleDeleteAccount} className={styles.link}>
+                            <p className="text-danger">I want to delete my account.</p>
+                        </div>
+                    </Col>
+                </Row>
+                <Row>
+
                 </Row>
             </Card.Body>
         </Card>
