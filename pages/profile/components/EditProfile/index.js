@@ -57,6 +57,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
         setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
     };
 
+    // Update user
     const handleSave = async () => {
         const formattedMobile = mobile.replace(/\D/g, '');
 
@@ -108,6 +109,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
         }
     };
 
+    // Delete user
     const handleDeleteAccount = () => {
         Swal.fire({
             title: 'Are you sure you want to permanently delete your account?',
@@ -118,15 +120,37 @@ const EditProfileCard = ({ userData, onCancel }) => {
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes',
             cancelButtonText: 'No'
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                Swal.fire('Your account has been deleted.', 'Your account has been permanently deleted.', 'success');
+                try {
+                    // Delete user
+                    const token = localStorage.getItem('token');
+                    const response = await axios.delete('/private/user/delete-user', {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
 
-                localStorage.removeItem('token')
-
-                dispatch(clearUser())
-                router.push('/')
-                // Burada API'ye istek gönderebiliriz
+                    if (response.code === 1) {
+                        Swal.fire('Your account has been deleted.', 'Your account has been permanently deleted.', 'success');
+                        localStorage.removeItem('token');
+                        dispatch(clearUser());
+                        router.push('/');
+                    } else {
+                        Swal.fire({
+                            title: 'Account Deletion Failed',
+                            icon: 'error',
+                            text: response.message,
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error deleting user account:', error);
+                    Swal.fire({
+                        title: 'Account Deletion Failed',
+                        icon: 'error',
+                        text: 'An error occurred. Please try again.',
+                    });
+                }
             }
         });
     };
