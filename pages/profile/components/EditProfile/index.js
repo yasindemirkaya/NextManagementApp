@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Card, Button, Form, Row, Col } from 'react-bootstrap';
+import { Card, Button, Form, Row, Col, Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux';
@@ -7,6 +7,7 @@ import { clearUser, updateUser } from '@/redux/user';
 import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
 import axios from '@/utils/axios'
+import ChangePassword from '../ChangePassword/index';
 
 const EditProfileCard = ({ userData, onCancel }) => {
     const dispatch = useDispatch()
@@ -19,6 +20,8 @@ const EditProfileCard = ({ userData, onCancel }) => {
     const [email, setEmail] = useState(userData.email);
     const [mobile, setMobile] = useState(userData.mobile);
     const [isActive, setIsActive] = useState(userData.is_active === 1);
+
+    const [showModal, setShowModal] = useState(false);
 
     const [errors, setErrors] = useState({
         firstName: '',
@@ -157,8 +160,12 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
     // Change password
     const handleChangePassword = () => {
-
+        setShowModal(true);
     }
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
 
     return (
         <Card className={styles.profileEditCard}>
@@ -236,6 +243,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     <Button variant="primary" onClick={handleSave}>Save</Button>
                     <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
                 </Form>
+                {/* Links */}
                 <Row className="mt-3">
                     <Col md={12}>
                         <div onClick={handleChangePassword} className={styles.link}>
@@ -248,9 +256,9 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         </div>
                     </Col>
                 </Row>
-                <Row>
 
-                </Row>
+                {/* Change Password Modal */}
+                <ChangePassword show={showModal} onHide={handleCloseModal} />
             </Card.Body>
         </Card>
     );

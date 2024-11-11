@@ -88,7 +88,7 @@ export default async function handler(req, res) {
             }
 
             // Yeni şifreyi hash'le ve güncelle
-            const hashedPassword = await hashPassword(hashedPassword, 10);
+            const hashedPassword = await hashPassword(newPassword, 10);
             const result = await updateUserPasswordById(userId, hashedPassword);
 
             if (result.affectedRows === 0) {
