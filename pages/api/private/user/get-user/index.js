@@ -3,7 +3,7 @@
 // | Service Name: Get User
 // | Description: Service that fetches all data in the Users table of the user whose ID is sent.
 // | Parameters: id
-// | Endpoint: /api/private/users/get-user?id=63feea7c-9f4e-11ef-9af8-244bfe9797df
+// | Endpoint: /api/private/user/get-user?id=63feea7c-9f4e-11ef-9af8-244bfe9797df
 // |
 // ------------------------------
 

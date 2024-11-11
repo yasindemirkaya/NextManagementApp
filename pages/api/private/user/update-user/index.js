@@ -3,7 +3,7 @@
 // | Service Name: Update User
 // | Description: Service that the user updates his/her own data.
 // | Parameters: first_name, last_name, email, mobile, is_active
-// | Endpoint: /api/private/users/update-user
+// | Endpoint: /api/private/user/update-user
 // |
 // ------------------------------
 

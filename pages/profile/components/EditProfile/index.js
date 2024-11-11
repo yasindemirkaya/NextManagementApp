@@ -78,7 +78,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.put('/private/users/update-user', updatedData, {
+                const response = await axios.put('/private/user/update-user', updatedData, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

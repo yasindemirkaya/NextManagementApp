@@ -25,7 +25,7 @@ const ProfileCard = () => {
             const token = localStorage.getItem('token');
 
             if (token) {
-                axios.get('/private/users/get-user', {
+                axios.get('/private/user/get-user', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
