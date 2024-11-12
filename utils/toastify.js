@@ -11,7 +11,6 @@ export default function notify(type, message) {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "colored",
     })
 
     const error = (message) => toast.error(message, {
@@ -22,7 +21,6 @@ export default function notify(type, message) {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "colored",
     })
 
     if (type == "SUCCESS") success(message)

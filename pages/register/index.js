@@ -1,195 +1,78 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from './index.module.scss';
 import InputMask from 'react-input-mask';
-import axios from '@/utils/axios'
-import toast from '@/utils/toastify'
+import axios from '@/utils/axios';
+import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
-
+import { useForm } from 'react-hook-form';
 
 const SignUp = () => {
     const router = useRouter();
-    const mobileInputRef = useRef(null);
+    const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
+        mode: 'onChange',
+    });
 
-    // DATA
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [mobile, setMobile] = useState('');
-    const [errors, setErrors] = useState({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    // METHODS
-    const validateField = (name, value) => {
-        let error = '';
-
-        switch (name) {
-            case 'firstName':
-                if (!value.trim()) error = 'Name is required';
-                else if (value.length < 2) error = 'Name must be at least 2 characters';
-                break;
-            case 'lastName':
-                if (!value.trim()) error = 'Surname is required';
-                else if (value.length < 2) error = 'Surname must be at least 2 characters';
-                break;
-            case 'email':
-                if (!value) error = 'Email is required';
-                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = 'Invalid email format';
-                break;
-            case 'password':
-                if (!value) error = 'Password is required';
-                else if (value.length < 6) error = 'Password must be at least 6 characters';
-                break;
-            case 'mobile':
-                if (!value) error = 'Mobile number is required';
-                else if (!/^\d+$/.test(value)) error = 'Mobile number should contain only digits';
-                break;
-            default:
-                break;
-        }
-
-        setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
-    };
-
-    // validateField methodunu her bir input için çalıştır ve errorları return et
-    const validateForm = () => {
-        const newErrors = {};
-
-        // Alanların dolu olup olmadığını kontrol et
-        if (!firstName) newErrors.firstName = 'Name is required';
-        if (!lastName) newErrors.lastName = 'Surname is required';
-        if (!email) newErrors.email = 'Email is required';
-        if (!password) newErrors.password = 'Password is required';
-        if (!mobile) newErrors.mobile = 'Mobile number is required';
-
-        // Mevcut hataları kontrol et
-        validateField('firstName', firstName);
-        validateField('lastName', lastName);
-        validateField('email', email);
-        validateField('password', password);
-        validateField('mobile', mobile);
-
-        // Hataları güncelle
-        setErrors(prevErrors => ({ ...prevErrors, ...newErrors }));
-
-        return Object.keys(newErrors).length === 0; // Eğer hata yoksa true döner
-    };
-
-    // Inputlara her kullanıcı girişinde canlı olarak validation yap
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-
-        // Name surname capital case format
-        let formattedValue = value;
-        if (name === 'firstName' || name === 'lastName') {
-            formattedValue = value.charAt(0).toUpperCase() + value.slice(1);
-        }
-
-        // Mobile format
-        let cleanValue = value;
-        if (name === 'mobile') {
-            // Remove every non-digit characters
-            cleanValue = value.replace(/\D/g, '');
-        }
-
-        switch (name) {
-            case 'firstName':
-                setFirstName(formattedValue);
-                break;
-            case 'lastName':
-                setLastName(formattedValue);
-                break;
-            case 'email':
-                setEmail(value);
-                break;
-            case 'password':
-                setPassword(value);
-                break;
-            case 'mobile':
-                setMobile(cleanValue);
-                break;
-            default:
-                break;
-        }
-
-        // Validasyonu çağır
-        validateField(name, name !== 'mobile' ? formattedValue : cleanValue);
-    };
-
-    // Form submission sonrası inputları temizle
-    const clearFieldsAfterFormSubmit = () => {
-        setFirstName('');
-        setLastName('');
-        setEmail('');
-        setPassword('');
-        setMobile('');
-        setErrors({});
-    }
-
-    // Geri dön butonu için redirect
+    // Geri dön butonu için yönlendirme
     const handleBack = () => {
         router.back();
     };
 
-    // Form submit
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true)
+    // Form submit işlemi
+    const onSubmit = async (data) => {
+        const { firstName, lastName, email, password, mobile } = data;
 
-        // Validation başarısız ise işleme devam etme.
-        if (!validateForm()) {
-            setIsSubmitting(false)
-            return;
-        }
-
-        const payload = {
-            firstName,
-            lastName,
-            email,
-            password,
-            mobile,
-        };
-
-        // Register api call
         try {
-            const response = await axios.post('/public/register', payload)
+            // Register API isteği gönderiliyor
+            const response = await axios.post('/public/register', {
+                firstName,
+                lastName,
+                email,
+                password,
+                mobile,
+            });
 
             if (response.result) {
                 toast('SUCCESS', response.message);
-                clearFieldsAfterFormSubmit();
+                reset();
 
                 setTimeout(() => {
                     router.push('/login');
                 }, 2000);
             }
         } catch (error) {
-            toast('ERROR', error.response?.data?.message)
-        } finally {
-            setIsSubmitting(false);
+            toast('ERROR', error.response?.data?.message);
         }
+    };
+
+    // İsim ve soyisim alanları için ilk harfi büyük yapma
+    const handleNameChange = (e, name) => {
+        const formattedValue = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1);
+        setValue(name, formattedValue);
     };
 
     return (
         <>
             <Container className={`mt-5 ${styles.signupContainer}`}>
                 <h2>Register</h2>
-                <Form onSubmit={handleSubmit}>
+                <Form onSubmit={handleSubmit(onSubmit)}>
 
                     {/* First Name */}
                     <Form.Group controlId="formBasicName" className="mt-1">
                         <Form.Label>Name</Form.Label>
                         <Form.Control
                             type="text"
-                            name="firstName"
                             placeholder="Enter your first name"
-                            value={firstName}
-                            onChange={handleChange}
                             isInvalid={!!errors.firstName}
+                            {...register("firstName", {
+                                required: "Name is required",
+                                minLength: { value: 2, message: "Name must be at least 2 characters" },
+                            })}
+                            onBlur={(e) => handleNameChange(e, "firstName")}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.firstName?.message}</Form.Control.Feedback>
                     </Form.Group>
 
                     {/* Last Name */}
@@ -197,13 +80,15 @@ const SignUp = () => {
                         <Form.Label>Surname</Form.Label>
                         <Form.Control
                             type="text"
-                            name="lastName"
                             placeholder="Enter your last name"
-                            value={lastName}
-                            onChange={handleChange}
                             isInvalid={!!errors.lastName}
+                            {...register("lastName", {
+                                required: "Surname is required",
+                                minLength: { value: 2, message: "Surname must be at least 2 characters" },
+                            })}
+                            onBlur={(e) => handleNameChange(e, "lastName")}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.lastName?.message}</Form.Control.Feedback>
                     </Form.Group>
 
                     {/* Email */}
@@ -211,13 +96,14 @@ const SignUp = () => {
                         <Form.Label>Email address</Form.Label>
                         <Form.Control
                             type="email"
-                            name="email"
                             placeholder="Enter your email"
-                            value={email}
-                            onChange={handleChange}
                             isInvalid={!!errors.email}
+                            {...register("email", {
+                                required: "Email is required",
+                                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" },
+                            })}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
                     </Form.Group>
 
                     {/* Password */}
@@ -225,13 +111,14 @@ const SignUp = () => {
                         <Form.Label>Password</Form.Label>
                         <Form.Control
                             type="password"
-                            name="password"
                             placeholder="Enter your password"
-                            value={password}
-                            onChange={handleChange}
                             isInvalid={!!errors.password}
+                            {...register("password", {
+                                required: "Password is required",
+                                minLength: { value: 6, message: "Password must be at least 6 characters" },
+                            })}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>
                     </Form.Group>
 
                     {/* Mobile */}
@@ -239,21 +126,22 @@ const SignUp = () => {
                         <Form.Label>Mobile</Form.Label>
                         <InputMask
                             mask="(999) 999-9999"
-                            value={mobile}
-                            onChange={handleChange}
+                            {...register("mobile", {
+                                required: "Mobile number is required",
+                                pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: "Invalid mobile format" },
+                            })}
+                            onChange={(e) => setValue("mobile", e.target.value.replace(/\D/g, ''))}
                         >
                             {(inputProps) => (
                                 <Form.Control
                                     type="tel"
-                                    name="mobile"
                                     placeholder="Enter your mobile number"
                                     isInvalid={!!errors.mobile}
-                                    ref={mobileInputRef} // Ref'i burada ekle
                                     {...inputProps}
                                 />
                             )}
                         </InputMask>
-                        <Form.Control.Feedback type="invalid">{errors.mobile}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.mobile?.message}</Form.Control.Feedback>
                     </Form.Group>
 
                     {/* Buttons */}
