@@ -130,14 +130,13 @@ const SignUp = () => {
                                 required: "Mobile number is required",
                                 pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: "Invalid mobile format" },
                             })}
-                            onChange={(e) => setValue("mobile", e.target.value.replace(/\D/g, ''))}
                         >
                             {(inputProps) => (
                                 <Form.Control
+                                    {...inputProps}
                                     type="tel"
                                     placeholder="Enter your mobile number"
                                     isInvalid={!!errors.mobile}
-                                    {...inputProps}
                                 />
                             )}
                         </InputMask>

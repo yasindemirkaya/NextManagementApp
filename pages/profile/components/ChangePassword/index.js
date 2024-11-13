@@ -1,68 +1,23 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import axios from '@/utils/axios';
 
 const ChangePassword = ({ show, onHide }) => {
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [errors, setErrors] = useState({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-    });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+        setError,
+        watch
+    } = useForm();
 
-    const validateField = (name, value) => {
-        let error = '';
-
-        switch (name) {
-            case 'currentPassword':
-                if (!value) error = 'Current password is required';
-                break;
-            case 'newPassword':
-                if (!value) error = 'New password is required';
-                else if (value.length < 6) error = 'New password must be at least 6 characters';
-                break;
-            case 'confirmPassword':
-                if (!value) error = 'Please confirm your new password';
-                else if (value !== newPassword) error = 'Passwords do not match';
-                break;
-            default:
-                break;
-        }
-
-        // Hata mesajını güncellerken, direkt olarak errors state'ini update et
-        setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
-    };
-
-    const handleChangePassword = async (e) => {
-        e.preventDefault();
-
-        // Alanları doğrula
-        validateField('currentPassword', currentPassword);
-        validateField('newPassword', newPassword);
-        validateField('confirmPassword', confirmPassword);
-
-        // Eğer herhangi bir input boşsa servise gitme
-        if (!currentPassword || !newPassword || !confirmPassword) {
-            return;
-        }
-
-        // Hataları kontrol et, hata varsa servise gitme
-        if (Object.values(errors).some(error => error !== '')) {
-            return;
-        }
-
-        // Hata yoksa servise git
+    const onSubmit = async (data) => {
         try {
-            const payload = {
-                currentPassword,
-                newPassword,
-                confirmPassword
-            };
             const token = localStorage.getItem('token');
-            const response = await axios.patch('/private/user/change-password', payload, {
+            const response = await axios.patch('/private/user/change-password', data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -75,6 +30,7 @@ const ChangePassword = ({ show, onHide }) => {
                     text: response.message,
                 });
                 onHide();
+                reset();
             } else {
                 Swal.fire({
                     title: 'Error',
@@ -93,16 +49,8 @@ const ChangePassword = ({ show, onHide }) => {
     };
 
     const handleClose = () => {
-        // Modal kapandığında inputları ve hata mesajlarını sıfırla
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmPassword('');
-        setErrors({
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: '',
-        });
-        onHide(); // onHide'ı çağırarak modalı kapat
+        reset();
+        onHide();
     };
 
     return (
@@ -111,52 +59,61 @@ const ChangePassword = ({ show, onHide }) => {
                 <Modal.Title>Change Password</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form onSubmit={handleChangePassword}>
+                <Form onSubmit={handleSubmit(onSubmit)}>
                     {/* Current Password */}
                     <Form.Group className="mb-3">
                         <Form.Label>Current Password</Form.Label>
                         <Form.Control
                             type="password"
-                            value={currentPassword}
-                            onChange={(e) => {
-                                setCurrentPassword(e.target.value);
-                                validateField('currentPassword', e.target.value);
-                            }}
-                            onBlur={() => validateField('currentPassword', currentPassword)}
+                            placeholder="Enter current password"
                             isInvalid={!!errors.currentPassword}
+                            {...register("currentPassword", {
+                                required: "Current password is required"
+                            })}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.currentPassword}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">
+                            {errors.currentPassword?.message}
+                        </Form.Control.Feedback>
                     </Form.Group>
+
                     {/* New Password */}
                     <Form.Group className="mb-3">
                         <Form.Label>New Password</Form.Label>
                         <Form.Control
                             type="password"
-                            value={newPassword}
-                            onChange={(e) => {
-                                setNewPassword(e.target.value);
-                                validateField('newPassword', e.target.value);
-                            }}
-                            onBlur={() => validateField('newPassword', newPassword)}
+                            placeholder="Enter new password"
                             isInvalid={!!errors.newPassword}
+                            {...register("newPassword", {
+                                required: "New password is required",
+                                minLength: {
+                                    value: 6,
+                                    message: "New password must be at least 6 characters"
+                                }
+                            })}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.newPassword}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">
+                            {errors.newPassword?.message}
+                        </Form.Control.Feedback>
                     </Form.Group>
+
                     {/* Confirm Password */}
                     <Form.Group className="mb-3">
                         <Form.Label>Confirm New Password</Form.Label>
                         <Form.Control
                             type="password"
-                            value={confirmPassword}
-                            onChange={(e) => {
-                                setConfirmPassword(e.target.value);
-                                validateField('confirmPassword', e.target.value);
-                            }}
-                            onBlur={() => validateField('confirmPassword', confirmPassword)}
+                            placeholder="Confirm new password"
                             isInvalid={!!errors.confirmPassword}
+                            {...register("confirmPassword", {
+                                required: "Please confirm your new password",
+                                validate: (value) =>
+                                    value === watch("newPassword") || "Passwords do not match"
+                            })}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">
+                            {errors.confirmPassword?.message}
+                        </Form.Control.Feedback>
                     </Form.Group>
+
                     {/* Submit Button */}
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>

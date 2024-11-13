@@ -1,234 +1,188 @@
 import { useState, useRef } from 'react';
-import { Card, Button, Form, Row, Col, Modal } from 'react-bootstrap';
+import { Card, Button, Form, Row, Col } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
 import { clearUser, updateUser } from '@/redux/user';
 import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
-import axios from '@/utils/axios'
+import axios from '@/utils/axios';
 import ChangePassword from '../ChangePassword/index';
 
 const EditProfileCard = ({ userData, onCancel }) => {
-    const dispatch = useDispatch()
-    const router = useRouter()
-    const mobileInputRef = useRef(null);
-
-    // DATA
-    const [firstName, setFirstName] = useState(userData.first_name);
-    const [lastName, setLastName] = useState(userData.last_name);
-    const [email, setEmail] = useState(userData.email);
-    const [mobile, setMobile] = useState(userData.mobile);
-    const [isActive, setIsActive] = useState(userData.is_active === 1);
-
-    const [showModal, setShowModal] = useState(false);
-
-    const [errors, setErrors] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        mobile: ''
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
+        defaultValues: {
+            firstName: userData.first_name,
+            lastName: userData.last_name,
+            email: userData.email,
+            mobile: userData.mobile,
+        }
     });
 
-    // METHODS
-    const validateField = (name, value) => {
-        let error = '';
+    const [isActive, setIsActive] = useState(userData.is_active === 1);
+    const [showModal, setShowModal] = useState(false);
 
-        switch (name) {
-            case 'firstName':
-                if (!value.trim()) error = 'Name is required';
-                else if (value.length < 2) error = 'Name must be at least 2 characters';
-                else if (/[^a-zA-Z\s]/.test(value)) error = 'Name cannot contain numeric characters';
-                break;
-            case 'lastName':
-                if (!value.trim()) error = 'Surname is required';
-                else if (value.length < 2) error = 'Surname must be at least 2 characters';
-                else if (/[^a-zA-Z\s]/.test(value)) error = 'Surname cannot contain numeric characters';
-                break;
-            case 'email':
-                if (!value) error = 'Email is required';
-                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = 'Invalid email format';
-                break;
-            case 'mobile':
-                if (!value) error = 'Mobile number is required';
-                else if (!/^\d+$/.test(value)) error = 'Mobile number should contain only digits';
-                break;
-            default:
-                break;
-        }
+    const handleSave = async (data) => {
+        const formattedMobile = data.mobile.replace(/\D/g, '');
 
-        setErrors(prevErrors => ({ ...prevErrors, [name]: error }));
-    };
+        const updatedData = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            mobile: formattedMobile,
+            isActive: isActive ? 1 : 0
+        };
 
-    // Update user
-    const handleSave = async () => {
-        const formattedMobile = mobile.replace(/\D/g, '');
-
-        // Form validation before saving
-        validateField('firstName', firstName);
-        validateField('lastName', lastName);
-        validateField('email', email);
-        validateField('mobile', formattedMobile);
-
-        // If there are no errors, proceed with save
-        if (!Object.values(errors).some(error => error !== '')) {
-            const updatedData = {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                mobile: formattedMobile,
-                isActive: isActive ? 1 : 0
-            };
-
-            try {
-                const token = localStorage.getItem('token');
-                const response = await axios.put('/private/user/update-user', updatedData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-
-                if (response.code === 1) {
-                    Swal.fire({
-                        title: response.message,
-                        icon: 'success'
-                    })
-
-                    dispatch(updateUser(updatedData))
-                } else {
-                    Swal.fire({
-                        title: response.message,
-                        icon: 'error',
-                    });
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.put('/private/user/update-user', updatedData, {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            } catch (error) {
-                console.error('Error updating user data:', error);
+            });
+
+            if (response.code === 1) {
                 Swal.fire({
-                    title: 'User could not be updated.',
+                    title: response.message,
+                    icon: 'success'
+                });
+                dispatch(updateUser(updatedData));
+            } else {
+                Swal.fire({
+                    title: response.message,
                     icon: 'error',
-                    text: 'An error occured. Please try again.'
                 });
             }
+        } catch (error) {
+            console.error('Error updating user data:', error);
+            Swal.fire({
+                title: 'User could not be updated.',
+                icon: 'error',
+                text: 'An error occurred. Please try again.'
+            });
         }
     };
 
-    // Delete user
-    const handleDeleteAccount = () => {
-        Swal.fire({
-            title: 'Are you sure you want to permanently delete your account?',
-            text: "This action cannot be reverted.",
+    const handleDeleteAccount = async () => {
+        const confirmation = await Swal.fire({
+            title: 'Are you sure?',
+            text: "Your account will be permanently deleted and cannot be recovered.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    // Delete user
-                    const token = localStorage.getItem('token');
-                    const response = await axios.delete('/private/user/delete-user', {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
+            confirmButtonText: 'Yes, delete it!'
+        });
 
-                    if (response.code === 1) {
-                        Swal.fire('Your account has been deleted.', 'Your account has been permanently deleted.', 'success');
-                        localStorage.removeItem('token');
-                        dispatch(clearUser());
-                        router.push('/');
-                    } else {
-                        Swal.fire({
-                            title: 'Account Deletion Failed',
-                            icon: 'error',
-                            text: response.message,
-                        });
+        if (confirmation.isConfirmed) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.delete('/private/user/delete-user', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
                     }
-                } catch (error) {
-                    console.error('Error deleting user account:', error);
+                });
+
+                if (response.code === 1) {
                     Swal.fire({
-                        title: 'Account Deletion Failed',
-                        icon: 'error',
-                        text: 'An error occurred. Please try again.',
+                        title: 'Account Deleted',
+                        text: 'Your account has been deleted successfully.',
+                        icon: 'success'
+                    });
+                    dispatch(clearUser());
+                    localStorage.removeItem('token')
+                    router.push('/login');
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.message || 'Account could not be deleted. Please try again.',
+                        icon: 'error'
                     });
                 }
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'An error occurred while deleting the account. Please try again later.',
+                    icon: 'error'
+                });
             }
-        });
-    };
-
-    // Change password
-    const handleChangePassword = () => {
-        setShowModal(true);
-    }
-
-    const handleCloseModal = () => {
-        setShowModal(false);
+        }
     };
 
     return (
         <Card className={styles.profileEditCard}>
             <Card.Body>
                 <Card.Title>Edit Profile</Card.Title>
-                <Form>
-                    {/* Name */}
+                <Form onSubmit={handleSubmit(handleSave)}>
                     <Form.Group className="mb-3">
                         <Form.Label>Name</Form.Label>
                         <Form.Control
                             type="text"
-                            name="firstName"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
+                            placeholder="Enter your first name"
+                            {...register("firstName", {
+                                required: "Name is required",
+                                minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                pattern: { value: /^[a-zA-Z\s]*$/, message: "Name cannot contain numeric characters" },
+                            })}
                             isInvalid={!!errors.firstName}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.firstName}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.firstName?.message}</Form.Control.Feedback>
                     </Form.Group>
-                    {/* Suraname */}
+
                     <Form.Group className="mb-3">
                         <Form.Label>Surname</Form.Label>
                         <Form.Control
                             type="text"
-                            name="lastName"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
+                            placeholder="Enter your last name"
+                            {...register("lastName", {
+                                required: "Surname is required",
+                                minLength: { value: 2, message: "Surname must be at least 2 characters" },
+                                pattern: { value: /^[a-zA-Z\s]*$/, message: "Surname cannot contain numeric characters" },
+                            })}
                             isInvalid={!!errors.lastName}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.lastName}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.lastName?.message}</Form.Control.Feedback>
                     </Form.Group>
-                    {/* Email */}
+
                     <Form.Group className="mb-3">
                         <Form.Label>Email</Form.Label>
                         <Form.Control
                             type="email"
-                            name="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter your email"
+                            {...register("email", {
+                                required: "Email is required",
+                                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" },
+                            })}
                             isInvalid={!!errors.email}
                         />
-                        <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
                     </Form.Group>
-                    {/* Mobile */}
+
                     <Form.Group className="mb-3">
                         <Form.Label>Mobile</Form.Label>
                         <InputMask
                             mask="(999) 999-9999"
-                            value={mobile}
-                            onChange={(e) => setMobile(e.target.value)}
+                            {...register("mobile", {
+                                required: "Mobile number is required",
+                                pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: "Invalid mobile format" },
+                            })}
                         >
                             {(inputProps) => (
                                 <Form.Control
-                                    type="tel"
-                                    name="mobile"
-                                    ref={mobileInputRef}
-                                    isInvalid={!!errors.mobile}
                                     {...inputProps}
+                                    type="tel"
+                                    placeholder="Enter your mobile number"
+                                    isInvalid={!!errors.mobile}
                                 />
                             )}
                         </InputMask>
-                        <Form.Control.Feedback type="invalid">{errors.mobile}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{errors.mobile?.message}</Form.Control.Feedback>
                     </Form.Group>
-                    {/* Account Status */}
+
                     <Form.Group className="mb-3">
                         <Form.Label>Account Status</Form.Label>
                         <Form.Check
@@ -239,14 +193,14 @@ const EditProfileCard = ({ userData, onCancel }) => {
                             onChange={(e) => setIsActive(e.target.checked)}
                         />
                     </Form.Group>
-                    {/* Buttons */}
-                    <Button variant="primary" onClick={handleSave}>Save</Button>
+
+                    <Button variant="primary" type="submit">Save</Button>
                     <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
                 </Form>
-                {/* Links */}
+
                 <Row className="mt-3">
                     <Col md={12}>
-                        <div onClick={handleChangePassword} className={styles.link}>
+                        <div onClick={() => setShowModal(true)} className={styles.link}>
                             <p className="text-primary">I want to change my password.</p>
                         </div>
                     </Col>
@@ -257,8 +211,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     </Col>
                 </Row>
 
-                {/* Change Password Modal */}
-                <ChangePassword show={showModal} onHide={handleCloseModal} />
+                <ChangePassword show={showModal} onHide={() => setShowModal(false)} />
             </Card.Body>
         </Card>
     );
