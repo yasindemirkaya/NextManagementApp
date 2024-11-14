@@ -2,16 +2,13 @@ import { useState, useEffect } from 'react';
 import { Card, Button, Form, Row, Col } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { clearUser, updateUser } from '@/redux/user';
 import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
 import axios from '@/utils/axios';
 import ChangePassword from '../ChangePassword/index';
 
 const EditProfileCard = ({ userData, onCancel }) => {
-    const dispatch = useDispatch();
     const router = useRouter();
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         defaultValues: {
@@ -54,7 +51,6 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     title: response.message,
                     icon: 'success'
                 });
-                dispatch(updateUser(updatedData));
             } else {
                 Swal.fire({
                     title: response.message,
@@ -97,7 +93,6 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         text: 'Your account has been deleted successfully.',
                         icon: 'success'
                     });
-                    dispatch(clearUser());
                     localStorage.removeItem('token')
                     router.push('/login');
                 } else {
