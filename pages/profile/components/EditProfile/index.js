@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, Button, Form, Row, Col } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
@@ -24,6 +24,11 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
     const [isActive, setIsActive] = useState(userData.is_active === 1);
     const [showModal, setShowModal] = useState(false);
+
+    useEffect(() => {
+        const formattedMobile = userData.mobile.replace(/^(\d{3})(\d{3})(\d{4})$/, "($1) $2-$3");
+        setValue("mobile", formattedMobile);
+    }, [userData.mobile, setValue]);
 
     const handleSave = async (data) => {
         const formattedMobile = data.mobile.replace(/\D/g, '');
