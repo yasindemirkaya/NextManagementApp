@@ -1,9 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/global.scss';
 
-import { useEffect } from 'react';
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 
 import { Provider } from "react-redux";
@@ -22,13 +20,16 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
   const Layout = router.pathname === '/404' ? NotFoundLayout : DefaultLayout;
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
+    const checkToken = () => {
+      const token = localStorage.getItem('token');
+      if (!token || isTokenExpired(token)) {
+        localStorage.removeItem('token');
+        router.push('/login');
+      }
+    };
 
-    if (!token || isTokenExpired(token)) {
-      localStorage.removeItem('token')
-      router.push('/login')
-    }
-  })
+    checkToken();
+  }, [router]);
 
   return (
     <Provider store={store}>
@@ -36,6 +37,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
         <Head>
           <meta charSet="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>Next Management App</title>
         </Head>
         <Layout>
           <Component {...pageProps} />
