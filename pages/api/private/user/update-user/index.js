@@ -9,10 +9,10 @@
 
 import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
+import { isTokenExpiredServer } from '@/helpers/tokenVerifier';
 
 // Kullanıcının güncellediği email adresi ya da telefon ile varolan kayıt var mı diye kontrol
 const isDataAlreadyExists = async (email, mobile, currentEmail, currentMobile) => {
-    // Eğer email veya mobil değişmediyse, bu alanları kontrol etme
     const conditions = [];
     const replacements = [];
 
@@ -35,11 +35,10 @@ const isDataAlreadyExists = async (email, mobile, currentEmail, currentMobile) =
                 replacements,
             }
         );
-        return results.length > 0; // Eğer herhangi bir sonuç varsa, başka birisi tarafından kullanılıyor demektir
+        return results.length > 0;
     }
-    return false; // Hiçbir şey değişmemişse, mevcut data geçerli demektir
-};;
-
+    return false;
+};
 
 // Update methodu
 const updateUserById = async (id, userData, currentEmail, currentMobile) => {
@@ -69,6 +68,14 @@ export default async function handler(req, res) {
             if (!token) {
                 return res.status(200).json({
                     message: "You must be logged in to update your data.",
+                    code: 0
+                });
+            }
+
+            // Token'ın süresi dolmuş mu diye kontrol et
+            if (isTokenExpiredServer(token)) {
+                return res.status(401).json({
+                    message: "Token has expired. Please log in again.",
                     code: 0
                 });
             }

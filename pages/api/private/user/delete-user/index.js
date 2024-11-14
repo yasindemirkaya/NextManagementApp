@@ -8,6 +8,7 @@
 
 import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
+import { isTokenExpiredServer } from '@/helpers/tokenVerifier';
 
 const deleteUserById = async (userId) => {
     // Kullanıcıyı veritabanından sil
@@ -28,6 +29,14 @@ export default async function handler(req, res) {
             if (!token) {
                 return res.status(200).json({
                     message: "You must be logged in to delete your account.",
+                    code: 0
+                });
+            }
+
+            // Token'ın süresi dolmuş mu kontrol et
+            if (isTokenExpiredServer(token)) {
+                return res.status(401).json({
+                    message: "Token has expired. Please log in again.",
                     code: 0
                 });
             }

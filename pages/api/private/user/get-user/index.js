@@ -9,6 +9,7 @@
 
 import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
+import { isTokenExpiredServer } from '@/helpers/tokenVerifier'; // Helper fonksiyon
 
 const findUserById = async (id) => {
     const [users] = await sequelize.query('SELECT * FROM users WHERE id = ?', {
@@ -25,6 +26,14 @@ export default async function handler(req, res) {
             if (!token) {
                 return res.status(200).json({
                     message: "You must be logged in to get this user's data.",
+                    code: 0
+                });
+            }
+
+            // Token'ın süresi dolmuşsa kontrol et
+            if (isTokenExpiredServer(token)) {
+                return res.status(401).json({
+                    message: 'Token has expired, please log in again.',
                     code: 0
                 });
             }

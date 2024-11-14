@@ -10,9 +10,9 @@ import sequelize from '@/config/db';
 import bcrypt from 'bcrypt';
 import { verify } from 'jsonwebtoken';
 import hashPassword from '@/helpers/hash';
+import { isTokenExpiredServer } from '@/helpers/tokenVerifier';
 
 const getUserPasswordById = async (userId) => {
-    // Kullanıcının mevcut şifresini veritabanından al
     const [user] = await sequelize.query(
         'SELECT password FROM users WHERE id = ?',
         {
@@ -24,7 +24,6 @@ const getUserPasswordById = async (userId) => {
 };
 
 const updateUserPasswordById = async (userId, newPassword) => {
-    // Kullanıcının şifresini güncelle
     const [result] = await sequelize.query(
         'UPDATE users SET password = ? WHERE id = ?',
         {
@@ -37,7 +36,6 @@ const updateUserPasswordById = async (userId, newPassword) => {
 export default async function handler(req, res) {
     if (req.method === 'PATCH') {
         try {
-            // JWT token'ı doğrula
             const token = req.headers.authorization?.split(' ')[1];
             if (!token) {
                 return res.status(200).json({
@@ -46,14 +44,18 @@ export default async function handler(req, res) {
                 });
             }
 
-            // Token'ı decode et ve kullanıcı id'sini al
+            if (isTokenExpiredServer(token)) {
+                return res.status(200).json({
+                    message: "Token has expired. Please log in again.",
+                    code: 0
+                });
+            }
+
             const decoded = verify(token, process.env.JWT_SECRET);
             const userId = decoded.id;
 
-            // İstekten şifreleri al
             const { currentPassword, newPassword, confirmPassword } = req.body;
 
-            // Girdi doğrulama
             if (!currentPassword || !newPassword || !confirmPassword) {
                 return res.status(200).json({
                     message: 'Please provide all required fields.',
@@ -61,7 +63,6 @@ export default async function handler(req, res) {
                 });
             }
 
-            // newPassword ve confirmPassword kontrolü
             if (newPassword !== confirmPassword) {
                 return res.status(200).json({
                     message: 'New password and confirm password do not match.',
@@ -69,7 +70,6 @@ export default async function handler(req, res) {
                 });
             }
 
-            // Kullanıcının mevcut şifresini veritabanından al
             const existingPassword = await getUserPasswordById(userId);
             if (!existingPassword) {
                 return res.status(200).json({
@@ -78,7 +78,6 @@ export default async function handler(req, res) {
                 });
             }
 
-            // Mevcut şifrenin doğru olup olmadığını kontrol et
             const isMatch = await bcrypt.compare(currentPassword, existingPassword);
             if (!isMatch) {
                 return res.status(200).json({
@@ -87,7 +86,6 @@ export default async function handler(req, res) {
                 });
             }
 
-            // Yeni şifreyi hash'le ve güncelle
             const hashedPassword = await hashPassword(newPassword, 10);
             const result = await updateUserPasswordById(userId, hashedPassword);
 
@@ -95,7 +93,6 @@ export default async function handler(req, res) {
                 return res.status(500).json({ message: 'Failed to update password.' });
             }
 
-            // Başarılı şifre güncelleme yanıtı
             return res.status(200).json({
                 message: 'Password successfully changed.',
                 code: 1
@@ -105,7 +102,6 @@ export default async function handler(req, res) {
             return res.status(500).json({ message: 'An error occurred', error: error.message });
         }
     } else {
-        // Sadece PATCH isteği kabul edilir
         res.setHeader('Allow', ['PATCH']);
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
