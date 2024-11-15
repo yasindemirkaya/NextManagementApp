@@ -1,0 +1,63 @@
+.tableContainer {
+    margin: 20px;
+    overflow-x: auto;
+}
+
+.searchInput {
+    margin-bottom: 10px;
+    padding: 8px;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tableHeader {
+    background-color: #f4f4f4;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.tableCell {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.noData {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.activeSort {
+    color: #007bff;
+}
+
+.sortIcon {
+    margin-left: 5px;
+}
