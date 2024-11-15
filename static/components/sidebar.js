@@ -3,19 +3,22 @@ const sidebarMenu = [
         id: 1,
         name: "User Management",
         link: "/user-management",
-        icon: "user-icon",
+        iconPrimary: "faChevronUp",
+        iconSecondary: "faChevronCircleUp",
         subMenus: [
             {
                 id: 1,
                 name: "View Users",
                 link: "/user-management/view-users",
-                icon: "view-icon",
+                iconPrimary: "faUser",
+                iconSecondary: "",
             },
             {
                 id: 2,
-                name: "Create User Group",
+                name: "User Groups",
                 link: "/user-management/user-groups",
-                icon: "group-icon",
+                iconPrimary: "faUsers",
+                iconSecondary: ""
             },
         ],
     },

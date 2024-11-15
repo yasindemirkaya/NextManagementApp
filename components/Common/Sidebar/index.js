@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Offcanvas, Nav } from "react-bootstrap";
 import Link from "next/link";
-import { Offcanvas, Nav } from "react-bootstrap";
 import sidebarMenu from "@/static/components/sidebar";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { icons } from '@/static/icons';
 import styles from "./index.module.scss";
 
 const Sidebar = () => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-    const [show, setShow] = useState(false);
-    const [activeSubMenu, setActiveSubMenu] = useState(null); // Alt menü durumunu tutan state
+    const [isSidebarVisible, setSidebarVisible] = useState(false);
+    const [activeMenuId, setActiveMenuId] = useState(null);
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const toggleSidebar = () => setSidebarVisible(!isSidebarVisible);
 
     // Token yoksa, Sidebar'ı render etme
     if (!token) {
@@ -20,16 +20,12 @@ const Sidebar = () => {
     }
 
     const handleMenuClick = (menuId, link) => {
-        // Eğer tıklanan menüde alt menüler varsa, yönlendirme yapılmasın
-        if (menuId === activeSubMenu) {
-            setActiveSubMenu(null); // Eğer zaten aktifse, alt menüleri gizle
-        } else {
-            setActiveSubMenu(menuId); // Alt menüleri göster
-        }
+        // Menü tıklandığında alt menü açma/kapatma durumu
+        setActiveMenuId(prevActiveId => prevActiveId === menuId ? null : menuId);
 
-        // Eğer alt menü yoksa, sayfaya yönlendir
-        if (!sidebarMenu.find((menu) => menu.id === menuId).subMenus.length) {
-            window.location.href = link; // Yönlendirme
+        // Alt menü yoksa ana menüye yönlendirme yap
+        if (!sidebarMenu.find(menu => menu.id === menuId).subMenus.length) {
+            window.location.href = link;
         }
     };
 
@@ -38,7 +34,7 @@ const Sidebar = () => {
             {/* Sidebar açma butonu */}
             <Button
                 variant="primary"
-                onClick={handleShow}
+                onClick={toggleSidebar}
                 className={styles.sidebarToggle}
             >
                 Menu
@@ -46,8 +42,8 @@ const Sidebar = () => {
 
             {/* Offcanvas Sidebar */}
             <Offcanvas
-                show={show}
-                onHide={handleClose}
+                show={isSidebarVisible}
+                onHide={toggleSidebar}
                 placement="start"
                 className={styles.sidebar}
             >
@@ -56,16 +52,35 @@ const Sidebar = () => {
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <Nav className="flex-column">
-                        {sidebarMenu.map((menu) => (
+                        {sidebarMenu.map(menu => (
                             <div key={menu.id}>
-                                <Nav.Link className={`text-dark fw-bold ${styles.mainMenu}`} as="button" onClick={() => handleMenuClick(menu.id, menu.link)}>
+                                <Nav.Link
+                                    className={`text-dark fw-bold ${styles.mainMenu}`}
+                                    as="button"
+                                    onClick={() => handleMenuClick(menu.id, menu.link)}
+                                >
                                     {menu.name}
+
+                                    {/* Menüde alt menüler varsa ikon göster */}
+                                    {menu.subMenus.length > 0 && (
+                                        <FontAwesomeIcon
+                                            icon={icons[menu.iconPrimary || menu.iconSecondary]}
+                                            className={`${styles.chevron} ms-2`}
+                                            style={{
+                                                transform: activeMenuId === menu.id ? "rotate(180deg)" : "rotate(0deg)",
+                                                transition: "transform 0.3s ease-in-out"
+                                            }}
+                                        />
+                                    )}
                                 </Nav.Link>
-                                {menu.subMenus.length > 0 && activeSubMenu === menu.id && (
+
+                                {/* Alt menüler açık mı? */}
+                                {menu.subMenus.length > 0 && activeMenuId === menu.id && (
                                     <Nav className="ms-3 flex-column">
-                                        {menu.subMenus.map((subMenu) => (
+                                        {menu.subMenus.map(subMenu => (
                                             <Nav.Link className={`text-primary fw-bold ${styles.subMenu}`} key={subMenu.id} as={Link} href={subMenu.link} passHref>
-                                                - {subMenu.name}
+                                                <FontAwesomeIcon icon={icons[subMenu.iconPrimary || subMenu.iconSecondary]} className="me-2" />
+                                                {subMenu.name}
                                             </Nav.Link>
                                         ))}
                                     </Nav>
