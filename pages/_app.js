@@ -13,23 +13,29 @@ import { useRouter } from 'next/router';
 import DefaultLayout from '@/components/Layouts/Default/index';
 import NotFoundLayout from '@/components/Layouts/404';
 
-import { isTokenExpiredClient } from '@/helpers/tokenVerifier';
+import { checkAuth, isTokenExpiredClient } from '@/helpers/tokenVerifier';
+import protectedPages from '@/static/protectedPages';
 
-export default function App({ Component, pageProps: { session, ...pageProps } }) {
+export default function App({ Component, pageProps }) {
   const router = useRouter();
   const Layout = router.pathname === '/404' ? NotFoundLayout : DefaultLayout;
 
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
   useEffect(() => {
-    const checkToken = () => {
-      const token = localStorage.getItem('token');
-      if (!token || isTokenExpiredClient(token)) {
+    const isProtected = protectedPages.some((path) =>
+      router.pathname.startsWith(path)
+    );
+
+    if (isProtected) {
+      checkAuth(token, router);
+    } else {
+      if (token && isTokenExpiredClient(token)) {
         localStorage.removeItem('token');
         router.push('/login');
       }
-    };
-
-    checkToken();
-  }, [router]);
+    }
+  }, [router.pathname, token]);
 
   return (
     <Provider store={store}>
