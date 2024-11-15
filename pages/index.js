@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Card, Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import styles from './index.module.scss';
+import { isTokenExpiredClient } from '@/helpers/tokenVerifier';
+
 
 const Home = () => {
   const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token && !isTokenExpiredClient(token)) {
+      router.push('/dashboard');
+    }
+  }, [router]);
 
   const handleLogin = () => {
     router.push('/login');

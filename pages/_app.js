@@ -14,7 +14,7 @@ import DefaultLayout from '@/components/Layouts/Default/index';
 import NotFoundLayout from '@/components/Layouts/404';
 
 import { checkAuth, isTokenExpiredClient } from '@/helpers/tokenVerifier';
-import protectedPages from '@/static/protectedPages';
+import protectedPages from '@/static/data/protectedPages';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
