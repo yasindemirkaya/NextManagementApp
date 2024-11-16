@@ -10,7 +10,6 @@ const BreadcrumbComponent = () => {
         return null;
     }
 
-    // Next.js'in useRouter hook'u ile mevcut URL'yi alıyoruz
     const router = useRouter();
     const pathSegments = router.pathname.split('/').filter(Boolean);
 
