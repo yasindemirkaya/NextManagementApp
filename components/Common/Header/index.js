@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { useRouter } from 'next/router';
+import headerMenu from "@/static/components/header";
 import styles from './index.module.scss';
 
 const Header = () => {
     const router = useRouter();
-    const token = localStorage.getItem('token');
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -21,12 +22,18 @@ const Header = () => {
         <>
             <Navbar bg="light" expand="lg" className={styles.header}>
                 <Container>
+                    {/* Brand */}
                     <Navbar.Brand as={Link} href="/">MyApp</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
                     <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto">
-                            <Nav.Link as={Link} href="/dashboard">Home</Nav.Link>
-                        </Nav>
+                        {/* Menu */}
+                        {headerMenu.map(menu => (
+                            <Nav>
+                                <Nav.Link as={Link} href={menu.link}>{menu.name}</Nav.Link>
+                            </Nav>
+                        ))}
+
                         <Nav className="ms-auto">
                             {token ? (<Nav.Link as={Link} href="/profile">Profile</Nav.Link>) : null}
                             {token ? (
