@@ -9,7 +9,7 @@
 
 import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
-import { isTokenExpiredServer } from '@/helpers/tokenVerifier'; // Helper fonksiyon
+import { isTokenExpiredServer } from '@/helpers/tokenVerifier';
 
 const findUserById = async (id) => {
     const [users] = await sequelize.query('SELECT * FROM users WHERE id = ?', {
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
         try {
             // JWT token'ı doğrulama
-            const token = req.headers.authorization?.split(' ')[1]; // Bearer token formatında gönderildiğini varsayıyoruz
+            const token = req.headers.authorization?.split(' ')[1];
             if (!token) {
                 return res.status(200).json({
                     message: "You must be logged in to get this user's data.",
