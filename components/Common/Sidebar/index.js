@@ -22,6 +22,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
 
         // Alt menü yoksa ana menüye yönlendirme yap
         if (!sidebarMenu.find(menu => menu.id === menuId).subMenus.length) {
+            toggleSidebar();
             window.location.href = link;
         }
     };
@@ -36,7 +37,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                 className={styles.sidebar}
             >
                 <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Sidebar Menu</Offcanvas.Title>
+                    <Offcanvas.Title>Menu</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <Nav className="flex-column">
@@ -66,7 +67,14 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                                 {menu.subMenus.length > 0 && activeMenuId === menu.id && (
                                     <Nav className="ms-3 flex-column">
                                         {menu.subMenus.map(subMenu => (
-                                            <Nav.Link className={`text-primary fw-bold ${styles.subMenu}`} key={subMenu.id} as={Link} href={subMenu.link} passHref>
+                                            <Nav.Link
+                                                onClick={toggleSidebar}
+                                                className={`text-primary fw-bold ${styles.subMenu}`}
+                                                key={subMenu.id}
+                                                as={Link}
+                                                href={subMenu.link}
+                                                passHref
+                                            >
                                                 <FontAwesomeIcon icon={icons[subMenu.iconPrimary || subMenu.iconSecondary]} className="me-2" />
                                                 {subMenu.name}
                                             </Nav.Link>
