@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import Header from '@/components/Common/Header';
 import Breadcrumb from '@/components/Common/Breadcrumb';
 import Footer from '@/components/Common/Footer';
@@ -7,11 +8,14 @@ import Sidebar from '@/components/Common/Sidebar';
 import styles from './index.module.scss';
 
 const DefaultLayout = ({ children }) => {
+    const [isSidebarVisible, setSidebarVisible] = useState(false);
+    const toggleSidebar = () => setSidebarVisible(!isSidebarVisible);
+
     return (
         <div className={styles.layout}>
-            <Header className={styles.header} />
+            <Header className={styles.header} toggleSidebar={toggleSidebar} />
             <Breadcrumb />
-            <Sidebar />
+            <Sidebar isSidebarVisible={isSidebarVisible} toggleSidebar={toggleSidebar} />
             <main className={styles.mainContent}>{children}</main>
             <Footer className={styles.footer} />
         </div>

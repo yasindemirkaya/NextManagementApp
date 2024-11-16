@@ -6,13 +6,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
 import styles from "./index.module.scss";
 
-const Sidebar = () => {
+const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-    const [isSidebarVisible, setSidebarVisible] = useState(false);
     const [activeMenuId, setActiveMenuId] = useState(null);
-
-    const toggleSidebar = () => setSidebarVisible(!isSidebarVisible);
 
     // Token yoksa, Sidebar'ı render etme
     if (!token) {
@@ -31,15 +28,6 @@ const Sidebar = () => {
 
     return (
         <>
-            {/* Sidebar açma butonu */}
-            <Button
-                variant="primary"
-                onClick={toggleSidebar}
-                className={styles.sidebarToggle}
-            >
-                Menu
-            </Button>
-
             {/* Offcanvas Sidebar */}
             <Offcanvas
                 show={isSidebarVisible}

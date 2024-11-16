@@ -1,10 +1,12 @@
 import Link from 'next/link';
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import headerMenu from "@/static/components/header";
+import { icons } from '@/static/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './index.module.scss';
 
-const Header = () => {
+const Header = ({ toggleSidebar }) => {
     const router = useRouter();
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -21,6 +23,9 @@ const Header = () => {
     return (
         <>
             <Navbar bg="light" expand="lg" className={styles.header}>
+                <Button variant="secondary" className="m-2" onClick={toggleSidebar}>
+                    <FontAwesomeIcon icon={icons.faChevronRight} />
+                </Button>
                 <Container>
                     {/* Brand */}
                     <Navbar.Brand as={Link} href="/">MyApp</Navbar.Brand>
