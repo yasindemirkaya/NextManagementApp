@@ -66,3 +66,13 @@
 .selfBadge {
     margin-left: 5px;
 }
+
+.tableRow {
+    &:hover {
+        background-color: #f1f1f1; // Hover için açık bir renk
+    }
+}
+
+.tableRow:hover {
+    cursor: pointer;
+}

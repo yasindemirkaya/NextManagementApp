@@ -4,12 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
 import { Badge } from 'react-bootstrap';
 import Pagination from "../Pagination";
+import { useRouter } from "next/router";
 
 const Table = ({ headers, data, itemsPerPage }) => {
     const [searchTerm, setSearchTerm] = useState(''); // Search metni
     const [sortedData, setSortedData] = useState([]); // Verilerin sortlanmış hali
     const [currentPage, setCurrentPage] = useState(1);
     const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" }); // Sıralamanın hangi sütunda olduğunu ve sıralama yönünü tutar
+
+    const router = useRouter()
 
     // Başlangıçta sortedData'yı default şekilde data ile setliyoruz
     useEffect(() => {
@@ -56,6 +59,13 @@ const Table = ({ headers, data, itemsPerPage }) => {
         }
         return sorted;
     };
+
+    // Kullanıcının üzerine tıklandığında user detail sayfasına yönlendirme
+    const handleRowClick = (row) => {
+        const { Name, Surname, id } = row;
+        const dynamicPath = `/user-management/view-users/${Name.toLowerCase()}-${Surname.toLowerCase()}-${id}`;
+        router.push(dynamicPath);
+    }
 
     // Sıralanan veriler arasında filtreleme
     const filteredData = getSortedData().filter((item) =>
@@ -110,7 +120,11 @@ const Table = ({ headers, data, itemsPerPage }) => {
                         </tr>
                     ) : (
                         currentData.map((row, rowIndex) => (
-                            <tr key={rowIndex}>
+                            <tr
+                                key={rowIndex}
+                                className={styles.tableRow}
+                                onClick={() => handleRowClick(row)}
+                            >
                                 {headers.map((header, colIndex) => (
                                     <td key={colIndex} className={styles.tableCell}>
                                         {row[header] || "-"}

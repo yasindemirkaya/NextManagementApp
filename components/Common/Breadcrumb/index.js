@@ -15,6 +15,9 @@ const BreadcrumbComponent = () => {
 
     // Breadcrumb linklerini formatlamak için
     const segmentFormatter = (segment) => {
+        if (segment.includes('[userId]')) {
+            return 'User Detail';
+        }
         return segment.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
     }
 
