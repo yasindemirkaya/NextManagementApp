@@ -4,6 +4,12 @@ import { useRouter } from 'next/router';
 import styles from './index.module.scss';
 
 const BreadcrumbComponent = () => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+    if (!token) {
+        return null;
+    }
+
     // Next.js'in useRouter hook'u ile mevcut URL'yi alıyoruz
     const router = useRouter();
     const pathSegments = router.pathname.split('/').filter(Boolean);
