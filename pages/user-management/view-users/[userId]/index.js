@@ -14,7 +14,6 @@ const UserDetailPage = () => {
             const name = parts[0];
             const surname = parts[1];
             const id = parts.slice(2).join('-');
-            const test = ""
 
             return { name, surname, id };
         }
