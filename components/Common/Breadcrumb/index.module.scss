@@ -1,0 +1,23 @@
+.breadcrumb {
+    background-color: #f8f9fa;
+    padding: 0rem 1rem;
+}
+
+.breadcrumb>ol {
+    border: 0;
+}
+
+.breadcrumbItem {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.breadcrumbItem.active {
+    font-weight: 700;
+    color: #007bff;
+}
+
+.breadcrumbItem+.breadcrumbItem::before {
+    content: '>';
+    margin: 0 10px;
+}
