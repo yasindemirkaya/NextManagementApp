@@ -28,6 +28,7 @@
 .tableCell {
     padding: 8px;
     border-bottom: 1px solid #ddd;
+    margin: auto
 }
 
 .noData {
@@ -59,5 +60,9 @@
 }
 
 .sortIcon {
+    margin-left: 5px;
+}
+
+.selfBadge {
     margin-left: 5px;
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./index.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
+import { Badge } from 'react-bootstrap';
 import Pagination from "../Pagination";
 
 const Table = ({ headers, data, itemsPerPage }) => {
@@ -113,6 +114,9 @@ const Table = ({ headers, data, itemsPerPage }) => {
                                 {headers.map((header, colIndex) => (
                                     <td key={colIndex} className={styles.tableCell}>
                                         {row[header] || "-"}
+                                        {row.isSelf && header === "Name" && (
+                                            <Badge bg="success" className={styles.selfBadge}>Self</Badge>
+                                        )}
                                     </td>
                                 ))}
                             </tr>
@@ -127,7 +131,7 @@ const Table = ({ headers, data, itemsPerPage }) => {
                 currentPage={currentPage}
                 onPageChange={handlePageChange}
             />
-        </div>
+        </div >
     );
 };
 
