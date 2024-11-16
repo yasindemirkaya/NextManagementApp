@@ -22,7 +22,8 @@ const SignUp = () => {
 
     // Form submit işlemi
     const onSubmit = async (data) => {
-        const { firstName, lastName, email, password, mobile } = data;
+        const { firstName, lastName, email, password } = data;
+        const mobile = data.mobile.replace(/\D/g, '');
 
         try {
             // Register API isteği gönderiliyor

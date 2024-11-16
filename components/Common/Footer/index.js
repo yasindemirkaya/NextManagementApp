@@ -17,7 +17,7 @@ const Footer = () => {
 
                     <Col md={6} className="d-flex justify-content-center justify-content-md-end h-100">
                         {footerMenu.map((menu) => (
-                            <div className={styles.links}>
+                            <div key={menu.id} className={styles.links}>
                                 <Link href={menu.link} className="me-3">{menu.name}</Link>
                             </div>
                         ))}

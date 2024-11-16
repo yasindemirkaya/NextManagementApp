@@ -34,7 +34,7 @@ const Header = ({ toggleSidebar }) => {
                     <Navbar.Collapse id="basic-navbar-nav">
                         {/* Menu */}
                         {headerMenu.map(menu => (
-                            <Nav>
+                            <Nav key={menu.id}>
                                 <Nav.Link as={Link} href={menu.link}>{menu.name}</Nav.Link>
                             </Nav>
                         ))}

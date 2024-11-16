@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Spinner, Alert } from 'react-bootstrap';
+import { Spinner, Alert, Badge } from 'react-bootstrap';
 import Table from "@/components/Common/Table";
 import axios from "@/utils/axios";
 import { isTokenExpiredClient } from "@/helpers/tokenVerifier";
+import { mobileFormatter } from '@/helpers/mobileFormatter';
 
 const ViewUsers = () => {
     const headers = ["Name", "Surname", "Email", 'Role', 'Mobile', 'Is Active', 'Is Verified']
@@ -41,18 +42,31 @@ const ViewUsers = () => {
             });
     };
 
+    // User verisini tabloya gönderilecek şekilde formatlıyoruz
     const formatUserData = (userData) => {
         const formattedData = userData.map(user => ({
             Name: user.first_name,
             Surname: user.last_name,
             Email: user.email,
-            Role: user.role === 2 ? "Super Admin" : user.role === 1 ? "Admin" : "Standard User",
-            Mobile: user.mobile,
-            "Is Active": user.is_active ? "Yes" : "No",
-            "Is Verified": user.is_verified ? "Yes" : "No"
-        }))
-        return formattedData
-    }
+            Role: (
+                <Badge bg={user.role === 2 ? "danger" : user.role === 1 ? "primary" : "warning"}>
+                    {user.role === 2 ? "Super Admin" : user.role === 1 ? "Admin" : "Standard User"}
+                </Badge>
+            ),
+            Mobile: mobileFormatter(user.mobile),
+            "Is Active": (
+                <Badge bg={user.is_active ? "success" : "danger"}>
+                    {user.is_active ? "Yes" : "No"}
+                </Badge>
+            ),
+            "Is Verified": (
+                <Badge bg={user.is_verified ? "success" : "danger"}>
+                    {user.is_verified ? "Yes" : "No"}
+                </Badge>
+            )
+        }));
+        return formattedData;
+    };
 
     if (loading) {
         return (
