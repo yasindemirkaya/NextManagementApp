@@ -92,7 +92,11 @@ const handler = async (req, res) => {
 
         try {
             const [users, metadata] = await sequelize.query(query, { replacements });
-            res.status(200).json(users);
+            res.status(200).json({
+                code: 1,
+                message: 'Users successfully fetched.',
+                users
+            });
         } catch (error) {
             console.error('Error fetching users:', error);
             res.status(500).json({ error: 'Failed to fetch users from the database' });
