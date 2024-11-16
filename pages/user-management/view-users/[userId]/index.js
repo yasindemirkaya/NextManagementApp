@@ -22,7 +22,7 @@ const UserDetailPage = () => {
     };
 
     const userData = queryFormatter(userId);
-    
+
 
     return (
         <>
