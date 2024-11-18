@@ -4,7 +4,8 @@ import styles from './index.module.scss';
 import { useEffect, useState } from "react";
 import { isTokenExpiredClient } from "@/helpers/tokenVerifier";
 import { Col, Container, Row } from "react-bootstrap";
-import ProfileCard from "@/components/UserManagement/ViewUsers/UserProfile";
+import ProfileCard from "@/components/UserManagement/ViewUsers/UserProfile/ProfileCard";
+import { isSelf, isSuperAdmin } from "@/helpers/authorityDetector";
 
 const UserDetailPage = () => {
     const [user, setUser] = useState(null);
@@ -69,7 +70,7 @@ const UserDetailPage = () => {
         <Container className={styles.profilePage}>
             <Row className="d-flex justify-content-center h-100">
                 <Col md={4}>
-                    <ProfileCard user={user} loading={loading} error={error} />
+                    <ProfileCard user={user} loading={loading} error={error} isSuperAdmin={isSuperAdmin(token)} />
                 </Col>
             </Row>
         </Container>

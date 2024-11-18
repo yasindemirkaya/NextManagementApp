@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
 import axios from '@/utils/axios';
-import ChangePassword from '../ChangePassword/index';
+import ChangePassword from '../ChangePassword';
 
 const EditProfileCard = ({ userData, onCancel }) => {
     const router = useRouter();
