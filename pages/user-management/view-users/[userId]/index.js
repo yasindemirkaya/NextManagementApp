@@ -1,9 +1,28 @@
-import { capitalizeFirstLetter } from "@/helpers/capitalizeFirstLetter";
 import { useRouter } from "next/router";
+import axios from '@/utils/axios';
+import styles from './index.module.scss';
+import { useEffect, useState } from "react";
+import { isTokenExpiredClient } from "@/helpers/tokenVerifier";
+import { Col, Container, Row } from "react-bootstrap";
+import ProfileCard from "@/components/UserManagement/ViewUsers/UserProfile";
 
 const UserDetailPage = () => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
     const router = useRouter();
     const { userId } = router.query;
+
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+    useEffect(() => {
+        const userDataFromQuery = queryFormatter(userId)
+        if (token && !isTokenExpiredClient(token) && userDataFromQuery.id) {
+            getUserDetails(userDataFromQuery.id)
+            console.log(user)
+        }
+    }, [userId])
 
     // Formatter fonksiyonu
     const queryFormatter = (userId) => {
@@ -20,13 +39,41 @@ const UserDetailPage = () => {
         return {};
     };
 
-    const userData = queryFormatter(userId);
+    // Get User By ID
+    const getUserDetails = (id) => {
+        setLoading(true)
 
+        axios.get('/private/user/get-user-by-id', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            params: {
+                id,
+            },
+        })
+            .then((response) => {
+                if (response.code === 1) {
+                    setUser(response.user)
+                    setLoading(false)
+                } else {
+                    setLoading(false)
+                    setError(response.message)
+                }
+            })
+            .catch((error) => {
+                setLoading(false)
+                setError('An error occured when receiving user data. Please try again later.')
+            })
+    }
 
     return (
-        <>
-            {capitalizeFirstLetter(userData.name)} {capitalizeFirstLetter(userData.surname)} User Detail Page
-        </>
+        <Container className={styles.profilePage}>
+            <Row className="d-flex justify-content-center h-100">
+                <Col md={4}>
+                    <ProfileCard user={user} loading={loading} error={error} />
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
