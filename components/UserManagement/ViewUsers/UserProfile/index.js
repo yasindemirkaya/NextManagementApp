@@ -1,5 +1,6 @@
-import { Card, Button, Spinner, Alert, Badge } from 'react-bootstrap';
+import { Card, Button, Spinner, Alert } from 'react-bootstrap';
 import styles from './index.module.scss';
+import { formatAccountRole, formatAccountStatus, formatAccountVerification } from '@/helpers/formatAccountItems';
 
 const ProfileCard = ({ user, loading, error }) => {
     if (loading) {
@@ -17,9 +18,9 @@ const ProfileCard = ({ user, loading, error }) => {
                             <p><strong>Surname:</strong> {user.last_name}</p>
                             <p><strong>Email:</strong> {user.email}</p>
                             <p><strong>Mobile:</strong> {user.mobile}</p>
-                            <p><strong>Account Status:</strong> {user.is_active}</p>
-                            <p><strong>Verification Status:</strong> {user.is_verified}</p>
-                            <p><strong>Account Role:</strong> {user.role}</p>
+                            <p><strong>Account Status:</strong> {formatAccountStatus(user.is_active)}</p>
+                            <p><strong>Verification Status:</strong> {formatAccountVerification(user.is_verified)}</p>
+                            <p><strong>Account Role:</strong> {formatAccountRole(user.role)}</p>
                         </div>
                     </Card.Body>
                 </Card>

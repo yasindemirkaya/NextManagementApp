@@ -4,6 +4,7 @@ import styles from './index.module.scss';
 import axios from "@/utils/axios";
 import { mobileFormatter } from '@/helpers/mobileFormatter';
 import EditProfileCard from '../EditProfile/index';
+import { formatAccountRole, formatAccountStatus, formatAccountVerification } from '@/helpers/formatAccountItems';
 
 const ProfileCard = () => {
     const [user, setUser] = useState(null);
@@ -39,26 +40,6 @@ const ProfileCard = () => {
         getUser();
         setIsEditing(false);
     };
-
-    const formatAccountRole = (role) => (
-        <Badge bg={
-            role === 0 ? "primary" : role === 1 ? "success" : role === 2 ? "danger" : "warning"
-        }>
-            {role === 0 ? "Standard User" : role === 1 ? "Admin" : role === 2 ? "Super Admin" : "Undefined Role"}
-        </Badge>
-    );
-
-    const formatAccountStatus = (status) => (
-        <Badge bg={status === 1 ? "success" : "danger"}>
-            {status === 1 ? "Active" : "Not Active"}
-        </Badge>
-    );
-
-    const formatAccountVerification = (verification) => (
-        <Badge bg={verification === 1 ? "success" : "danger"}>
-            {verification === 1 ? "Verified" : "Not Verified"}
-        </Badge>
-    );
 
     if (loading) {
         return <div className={styles.loadingContainer}><Spinner animation="border" variant="primary" /></div>;
