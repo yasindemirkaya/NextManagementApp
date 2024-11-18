@@ -20,7 +20,6 @@ const UserDetailPage = () => {
         const userDataFromQuery = queryFormatter(userId)
         if (token && !isTokenExpiredClient(token) && userDataFromQuery.id) {
             getUserDetails(userDataFromQuery.id)
-            console.log(user)
         }
     }, [userId])
 
