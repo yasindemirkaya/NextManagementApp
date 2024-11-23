@@ -5,6 +5,7 @@ const sidebarMenu = [
         link: "/user-management",
         iconPrimary: "faChevronUp",
         iconSecondary: "faChevronCircleUp",
+        permission: 1,
         subMenus: [
             {
                 id: 1,
@@ -13,6 +14,7 @@ const sidebarMenu = [
                 description: "You can see all users here and examine each user's information in detail.",
                 iconPrimary: "faUser",
                 iconSecondary: "",
+                permission: 1,
             },
             {
                 id: 2,
@@ -20,7 +22,8 @@ const sidebarMenu = [
                 link: "/user-management/user-groups",
                 description: "Here you can see user groups and create a new user group.",
                 iconPrimary: "faUsers",
-                iconSecondary: ""
+                iconSecondary: "",
+                permission: 1
             },
         ],
     },

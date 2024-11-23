@@ -5,6 +5,7 @@ import sidebarMenu from "@/static/components/sidebar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
 import styles from "./index.module.scss";
+import { isSuperAdmin, isAdmin, isStandardUser } from "@/helpers/authorityDetector";
 
 const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -15,6 +16,20 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
     if (!token) {
         return null;
     }
+
+    // Giriş yapan kullanıcının rolünü al
+    const getUserRole = () => {
+        if (isSuperAdmin(token)) return 2;
+        if (isAdmin(token)) return 1;
+        if (isStandardUser(token)) return 0;
+        return -1; // Geçersiz rol
+    };
+    const userRole = getUserRole();
+
+    // Kullanıcının rolü menünün izin seviyesine uygun mu?
+    const hasPermission = (menuPermission) => {
+        return userRole >= menuPermission;
+    };
 
     const handleMenuClick = (menuId, link) => {
         // Menü tıklandığında alt menü açma/kapatma durumu
@@ -41,48 +56,55 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <Nav className="flex-column">
-                        {sidebarMenu.map(menu => (
-                            <div key={menu.id}>
-                                <Nav.Link
-                                    className={`text-dark fw-bold ${styles.mainMenu}`}
-                                    as="button"
-                                    onClick={() => handleMenuClick(menu.id, menu.link)}
-                                >
-                                    {menu.name}
+                        {sidebarMenu
+                            .filter((menu) => hasPermission(menu.permission))
+                            .map((menu) => (
+                                <div key={menu.id}>
+                                    <Nav.Link
+                                        className={`text-dark fw-bold ${styles.mainMenu}`}
+                                        as="button"
+                                        onClick={() => handleMenuClick(menu.id, menu.link)}
+                                    >
+                                        {menu.name}
 
-                                    {/* Menüde alt menüler varsa ikon göster */}
-                                    {menu.subMenus.length > 0 && (
-                                        <FontAwesomeIcon
-                                            icon={icons[menu.iconPrimary || menu.iconSecondary]}
-                                            className={`${styles.chevron} ms-2`}
-                                            style={{
-                                                transform: activeMenuId === menu.id ? "rotate(180deg)" : "rotate(0deg)",
-                                                transition: "transform 0.3s ease-in-out"
-                                            }}
-                                        />
+                                        {/* Menüde alt menüler varsa ikon göster */}
+                                        {menu.subMenus.length > 0 && (
+                                            <FontAwesomeIcon
+                                                icon={icons[menu.iconPrimary || menu.iconSecondary]}
+                                                className={`${styles.chevron} ms-2`}
+                                                style={{
+                                                    transform: activeMenuId === menu.id ? "rotate(180deg)" : "rotate(0deg)",
+                                                    transition: "transform 0.3s ease-in-out",
+                                                }}
+                                            />
+                                        )}
+                                    </Nav.Link>
+
+                                    {/* Alt menüler açık mı? */}
+                                    {menu.subMenus.length > 0 && activeMenuId === menu.id && (
+                                        <Nav className="ms-3 flex-column">
+                                            {menu.subMenus
+                                                .filter((subMenu) => hasPermission(subMenu.permission))
+                                                .map((subMenu) => (
+                                                    <Nav.Link
+                                                        onClick={toggleSidebar}
+                                                        className={`text-primary fw-bold ${styles.subMenu}`}
+                                                        key={subMenu.id}
+                                                        as={Link}
+                                                        href={subMenu.link}
+                                                        passHref
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={icons[subMenu.iconPrimary || subMenu.iconSecondary]}
+                                                            className="me-2"
+                                                        />
+                                                        {subMenu.name}
+                                                    </Nav.Link>
+                                                ))}
+                                        </Nav>
                                     )}
-                                </Nav.Link>
-
-                                {/* Alt menüler açık mı? */}
-                                {menu.subMenus.length > 0 && activeMenuId === menu.id && (
-                                    <Nav className="ms-3 flex-column">
-                                        {menu.subMenus.map(subMenu => (
-                                            <Nav.Link
-                                                onClick={toggleSidebar}
-                                                className={`text-primary fw-bold ${styles.subMenu}`}
-                                                key={subMenu.id}
-                                                as={Link}
-                                                href={subMenu.link}
-                                                passHref
-                                            >
-                                                <FontAwesomeIcon icon={icons[subMenu.iconPrimary || subMenu.iconSecondary]} className="me-2" />
-                                                {subMenu.name}
-                                            </Nav.Link>
-                                        ))}
-                                    </Nav>
-                                )}
-                            </div>
-                        ))}
+                                </div>
+                            ))}
                     </Nav>
                 </Offcanvas.Body>
             </Offcanvas>

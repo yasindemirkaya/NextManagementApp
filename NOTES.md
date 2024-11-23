@@ -20,3 +20,8 @@
 * Normal kullanıcılar GRİ badge ile gösteirlir.
 * Super Adminler kullanıcı tablosunda diğer Super Adminleri görebilir.
 * Adminler kullanıcı tablosunda Super Adminleri göremez!
+
+<!-- * SIDEBAR RULES * -->
+* static/data/components/sidebar.js dosyasında bulunan menülerde yer alan "permission" parametresi menüleri hangi rollerin görebileceğini belirtir.
+* permission 2 ise o menüyü sadece Super Admin görebilir.
+* permission 1 ise o menüyü Super Admin ve Adminler görebilir.
