@@ -7,8 +7,13 @@ import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
 import axios from '@/utils/axios';
 import ChangePassword from '../ChangePassword';
+import { isSuperAdmin } from '@/helpers/authorityDetector';
 
 const EditProfileCard = ({ userData, onCancel }) => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const changePasswordText = isSuperAdmin(token) ? "Change this user's password." : "I want to change my password."
+    const deleteAccountText = isSuperAdmin(token) ? "Delete this user's account." : "I want to delete my account."
+
     const router = useRouter();
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         defaultValues: {
@@ -201,12 +206,12 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 <Row className="mt-3">
                     <Col md={12}>
                         <div onClick={() => setShowModal(true)} className={styles.link}>
-                            <p className="text-primary">I want to change my password.</p>
+                            <p className="text-primary">{changePasswordText}</p>
                         </div>
                     </Col>
                     <Col md={12}>
                         <div onClick={handleDeleteAccount} className={styles.link}>
-                            <p className="text-danger">I want to delete my account.</p>
+                            <p className="text-danger">{deleteAccountText}</p>
                         </div>
                     </Col>
                 </Row>

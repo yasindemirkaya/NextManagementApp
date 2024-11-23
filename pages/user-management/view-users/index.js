@@ -62,7 +62,7 @@ const ViewUsers = () => {
             Surname: user.last_name,
             Email: user.email,
             Role: (
-                <Badge bg={user.role === 2 ? "danger" : user.role === 1 ? "primary" : "warning"}>
+                <Badge bg={user.role === 2 ? "danger" : user.role === 1 ? "warning" : "secondary"}>
                     {user.role === 2 ? "Super Admin" : user.role === 1 ? "Admin" : "Standard User"}
                 </Badge>
             ),

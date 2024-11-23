@@ -42,6 +42,7 @@ const ProfileCard = ({ user, loading, error, isSuperAdmin, from, getUser }) => {
                             <p><strong>Account Role:</strong> {formatAccountRole(user.role)}</p>
                         </div>
                         {/* Kullanıcı kendini görüyorsa, super adminse ya da profil sayfasından geldiyse düzenleme aktif */}
+                        {/* Normal Adminler sadece görüntüleme yapabilir, bir başka profile düzenleme yapamaz */}
                         {isSelf(token, user.id) || isSuperAdmin || from == 'profile' ? (<Button variant="primary" onClick={handleEditClick}>Edit</Button>) : null}
                     </Card.Body>
                 </Card>
