@@ -45,6 +45,14 @@ const User = sequelize.define('User', {
         allowNull: false,
         defaultValue: 0,
     },
+    created_by: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+            model: 'users',
+            key: 'id',
+        }
+    }
 }, {
     tableName: 'users', // Veritabanında 'users' tablosuna kaydedilir
     timestamps: true, // createdAt ve updatedAt alanları otomatik olarak eklenir

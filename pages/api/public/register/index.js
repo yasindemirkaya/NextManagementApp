@@ -43,10 +43,14 @@ export default async function handler(req, res) {
                 mobile,
                 is_active: 1, // Kullanıcı aktif
                 is_verified: 0, // Kullanıcı doğrulanmamış
-                role: 0 // Standart kullanıcı rolü
+                role: 0, // Standart kullanıcı rolü
+                created_by: null
             });
 
-            res.status(201).json({
+            newUser.created_by = newUser.id;  // Kendi ID'si ile created_by'yi güncelle
+            await newUser.save();
+
+            res.status(200).json({
                 result: true,
                 message: 'User registered successfully',
                 user: email

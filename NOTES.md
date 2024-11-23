@@ -25,3 +25,9 @@
 * static/data/components/sidebar.js dosyasında bulunan menülerde yer alan "permission" parametresi menüleri hangi rollerin görebileceğini belirtir.
 * permission 2 ise o menüyü sadece Super Admin görebilir.
 * permission 1 ise o menüyü Super Admin ve Adminler görebilir.
+
+<!-- * REGISTER (SIGNUP) RULES * -->
+* Register servisi ile kayıt olan kullanıcıların hepsi default olarak role: 0 standard user şeklinde kayıt edilir.
+* Register servisi üzerinden oluşturulan kayıtlar ile hiçbir kullanıcı Super Admin ya da Admin olamaz.
+* Super Admin kullanıcısı sistem tarafından kişilere verilir.
+* Super Admin uygulama içerisinden kullanıcı oluşturarak Admin ve Standard User hesapları açabilir
