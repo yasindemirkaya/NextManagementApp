@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { isTokenExpiredClient } from "@/helpers/tokenVerifier";
 import { Col, Container, Row } from "react-bootstrap";
 import ProfileCard from "@/components/UserManagement/ViewUsers/UserProfile/ProfileCard";
-import { isSelf, isSuperAdmin } from "@/helpers/authorityDetector";
+import { isSuperAdmin } from "@/helpers/authorityDetector";
 
 const UserDetailPage = () => {
     const [user, setUser] = useState(null);
@@ -70,7 +70,7 @@ const UserDetailPage = () => {
         <Container className={styles.profilePage}>
             <Row className="d-flex justify-content-center h-100">
                 <Col md={4}>
-                    <ProfileCard user={user} loading={loading} error={error} isSuperAdmin={isSuperAdmin(token)} />
+                    <ProfileCard user={user} loading={loading} error={error} isSuperAdmin={isSuperAdmin(token)} from={'viewUsers'} getUserDetails={getUserDetails} />
                 </Col>
             </Row>
         </Container>

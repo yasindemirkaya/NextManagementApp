@@ -6,7 +6,7 @@ import { formatAccountRole, formatAccountStatus, formatAccountVerification } fro
 import EditProfileCard from '../EditProfile';
 import { isSelf } from '@/helpers/authorityDetector';
 
-const ProfileCard = ({ user, loading, error, isSuperAdmin, from, getUser }) => {
+const ProfileCard = ({ user, loading, error, isSuperAdmin, from, getUser, getUserDetails }) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
@@ -14,7 +14,14 @@ const ProfileCard = ({ user, loading, error, isSuperAdmin, from, getUser }) => {
     const handleEditClick = () => setIsEditing(true);
 
     const handleCancelClick = () => {
-        getUser();
+        // Eğer component profil sayfasında kullanıldıysa o zaman ProfileCard'a back yapıldığında kullanıcının kendisinin bilgileri setlemeliyiz.
+        if (from == 'profile') {
+            getUser();
+        }
+        // Eğer component viewUsers sayfasından bir başkasının profilini görüntülemek için kullanıldıysa o zaman back yapıldığında yine o kullanıcının bilgilerini setlemeliyiz, login olan kişininkini değil!
+        else if (from == 'viewUsers') {
+            getUserDetails(user.id)
+        }
         setIsEditing(false);
     };
 

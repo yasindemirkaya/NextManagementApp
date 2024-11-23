@@ -7,12 +7,13 @@ import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
 import axios from '@/utils/axios';
 import ChangePassword from '../ChangePassword';
-import { isSuperAdmin } from '@/helpers/authorityDetector';
+import { isSelf, isSuperAdmin } from '@/helpers/authorityDetector';
 
 const EditProfileCard = ({ userData, onCancel }) => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    const changePasswordText = isSuperAdmin(token) ? "Change this user's password." : "I want to change my password."
-    const deleteAccountText = isSuperAdmin(token) ? "Delete this user's account." : "I want to delete my account."
+
+    const changePasswordText = !isSelf(token, userData.id) ? "Change this user's password." : "I want to change my password."
+    const deleteAccountText = !isSelf(token, userData.id) ? "Delete this user's account." : "I want to delete my account."
 
     const router = useRouter();
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
