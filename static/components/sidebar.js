@@ -18,6 +18,15 @@ const sidebarMenu = [
             },
             {
                 id: 2,
+                name: "Create User",
+                link: "/user-management/create-user",
+                description: "Here you can create accounts for new users.",
+                iconPrimary: "faUserPlus",
+                iconSecondary: "",
+                permission: 1
+            },
+            {
+                id: 3,
                 name: "User Groups",
                 link: "/user-management/user-groups",
                 description: "Here you can see user groups and create a new user group.",
