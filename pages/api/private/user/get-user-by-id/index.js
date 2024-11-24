@@ -90,6 +90,7 @@ export default async function handler(req, res) {
                     is_active: requestedUser.is_active,
                     is_verified: requestedUser.is_verified,
                     role: requestedUser.role,
+                    created_by: requestedUser.created_by
                 }
             });
         } catch (error) {

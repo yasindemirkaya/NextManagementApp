@@ -62,6 +62,7 @@ export default async function handler(req, res) {
                     is_active: user.is_active,
                     is_verified: user.is_verified,
                     role: user.role,
+                    created_by: user.created_by
                 }
             });
         } catch (error) {

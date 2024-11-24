@@ -8,11 +8,12 @@ import { isSelf } from '@/helpers/authorityDetector';
 
 const ProfileCard = ({ user, loading, error, isSuperAdmin, from, getUser, getUserDetails }) => {
     const [isEditing, setIsEditing] = useState(false);
-
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
+    // Handle Edit
     const handleEditClick = () => setIsEditing(true);
 
+    // Handle Cancle
     const handleCancelClick = () => {
         // Eğer component profil sayfasında kullanıldıysa o zaman ProfileCard'a back yapıldığında kullanıcının kendisinin bilgileri setlemeliyiz.
         if (from == 'profile') {
