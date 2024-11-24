@@ -45,9 +45,7 @@ const Login = () => {
                 localStorage.setItem('token', response.token);
 
                 // Dashboard'a yönlendir
-                setTimeout(() => {
-                    router.push('/dashboard');
-                }, 2000);
+                router.push('/dashboard');
             } else {
                 setLoading(false);
                 toast('ERROR', response.message);

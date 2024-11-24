@@ -5,10 +5,20 @@ import headerMenu from "@/static/components/header";
 import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './index.module.scss';
+import { jwtDecode } from "jwt-decode"
 
 const Header = ({ toggleSidebar }) => {
     const router = useRouter();
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+    let profileText;
+    if (token) {
+        const decoded = jwtDecode(token)
+        profileText = decoded.email
+    } else {
+        profileText = "Profile"
+    }
+
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -40,7 +50,7 @@ const Header = ({ toggleSidebar }) => {
                         ))}
 
                         <Nav className="ms-auto">
-                            {token ? (<Nav.Link as={Link} href="/profile">Profile</Nav.Link>) : null}
+                            {token ? (<Nav.Link as={Link} href="/profile">{profileText}</Nav.Link>) : null}
                             {token ? (
                                 <Nav.Link as="span" onClick={handleLogout} className={styles.logout}>
                                     Log Out
