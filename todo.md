@@ -1,2 +1,6 @@
-* get-user-by-id servisine istek atan kişi Super Admin ise servisten created_by değeri de dönsün ve view user sayfasında profil kartında o kullanıcıyı kimin oluşturduğunu gösterelim.
-* Eğer bir Super Admin bir başka kullanıcının profilini düzenliyorsa account status gibi account verification da ekleyelim. Super adminler hesapları verify edebilsin.
+* EditProfile componentına Profile sayfasından gelindiyse kullanıcı kendini update ediyor demektir. O zaman /update-user kullanalım. View users sayfasından gelindiyse /update-user-by-id kullanarak başkasını güncelleyelim. 
+
+* bir updateUser methodu oluşturulacak
+* bir updateUserById methodu oluşturulacak
+
+* handleSave methodu içinde kullanıcı kendini güncelliyorsa updateUser, başkasını güncelliyorsa updateUserById servisi çalıştırılacak.

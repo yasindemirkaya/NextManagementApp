@@ -26,6 +26,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     });
 
     const [isActive, setIsActive] = useState(userData.is_active === 1);
+    const [isVerified, setIsVerified] = useState(userData.is_verified === 1);
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
@@ -33,7 +34,8 @@ const EditProfileCard = ({ userData, onCancel }) => {
         setValue("mobile", formattedMobile);
     }, [userData.mobile, setValue]);
 
-    const handleSave = async (data) => {
+    // Kullanıcının kendi profilini güncellediği servis
+    const updateUser = async (data) => {
         const formattedMobile = data.mobile.replace(/\D/g, '');
 
         const updatedData = {
@@ -41,7 +43,8 @@ const EditProfileCard = ({ userData, onCancel }) => {
             lastName: data.lastName,
             email: data.email,
             mobile: formattedMobile,
-            isActive: isActive ? 1 : 0
+            isActive: isActive ? 1 : 0,
+            isVerified: isVerified ? 1 : 0
         };
 
         try {
@@ -70,6 +73,19 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 icon: 'error',
                 text: 'An error occurred. Please try again.'
             });
+        }
+    }
+
+    // Kullanıcının bir başka profili güncellediği servis
+    const updateUserById = async (data) => {
+        console.log('BAŞKASINI GÜNCELLEME SERVİSİ BURADA ÇALIŞACAK')
+    }
+
+    const handleSave = async (data) => {
+        if (isSelf(token, userData.id)) {
+            updateUser(data)
+        } else {
+            updateUserById(data)
         }
     };
 
@@ -124,6 +140,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
             <Card.Body>
                 <Card.Title>Edit Profile</Card.Title>
                 <Form onSubmit={handleSubmit(handleSave)}>
+                    {/* Name */}
                     <Form.Group className="mb-3">
                         <Form.Label>Name</Form.Label>
                         <Form.Control
@@ -139,6 +156,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         <Form.Control.Feedback type="invalid">{errors.firstName?.message}</Form.Control.Feedback>
                     </Form.Group>
 
+                    {/* Surname */}
                     <Form.Group className="mb-3">
                         <Form.Label>Surname</Form.Label>
                         <Form.Control
@@ -154,6 +172,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         <Form.Control.Feedback type="invalid">{errors.lastName?.message}</Form.Control.Feedback>
                     </Form.Group>
 
+                    {/* Email */}
                     <Form.Group className="mb-3">
                         <Form.Label>Email</Form.Label>
                         <Form.Control
@@ -168,6 +187,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
                     </Form.Group>
 
+                    {/* Mobile */}
                     <Form.Group className="mb-3">
                         <Form.Label>Mobile</Form.Label>
                         <InputMask
@@ -189,6 +209,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         <Form.Control.Feedback type="invalid">{errors.mobile?.message}</Form.Control.Feedback>
                     </Form.Group>
 
+                    {/* Account Status */}
                     <Form.Group className="mb-3">
                         <Form.Label>Account Status</Form.Label>
                         <Form.Check
@@ -199,6 +220,20 @@ const EditProfileCard = ({ userData, onCancel }) => {
                             onChange={(e) => setIsActive(e.target.checked)}
                         />
                     </Form.Group>
+
+                    {/* Account Verification (Only Super Admins can see this) */}
+                    {isSuperAdmin(token) ? (
+                        <Form.Group className="mb-3">
+                            <Form.Label>Account Verification</Form.Label>
+                            <Form.Check
+                                type="switch"
+                                id="isVerified"
+                                name="isVerified"
+                                checked={isVerified}
+                                onChange={(e) => setIsVerified(e.target.checked)}
+                            />
+                        </Form.Group>
+                    ) : null}
 
                     <Button variant="primary" type="submit">Save</Button>
                     <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>

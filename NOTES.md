@@ -31,3 +31,10 @@
 * Register servisi üzerinden oluşturulan kayıtlar ile hiçbir kullanıcı Super Admin ya da Admin olamaz.
 * Super Admin kullanıcısı sistem tarafından kişilere verilir.
 * Super Admin uygulama içerisinden kullanıcı oluşturarak Admin ve Standard User hesapları açabilir
+
+<!-- * UPDATE USER RULES * -->
+* Super Admin bir profili ancak kendisi güncelleyebilir. 
+* Super Admin bile olsa bir başka Super Admin profilini güncelleyemez.
+* Super Adminler, Admin ve Standard User profillerini güncelleyebilir.
+* Adminler, Standard User profillerini güncelleyebilir.
+* Standard Userlar sadece kendi profillerini güncelleyebilir.

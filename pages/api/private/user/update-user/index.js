@@ -1,8 +1,8 @@
 // --------------------------------
 // |
 // | Service Name: Update User
-// | Description: Service that the user updates his/her own data.
-// | Parameters: first_name, last_name, email, mobile, is_active
+// | Description: Service that the user updates their own data.
+// | Parameters: first_name, last_name, email, mobile, is_active, is_verified
 // | Endpoint: /api/private/user/update-user
 // |
 // ------------------------------
@@ -42,7 +42,7 @@ const isDataAlreadyExists = async (email, mobile, currentEmail, currentMobile) =
 
 // Update methodu
 const updateUserById = async (id, userData, currentEmail, currentMobile) => {
-    const { firstName, lastName, email, mobile, isActive } = userData;
+    const { firstName, lastName, email, mobile, isActive, isVerified } = userData;
 
     // Email ya da mobile değiştiyse, varolan kayıtları kontrol et
     const dataExists = await isDataAlreadyExists(email, mobile, currentEmail, currentMobile);
@@ -52,9 +52,9 @@ const updateUserById = async (id, userData, currentEmail, currentMobile) => {
 
     // Email yoksa güncelleme işlemi yapılır
     const [result] = await sequelize.query(
-        'UPDATE users SET first_name = ?, last_name = ?, email = ?, mobile = ?, is_active = ? WHERE id = ?',
+        'UPDATE users SET first_name = ?, last_name = ?, email = ?, mobile = ?, is_active = ?, is_verified = ? WHERE id = ?',
         {
-            replacements: [firstName, lastName, email, mobile, isActive, id],
+            replacements: [firstName, lastName, email, mobile, isActive, isVerified, id],
         }
     );
     return { success: true, result };
@@ -104,10 +104,10 @@ export default async function handler(req, res) {
             const currentMobile = user[0].mobile;
 
             // Gelen veriyi al
-            const { firstName, lastName, email, mobile, isActive } = req.body;
+            const { firstName, lastName, email, mobile, isActive, isVerified } = req.body;
 
             // Güncelleme işlemi
-            const result = await updateUserById(userId, { firstName, lastName, email, mobile, isActive }, currentEmail, currentMobile);
+            const result = await updateUserById(userId, { firstName, lastName, email, mobile, isActive, isVerified }, currentEmail, currentMobile);
 
             // Email zaten mevcutsa, sonuç false dönecek
             if (!result.success) {
