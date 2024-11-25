@@ -4,7 +4,7 @@ import styles from './index.module.scss';
 import { useEffect, useState } from 'react';
 import { isTokenExpiredClient } from '@/helpers/tokenVerifier';
 import axios from '@/utils/axios';
-import { isSuperAdmin } from '@/helpers/authorityDetector';
+import { isStandardUser } from '@/helpers/authorityDetector';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -40,7 +40,14 @@ const Profile = () => {
         <Container className={styles.profilePage}>
             <Row className="d-flex justify-content-center h-100">
                 <Col md={4}>
-                    <ProfileCard user={user} loading={loading} error={error} isSuperAdmin={isSuperAdmin(token)} from={'profile'} getUser={getUser} />
+                    <ProfileCard
+                        user={user}
+                        loading={loading}
+                        error={error}
+                        isStandardUser={isStandardUser(token)}
+                        from={'profile'}
+                        getUser={getUser}
+                    />
                 </Col>
             </Row>
         </Container>

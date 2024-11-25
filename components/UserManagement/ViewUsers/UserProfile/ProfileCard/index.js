@@ -6,7 +6,7 @@ import { formatAccountRole, formatAccountStatus, formatAccountVerification } fro
 import EditProfileCard from '../EditProfile';
 import { isSelf } from '@/helpers/authorityDetector';
 
-const ProfileCard = ({ user, loading, error, isSuperAdmin, from, getUser, getUserDetails }) => {
+const ProfileCard = ({ user, loading, error, isStandardUser, from, getUser, getUserDetails }) => {
     const [isEditing, setIsEditing] = useState(false);
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
@@ -49,9 +49,7 @@ const ProfileCard = ({ user, loading, error, isSuperAdmin, from, getUser, getUse
                             <p><strong>Verification Status:</strong> {formatAccountVerification(user.is_verified)}</p>
                             <p><strong>Account Role:</strong> {formatAccountRole(user.role)}</p>
                         </div>
-                        {/* Kullanıcı kendini görüyorsa, super adminse ya da profil sayfasından geldiyse düzenleme aktif */}
-                        {/* Normal Adminler sadece görüntüleme yapabilir, bir başka profile düzenleme yapamaz */}
-                        {isSelf(token, user.id) || isSuperAdmin || from == 'profile' ? (<Button variant="primary" onClick={handleEditClick}>Edit</Button>) : null}
+                        {isSelf(token, user.id) || !isStandardUser || from == 'profile' ? (<Button variant="primary" onClick={handleEditClick}>Edit</Button>) : null}
                     </Card.Body>
                 </Card>
             ) : (

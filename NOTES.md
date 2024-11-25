@@ -33,8 +33,11 @@
 * Super Admin uygulama içerisinden kullanıcı oluşturarak Admin ve Standard User hesapları açabilir
 
 <!-- * UPDATE USER RULES * -->
-* Super Admin bir profili ancak kendisi güncelleyebilir. 
+* Hiçbir kullanıcı kendi hesabının rolünü değiştiremez.
+* Super Admin olan bir kendisinden başka kimse güncelleyemez. 
 * Super Admin bile olsa bir başka Super Admin profilini güncelleyemez.
 * Super Adminler, Admin ve Standard User profillerini güncelleyebilir.
 * Adminler, Standard User profillerini güncelleyebilir.
 * Standard Userlar sadece kendi profillerini güncelleyebilir.
+* Super Adminler bir başka hesabı güncellerken rollerini değiştirip istediği rolü verebilir.
+* Adminler bir başka hesabı güncellerken rollerini değiştirebilir ancak bir admin bir başka kullanıcıyı Super Admin yapamaz.

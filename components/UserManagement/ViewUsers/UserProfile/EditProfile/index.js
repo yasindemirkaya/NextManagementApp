@@ -7,7 +7,8 @@ import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
 import axios from '@/utils/axios';
 import ChangePassword from '../ChangePassword';
-import { isSelf, isSuperAdmin } from '@/helpers/authorityDetector';
+import { isSelf, isStandardUser, isSuperAdmin } from '@/helpers/authorityDetector';
+import { jwtDecode } from 'jwt-decode'
 
 const EditProfileCard = ({ userData, onCancel }) => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
@@ -22,11 +23,15 @@ const EditProfileCard = ({ userData, onCancel }) => {
             lastName: userData.last_name,
             email: userData.email,
             mobile: userData.mobile,
+            isActive: userData.is_active === 1,
+            isVerified: userData.is_verified === 1,
+            role: userData.role || 0,
         }
     });
 
     const [isActive, setIsActive] = useState(userData.is_active === 1);
     const [isVerified, setIsVerified] = useState(userData.is_verified === 1);
+    const [role, setRole] = useState(userData.role || 0);
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
@@ -44,8 +49,12 @@ const EditProfileCard = ({ userData, onCancel }) => {
             email: data.email,
             mobile: formattedMobile,
             isActive: isActive ? 1 : 0,
-            isVerified: isVerified ? 1 : 0
+            isVerified: isVerified ? 1 : 0,
         };
+
+        // Kullanıcı kendini güncellediği için updatedBy kısmına kendi ID'sini geçiyoruz.
+        const decoded = jwtDecode(token);
+        updatedData.updatedBy = decoded.id;
 
         try {
             const token = localStorage.getItem('token');
@@ -78,8 +87,64 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
     // Kullanıcının bir başka profili güncellediği servis
     const updateUserById = async (data) => {
-        console.log('BAŞKASINI GÜNCELLEME SERVİSİ BURADA ÇALIŞACAK')
-    }
+        const formattedMobile = data.mobile.replace(/\D/g, '');
+
+        const updatedData = {};
+
+
+        // Kullanıcı verilerini güncellenmesi
+        updatedData.first_name = data.firstName;
+        updatedData.last_name = data.lastName;
+        updatedData.email = data.email;
+        updatedData.mobile = formattedMobile;
+        updatedData.is_active = isActive ? 1 : 0;
+
+        // Sadece super admin yetkisine sahip kullanıcılar buradan hesap verify edebilir
+        if (isSuperAdmin(token)) {
+            updatedData.is_verified = isVerified ? 1 : 0;
+        }
+
+        // Super Admin ve Adminler bir başkasının rolünü güncelleyebilir
+        if (!isStandardUser(token)) {
+            updatedData.role = role
+        }
+
+        // Güncellemeyi yapan kişinin ID'sini updated_by olarak gönderiyoruz
+        const decoded = jwtDecode(token);
+        updatedData.updated_by = decoded.id;
+
+        // Güncellenen kişinin ID'sini de requeste ekliyoruz
+        updatedData.id = userData.id
+
+        try {
+            const response = await axios.put(`/private/user/update-user-by-id`, updatedData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (response.code === 1) {
+                Swal.fire({
+                    title: response.message,
+                    icon: 'success'
+                });
+            } else {
+                Swal.fire({
+                    title: response.message,
+                    icon: 'error'
+                });
+            }
+        } catch (error) {
+            console.error('Error updating user by ID:', error);
+            Swal.fire({
+                title: 'User could not be updated.',
+                icon: 'error',
+                text: 'An error occurred. Please try again.'
+            });
+        }
+    };
 
     const handleSave = async (data) => {
         if (isSelf(token, userData.id)) {
@@ -208,6 +273,42 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         </InputMask>
                         <Form.Control.Feedback type="invalid">{errors.mobile?.message}</Form.Control.Feedback>
                     </Form.Group>
+
+                    {/* Role (Sadece adminler başkasını güncellerken görünür. Kullanıcı kendi rolünü değiştiremez */}
+                    {!isSelf(token, userData.id) && !isStandardUser(token) ? (
+                        <Form.Group className="mb-3">
+                            <Form.Label>Role</Form.Label>
+                            <div>
+                                <Form.Check
+                                    type="radio"
+                                    label="Standard User"
+                                    name="role"
+                                    value="0"
+                                    checked={role === 0}
+                                    onChange={(e) => setRole(parseInt(e.target.value))}
+                                />
+                                <Form.Check
+                                    type="radio"
+                                    label="Admin"
+                                    name="role"
+                                    value="1"
+                                    checked={role === 1}
+                                    onChange={(e) => setRole(parseInt(e.target.value))}
+                                />
+                                {/* Only Super Admins can see this */}
+                                {isSuperAdmin(token) ? (
+                                    <Form.Check
+                                        type="radio"
+                                        label="Super Admin"
+                                        name="role"
+                                        value="2"
+                                        checked={role === 2}
+                                        onChange={(e) => setRole(parseInt(e.target.value))}
+                                    />
+                                ) : null}
+                            </div>
+                        </Form.Group>
+                    ) : null}
 
                     {/* Account Status */}
                     <Form.Group className="mb-3">
