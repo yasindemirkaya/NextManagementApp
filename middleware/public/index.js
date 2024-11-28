@@ -1,16 +1,21 @@
+import publicRateLimit from './rateLimit';
+
 export default function applyMiddlewares(handler) {
-    return async (req, res, next) => {
+    return async (req, res) => {
+        const middlewareArray = [publicRateLimit];
+
         for (const middleware of middlewareArray) {
             await new Promise((resolve, reject) => {
                 middleware(req, res, (err) => {
                     if (err) {
-                        reject(err)
+                        reject(err);
                     } else {
-                        resolve()
+                        resolve();
                     }
                 });
             });
         }
-        await handler(req, res)
-    }
+
+        await handler(req, res);
+    };
 }

@@ -1,8 +1,9 @@
 import verifyToken from './verifyToken';
+import privateRateLimit from './rateLimit';
 
 export default function applyMiddlewares(handler) {
    return async (req, res) => {
-      const middlewareArray = [verifyToken]
+      const middlewareArray = [privateRateLimit, verifyToken]
 
       for (const middleware of middlewareArray) {
          await new Promise((resolve, reject) => {
