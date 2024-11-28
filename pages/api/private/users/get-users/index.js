@@ -21,10 +21,11 @@ const handler = async (req, res) => {
         // Token'ı decode et ve kullanıcı rolünü al
         let userRole;
         try {
+            const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
             userRole = decoded?.role;
         } catch (error) {
-            return res.status(401).json({
+            return res.status(200).json({
                 message: 'Invalid token, please log in again.',
                 code: 0
             });

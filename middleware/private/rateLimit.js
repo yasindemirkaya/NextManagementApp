@@ -1,6 +1,6 @@
 import rateLimit from "express-rate-limit";
 
-const rateLimit = rateLimit({
+const limiter = rateLimit({
     windowMs: 1 * 60 * 1000,
     max: 5,
     message: {
@@ -11,4 +11,4 @@ const rateLimit = rateLimit({
     legacyHeaders: false,  // Eski `X-RateLimit-*` başlıklarını kapatır
 });
 
-export default rateLimit;
+export default limiter;

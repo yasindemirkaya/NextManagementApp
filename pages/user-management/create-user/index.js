@@ -66,7 +66,7 @@ const CreateUser = () => {
             }
         } catch (error) {
             Swal.fire({
-                title: response.message,
+                title: 'Error',
                 text: 'An error occurred when creating a new user. Please try again later.',
                 icon: 'error'
             });

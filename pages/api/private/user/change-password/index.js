@@ -36,6 +36,7 @@ const updateUserPasswordById = async (userId, newPassword) => {
 const handler = async (req, res) => {
     if (req.method === 'PATCH') {
         try {
+            const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
             const userId = decoded.id;
 
@@ -75,7 +76,7 @@ const handler = async (req, res) => {
             const result = await updateUserPasswordById(userId, hashedPassword);
 
             if (result.affectedRows === 0) {
-                return res.status(500).json({ message: 'Failed to update password.' });
+                return res.status(200).json({ message: 'Failed to update password.' });
             }
 
             return res.status(200).json({

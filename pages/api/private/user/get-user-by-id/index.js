@@ -10,6 +10,12 @@ import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from "@/middleware/private/index"
 
+const ROLES = {
+    USER: 0,
+    ADMIN: 1,
+    SUPER_ADMIN: 2
+};
+
 const findUserById = async (id) => {
     const [users] = await sequelize.query('SELECT * FROM users WHERE id = ?', {
         replacements: [id],
@@ -21,6 +27,7 @@ const handler = async (req, res) => {
     if (req.method === 'GET') {
         try {
             // Token decode ve role bilgisi
+            const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
             const { id: loggedInUserId, role: loggedInUserRole } = decoded;
 
@@ -53,7 +60,7 @@ const handler = async (req, res) => {
             }
 
             // Admin olan kullanıcı Super Admin bir kullanıcının bilgilerine erişemez.
-            if (loggedInUserRole === 1 && requestedUser.role === 2) {
+            if (loggedInUserRole === ROLES.ADMIN && requestedUser.role === ROLES.SUPER_ADMIN) {
                 return res.status(200).json({
                     message: 'You are not authorized to access this user.',
                     code: 0

@@ -45,6 +45,7 @@ const handler = async (req, res) => {
     if (req.method === 'PUT') {
         try {
             // Token decode et ve kullanıcı bilgilerini al
+            const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
             const { id: loggedInUserId, role: loggedInUserRole } = decoded;
 
@@ -112,7 +113,13 @@ const handler = async (req, res) => {
                 code: 1
             });
         } catch (error) {
-            console.error('Error updating user by ID:', error);
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                return res.status(200).json({
+                    message: 'Email or mobile number already in use.',
+                    code: 0
+                });
+            }
+
             return res.status(200).json({
                 message: 'An error occurred.',
                 error: error.message,

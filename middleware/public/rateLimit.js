@@ -7,7 +7,7 @@ const skipGoogleBot = (req) => {
 };
 
 // Rate limit ayarları
-const publicApiRateLimiter = rateLimit({
+const limiter = rateLimit({
     windowMs: 1 * 60 * 1000,
     max: 100, // 1 dakikada 100 isteğe izin verilir
     message: {
@@ -19,4 +19,4 @@ const publicApiRateLimiter = rateLimit({
     skip: skipGoogleBot, // Googlebot için sınırı atlar
 });
 
-export default publicApiRateLimiter;
+export default limiter;

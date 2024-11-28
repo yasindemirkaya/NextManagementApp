@@ -7,9 +7,8 @@
 // |
 // ------------------------------
 
-import { Op } from 'sequelize';
-import hashPassword from '@/helpers/hash';
 import { verify } from 'jsonwebtoken';
+import hashPassword from '@/helpers/hash';
 import User from '@/models/User';
 import privateMiddleware from "@/middleware/private/index"
 
@@ -17,6 +16,7 @@ const handler = async (req, res) => {
     if (req.method === 'POST') {
         try {
             // Token'ı decode et ve kullanıcı rolünü al
+            const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
             const { id: adminId, role } = decoded;
 
@@ -47,41 +47,45 @@ const handler = async (req, res) => {
                 });
             }
 
-            // Existing user kontrolü
-            const existingUser = await User.findOne({
-                where: {
-                    [Op.or]: [{ email }, { mobile }],
-                },
-            });
-
-            if (existingUser) {
-                return res.status(200).json({
-                    message: "Email or mobile number already in use.",
-                    code: 0,
-                });
-            }
-
             // Şifreyi hash'le
             const hashedPassword = await hashPassword(password, 10);
 
             // Yeni kullanıcı oluştur
-            const newUser = await User.create({
-                first_name: firstName,
-                last_name: lastName,
-                email: email,
-                password: hashedPassword,
-                mobile: mobile,
-                is_active: isActive,
-                is_verified: isVerified,
-                role: userRole,
-                created_by: adminId,
-            });
+            try {
+                const newUser = await User.create({
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    password: hashedPassword,
+                    mobile: mobile,
+                    is_active: isActive,
+                    is_verified: isVerified,
+                    role: userRole,
+                    created_by: adminId,
+                });
 
-            return res.status(200).json({
-                message: "User successfully created.",
-                code: 1,
-                user: email
-            });
+                return res.status(200).json({
+                    message: "User successfully created.",
+                    code: 1,
+                    user: email
+                });
+            } catch (error) {
+                if (error.name === 'SequelizeUniqueConstraintError') {
+                    // UNIQUE constraint hatasını yakala
+                    return res.status(200).json({
+                        message: "Email or mobile number already in use.",
+                        code: 0,
+                    });
+                }
+
+                // Diğer hataları yakala
+                console.error('Error creating user:', error);
+                return res.status(500).json({
+                    message: "An error occurred.",
+                    error: error.message,
+                    code: 0
+                });
+            }
         } catch (error) {
             console.error('Error creating user:', error);
             return res.status(500).json({
