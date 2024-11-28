@@ -10,7 +10,7 @@ import sequelize from '@/config/db';
 import bcrypt from 'bcrypt';
 import { verify } from 'jsonwebtoken';
 import hashPassword from '@/helpers/hash';
-import { isTokenExpiredServer } from '@/helpers/tokenVerifier';
+import privateMiddleware from "@/middleware/private/index"
 
 const getUserPasswordById = async (userId) => {
     const [user] = await sequelize.query(
@@ -33,24 +33,9 @@ const updateUserPasswordById = async (userId, newPassword) => {
     return result;
 };
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
     if (req.method === 'PATCH') {
         try {
-            const token = req.headers.authorization?.split(' ')[1];
-            if (!token) {
-                return res.status(200).json({
-                    message: "You must be logged in to change your password.",
-                    code: 0
-                });
-            }
-
-            if (isTokenExpiredServer(token)) {
-                return res.status(200).json({
-                    message: "Token has expired. Please log in again.",
-                    code: 0
-                });
-            }
-
             const decoded = verify(token, process.env.JWT_SECRET);
             const userId = decoded.id;
 
@@ -106,3 +91,5 @@ export default async function handler(req, res) {
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
+
+export default privateMiddleware(handler);

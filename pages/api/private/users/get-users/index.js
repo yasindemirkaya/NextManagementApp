@@ -14,27 +14,10 @@
 
 import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
-import { isTokenExpiredServer } from '@/helpers/tokenVerifier';
+import privateMiddleware from "@/middleware/private/index"
 
 const handler = async (req, res) => {
     if (req.method === 'GET') {
-        // JWT token'ı doğrulama
-        const token = req.headers.authorization?.split(' ')[1];
-        if (!token) {
-            return res.status(200).json({
-                message: "You must be logged in to get this user's data.",
-                code: 0
-            });
-        }
-
-        // Token'ın süresi dolmuşsa kontrol et
-        if (isTokenExpiredServer(token)) {
-            return res.status(401).json({
-                message: 'Token has expired, please log in again.',
-                code: 0
-            });
-        }
-
         // Token'ı decode et ve kullanıcı rolünü al
         let userRole;
         try {
@@ -107,4 +90,4 @@ const handler = async (req, res) => {
     }
 };
 
-export default handler;
+export default privateMiddleware(handler);

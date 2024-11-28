@@ -8,7 +8,7 @@
 
 import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
-import { isTokenExpiredServer } from '@/helpers/tokenVerifier';
+import privateMiddleware from "@/middleware/private/index"
 
 const findUserById = async (id) => {
     const [users] = await sequelize.query('SELECT * FROM users WHERE id = ?', {
@@ -17,26 +17,9 @@ const findUserById = async (id) => {
     return users.length > 0 ? users[0] : null;
 };
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
     if (req.method === 'GET') {
         try {
-            // JWT token'ı doğrulama
-            const token = req.headers.authorization?.split(' ')[1];
-            if (!token) {
-                return res.status(200).json({
-                    message: "You must be logged in to get this user's data.",
-                    code: 0
-                });
-            }
-
-            // Token'ın süresi dolmuşsa kontrol et
-            if (isTokenExpiredServer(token)) {
-                return res.status(401).json({
-                    message: 'Token has expired, please log in again.',
-                    code: 0
-                });
-            }
-
             // Token'ı decode et ve kullanıcı id'sini al
             const decoded = verify(token, process.env.JWT_SECRET);
             const userId = decoded.id;
@@ -75,3 +58,5 @@ export default async function handler(req, res) {
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
+
+export default privateMiddleware(handler);

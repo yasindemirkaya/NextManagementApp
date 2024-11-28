@@ -41,26 +41,9 @@ const updateUserById = async (id, updateData) => {
     return result.affectedRows > 0;
 };
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
     if (req.method === 'PUT') {
         try {
-            // JWT token doğrulama
-            const token = req.headers.authorization?.split(' ')[1];
-            if (!token) {
-                return res.status(401).json({
-                    message: "You must be logged in to access this service.",
-                    code: 0
-                });
-            }
-
-            // Token süresi dolmuş mu kontrol et
-            if (isTokenExpiredServer(token)) {
-                return res.status(401).json({
-                    message: 'Token has expired, please log in again.',
-                    code: 0
-                });
-            }
-
             // Token decode et ve kullanıcı bilgilerini al
             const decoded = verify(token, process.env.JWT_SECRET);
             const { id: loggedInUserId, role: loggedInUserRole } = decoded;
@@ -142,3 +125,5 @@ export default async function handler(req, res) {
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
+
+export default privateMiddleware(handler);

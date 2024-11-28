@@ -10,30 +10,12 @@
 import { Op } from 'sequelize';
 import hashPassword from '@/helpers/hash';
 import { verify } from 'jsonwebtoken';
-import { isTokenExpiredServer } from '@/helpers/tokenVerifier';
 import User from '@/models/User';
+import privateMiddleware from "@/middleware/private/index"
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
     if (req.method === 'POST') {
         try {
-            // JWT token doğrulama
-            const token = req.headers.authorization?.split(' ')[1];
-
-            if (!token) {
-                return res.status(401).json({
-                    message: "You must be logged in as admin to create a user.",
-                    code: 0
-                });
-            }
-
-            // Token'ın süresi dolmuş mu diye kontrol et
-            if (isTokenExpiredServer(token)) {
-                return res.status(401).json({
-                    message: "Token has expired. Please log in again.",
-                    code: 0
-                });
-            }
-
             // Token'ı decode et ve kullanıcı rolünü al
             const decoded = verify(token, process.env.JWT_SECRET);
             const { id: adminId, role } = decoded;
@@ -113,3 +95,5 @@ export default async function handler(req, res) {
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
+
+export default privateMiddleware(handler);

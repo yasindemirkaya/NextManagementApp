@@ -8,7 +8,7 @@
 
 import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
-import { isTokenExpiredServer } from '@/helpers/tokenVerifier';
+import privateMiddleware from "@/middleware/private/index"
 
 const deleteUserById = async (userId) => {
     // Kullanıcıyı veritabanından sil
@@ -21,26 +21,9 @@ const deleteUserById = async (userId) => {
     return result;
 };
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
     if (req.method === 'DELETE') {
         try {
-            // JWT token'ı doğrula
-            const token = req.headers.authorization?.split(' ')[1];
-            if (!token) {
-                return res.status(200).json({
-                    message: "You must be logged in to delete your account.",
-                    code: 0
-                });
-            }
-
-            // Token'ın süresi dolmuş mu kontrol et
-            if (isTokenExpiredServer(token)) {
-                return res.status(401).json({
-                    message: "Token has expired. Please log in again.",
-                    code: 0
-                });
-            }
-
             // Token'ı decode et ve kullanıcı id'sini al
             const decoded = verify(token, process.env.JWT_SECRET);
             const userId = decoded.id;
@@ -71,3 +54,5 @@ export default async function handler(req, res) {
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
+
+export default privateMiddleware(handler);
