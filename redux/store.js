@@ -1,17 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { persistStore } from 'redux-persist';
-import { persistedReducer } from './config'; // persistedReducer'ı buradan alıyoruz
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import userReducer from './userSlice';
+
+// Persist config
+const persistConfig = {
+    key: 'root',
+    storage,
+};
+
+const persistedReducer = persistReducer(persistConfig, userReducer);
 
 const store = configureStore({
-    reducer: persistedReducer, // persist edilmiş reducer'ı kullanıyoruz
-    devTools: process.env.NODE_ENV !== 'production', // Geliştirme ortamında Redux DevTools'u aktif et
-    middleware: (getDefaultMiddleware) => [
-        ...getDefaultMiddleware({
-            serializableCheck: false, // Serileştirilemeyen nesneler için kontrolü kapat
-        }),
-    ],
+    reducer: {
+        user: persistedReducer,
+    },
 });
 
-const persistor = persistStore(store); // Redux store'u ile persistStore'u başlatıyoruz
+export const persistor = persistStore(store);
 
-export { store, persistor }; // Store ve persistor'ı dışa aktarıyoruz
+export default store;

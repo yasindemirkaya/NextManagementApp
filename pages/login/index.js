@@ -5,12 +5,16 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import styles from './index.module.scss';
 import axios from "@/utils/axios";
-
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/redux/userSlice';
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
     const router = useRouter();
+    const dispatch = useDispatch();
+
     const {
         register,
         handleSubmit,
@@ -37,14 +41,18 @@ const Login = () => {
 
             if (response.message === 'Success') {
                 setLoading(false);
-                reset(); // Formu temizle
-
+                reset();
                 toast('SUCCESS', 'Welcome. Redirecting to Dashboard...');
 
-                // Token'ı localStorage'a kaydet
-                localStorage.setItem('token', response.token);
+                // Tokenı decode et ve redux'a yaz
+                const decodedToken = jwtDecode(response.token);
+                dispatch(setUser({
+                    id: decodedToken.id,
+                    email: decodedToken.email,
+                    role: decodedToken.role,
+                }))
 
-                // Dashboard'a yönlendir
+                localStorage.setItem('token', response.token);
                 router.push('/dashboard');
             } else {
                 setLoading(false);

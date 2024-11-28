@@ -5,28 +5,24 @@ import headerMenu from "@/static/components/header";
 import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './index.module.scss';
-import { jwtDecode } from "jwt-decode"
+import { useDispatch, useSelector } from 'react-redux';
+import { clearUser } from '@/redux/userSlice';
 
 const Header = ({ toggleSidebar }) => {
     const router = useRouter();
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const dispatch = useDispatch();
+    const loggedInUser = useSelector(state => state.user.user);
 
-    let profileText;
-    if (token) {
-        const decoded = jwtDecode(token)
-        profileText = decoded.email
-    } else {
-        profileText = "Profile"
-    }
-
+    let profileText = loggedInUser ? loggedInUser.email : "Profile";
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        dispatch(clearUser());
         router.push('/login');
     };
 
-    // Token yoksa, Header'ı render etme
-    if (!token) {
+    // Login olmuş user yoksa, Header'ı render etme
+    if (!loggedInUser) {
         return null;
     }
 
@@ -50,11 +46,13 @@ const Header = ({ toggleSidebar }) => {
                         ))}
 
                         <Nav className="ms-auto">
-                            {token ? (<Nav.Link as={Link} href="/profile">{profileText}</Nav.Link>) : null}
-                            {token ? (
-                                <Nav.Link as="span" onClick={handleLogout} className={styles.logout}>
-                                    Log Out
-                                </Nav.Link>
+                            {loggedInUser ? (
+                                <>
+                                    <Nav.Link as={Link} href="/profile">{profileText}</Nav.Link>
+                                    <Nav.Link as="span" onClick={handleLogout} className={styles.logout}>
+                                        Log Out
+                                    </Nav.Link>
+                                </>
                             ) : (
                                 <Nav.Link as={Link} href="/login">Log In</Nav.Link>
                             )}

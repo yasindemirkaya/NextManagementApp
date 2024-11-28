@@ -9,14 +9,18 @@ import axios from '@/utils/axios';
 import ChangePassword from '../ChangePassword';
 import { isSelf, isStandardUser, isSuperAdmin } from '@/helpers/authorityDetector';
 import { jwtDecode } from 'jwt-decode'
+import { useDispatch, useSelector } from 'react-redux';
+import { clearUser } from '@/redux/userSlice';
 
 const EditProfileCard = ({ userData, onCancel }) => {
+    const loggedInUser = useSelector(state => state.user.user);
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
     const changePasswordText = !isSelf(token, userData.id) ? "Change this user's password." : "I want to change my password."
     const deleteAccountText = !isSelf(token, userData.id) ? "Delete this user's account." : "I want to delete my account."
 
     const router = useRouter();
+    const dispatch = useDispatch();
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         defaultValues: {
             firstName: userData.first_name,
@@ -53,8 +57,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
         };
 
         // Kullanıcı kendini güncellediği için updatedBy kısmına kendi ID'sini geçiyoruz.
-        const decoded = jwtDecode(token);
-        updatedData.updatedBy = decoded.id;
+        updatedData.updatedBy = loggedInUser.id;
 
         try {
             const token = localStorage.getItem('token');
@@ -181,6 +184,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         icon: 'success'
                     });
                     localStorage.removeItem('token')
+                    dispatch(clearUser());
                     router.push('/login');
                 } else {
                     Swal.fire({

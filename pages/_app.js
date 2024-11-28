@@ -4,9 +4,8 @@ import '../styles/global.scss';
 import React, { useEffect } from 'react';
 import Head from 'next/head';
 
-import { Provider } from "react-redux";
-import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from "@/redux/store";
+import { Provider, useDispatch } from 'react-redux';
+import store from '../redux/store';
 
 import { useRouter } from 'next/router';
 
@@ -15,6 +14,7 @@ import NotFoundLayout from '@/components/Layouts/404';
 
 import { checkAuth, isTokenExpiredClient } from '@/helpers/tokenVerifier';
 import protectedPages from '@/static/data/protectedPages';
+import { clearUser } from '../redux/userSlice';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -32,23 +32,22 @@ export default function App({ Component, pageProps }) {
     } else {
       if (token && isTokenExpiredClient(token)) {
         localStorage.removeItem('token');
-        router.push('/login');
+        dispatch(clearUser());
+        router.push('/');
       }
     }
   }, [router.pathname, token]);
 
   return (
     <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <Head>
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <title>Next Management App</title>
-        </Head>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </PersistGate>
+      <Head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Next Management App</title>
+      </Head>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </Provider>
   );
 }
