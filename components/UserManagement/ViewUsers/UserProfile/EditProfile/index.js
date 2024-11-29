@@ -7,8 +7,7 @@ import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
 import axios from '@/utils/axios';
 import ChangePassword from '../ChangePassword';
-import { isSelf, isStandardUser, isSuperAdmin } from '@/helpers/authorityDetector';
-import { jwtDecode } from 'jwt-decode'
+import { isSelf, isStandardUser } from '@/helpers/authorityDetector';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
 
@@ -94,7 +93,6 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
         const updatedData = {};
 
-
         // Kullanıcı verilerini güncellenmesi
         updatedData.first_name = data.firstName;
         updatedData.last_name = data.lastName;
@@ -103,18 +101,17 @@ const EditProfileCard = ({ userData, onCancel }) => {
         updatedData.is_active = isActive ? 1 : 0;
 
         // Sadece super admin yetkisine sahip kullanıcılar buradan hesap verify edebilir
-        if (isSuperAdmin(token)) {
+        if (loggedInUser.role === 2) {
             updatedData.is_verified = isVerified ? 1 : 0;
         }
 
         // Super Admin ve Adminler bir başkasının rolünü güncelleyebilir
-        if (!isStandardUser(token)) {
+        if (loggedInUser.role !== 0) {
             updatedData.role = role
         }
 
         // Güncellemeyi yapan kişinin ID'sini updated_by olarak gönderiyoruz
-        const decoded = jwtDecode(token);
-        updatedData.updated_by = decoded.id;
+        updatedData.updated_by = loggedInUser.id;
 
         // Güncellenen kişinin ID'sini de requeste ekliyoruz
         updatedData.id = userData.id
@@ -147,17 +144,10 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 text: 'An error occurred. Please try again.'
             });
         }
-    };
+    }
 
-    const handleSave = async (data) => {
-        if (isSelf(token, userData.id)) {
-            updateUser(data)
-        } else {
-            updateUserById(data)
-        }
-    };
-
-    const handleDeleteAccount = async () => {
+    // Kullanıcının kendi profilini sildiği servis
+    const deleteUser = async () => {
         const confirmation = await Swal.fire({
             title: 'Are you sure?',
             text: "Your account will be permanently deleted and cannot be recovered.",
@@ -202,7 +192,119 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 });
             }
         }
+    }
+
+    // Kullanıcının bir başka profili sildiği servis
+    const deleteUserById = async (userId) => {
+        const confirmation = await Swal.fire({
+            title: 'Are you sure?',
+            text: "This user account will be permanently deleted and cannot be recovered.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (confirmation.isConfirmed) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.delete('/private/user/delete-user-by-id', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    data: {
+                        userId: userId,
+                    },
+                });
+
+                if (response.code === 1) {
+                    Swal.fire({
+                        title: 'Account Deleted',
+                        text: 'The user account has been deleted successfully.',
+                        icon: 'success'
+                    });
+                    setTimeout(() => {
+                        router.push('/user-management/view-users')
+                    }, 1000);
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.message || 'User account could not be deleted. Please try again.',
+                        icon: 'error'
+                    });
+                }
+            } catch (error) {
+                console.error('Error deleting user by ID:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'An error occurred while deleting the user. Please try again later.',
+                    icon: 'error'
+                });
+            }
+        }
     };
+
+    const handleSave = async (data) => {
+        if (isSelf(token, userData.id)) {
+            updateUser(data)
+        } else {
+            updateUserById(data)
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        if (isSelf(token, userData.id)) {
+            deleteUser()
+        } else {
+            deleteUserById(userData.id)
+        }
+    };
+
+    // Account Verification hangi durumlarda ekranda gösterilecek
+    const visibleForSuperAdmins = (loggedInUser) => {
+        if (loggedInUser && loggedInUser.role == 2) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    // Role hangi durumlarda ekranda gösterilecek
+    const roleDisplayer = (loggedInUser, token, userData) => {
+        // Kendini güncellerken role alanı görünmez. Çünkü kullanıcı kendi rolünü değiştiremez
+        if (isSelf(token, userData.id)) {
+            return false
+        } else {
+            // Bir başkasını güncellerken role alanını sadece Adminler görür, standart kullanıcı zaten bir başkasını güncelleyemiyor.
+            if (loggedInUser && loggedInUser.role != 0) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
+    const deleteAccountDisplayer = (loggedInUser, token, userData) => {
+        // Kullanıcını kendini düzenlerken hesap silme özelliğini görebilir
+        if (isSelf(token, userData.id)) {
+            return true
+        }
+
+        // Standard kullanıcılar bir başkasını güncelleyemediği için zaten bu alanı göremez
+        if (loggedInUser.role !== 0) {
+            // Eğer düzenlemeyi yapan kişi Admin ise sadece bir standard userın hesabını silebilir. Admin ya da Super Admin hesabı silemez
+            if (loggedInUser.role === 1) {
+                if (userData.role === 0) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        } else {
+            return false
+        }
+    }
 
     return (
         <Card className={styles.profileEditCard}>
@@ -279,7 +381,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     </Form.Group>
 
                     {/* Role (Sadece adminler başkasını güncellerken görünür. Kullanıcı kendi rolünü değiştiremez */}
-                    {!isSelf(token, userData.id) && !isStandardUser(token) ? (
+                    {roleDisplayer(loggedInUser, token, userData) ? (
                         <Form.Group className="mb-3">
                             <Form.Label>Role</Form.Label>
                             <div>
@@ -300,7 +402,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                                     onChange={(e) => setRole(parseInt(e.target.value))}
                                 />
                                 {/* Only Super Admins can see this */}
-                                {isSuperAdmin(token) ? (
+                                {loggedInUser && loggedInUser.role == 2 ? (
                                     <Form.Check
                                         type="radio"
                                         label="Super Admin"
@@ -326,8 +428,8 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         />
                     </Form.Group>
 
-                    {/* Account Verification (Only Super Admins can see this) */}
-                    {isSuperAdmin(token) ? (
+                    {/* Account Verification */}
+                    {visibleForSuperAdmins(loggedInUser) ? (
                         <Form.Group className="mb-3">
                             <Form.Label>Account Verification</Form.Label>
                             <Form.Check
@@ -350,11 +452,15 @@ const EditProfileCard = ({ userData, onCancel }) => {
                             <p className="text-primary">{changePasswordText}</p>
                         </div>
                     </Col>
-                    <Col md={12}>
-                        <div onClick={handleDeleteAccount} className={styles.link}>
-                            <p className="text-danger">{deleteAccountText}</p>
-                        </div>
-                    </Col>
+
+                    {/* Bir admin sadece kendisinin ve rolü 0 olan bir kullanıcının hesabını silebilir */}
+                    {deleteAccountDisplayer(loggedInUser, token, userData) ? (
+                        <Col md={12}>
+                            <div onClick={handleDeleteAccount} className={styles.link}>
+                                <p className="text-danger">{deleteAccountText}</p>
+                            </div>
+                        </Col>
+                    ) : null}
                 </Row>
 
                 <ChangePassword show={showModal} onHide={() => setShowModal(false)} />
