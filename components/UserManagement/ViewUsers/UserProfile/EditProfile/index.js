@@ -285,6 +285,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
         }
     }
 
+    // Account silme özelliği hangi durumlarda hangi kullanıcılara gösterilecek
     const deleteAccountDisplayer = (loggedInUser, token, userData) => {
         // Kullanıcını kendini düzenlerken hesap silme özelliğini görebilir
         if (isSelf(token, userData.id)) {
@@ -292,7 +293,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
         }
 
         // Standard kullanıcılar bir başkasını güncelleyemediği için zaten bu alanı göremez
-        if (loggedInUser.role !== 0) {
+        if (loggedInUser && loggedInUser.role !== 0) {
             // Eğer düzenlemeyi yapan kişi Admin ise sadece bir standard userın hesabını silebilir. Admin ya da Super Admin hesabı silemez
             if (loggedInUser.role === 1) {
                 if (userData.role === 0) {
@@ -300,6 +301,8 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 } else {
                     return false
                 }
+            } else {
+                return true
             }
         } else {
             return false
