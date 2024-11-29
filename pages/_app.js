@@ -4,8 +4,9 @@ import '../styles/global.scss';
 import React, { useEffect } from 'react';
 import Head from 'next/head';
 
-import { Provider, useDispatch } from 'react-redux';
-import store from '../redux/store';
+import { Provider, useDispatch } from "react-redux";
+import store, { persistor } from "../redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 import { useRouter } from 'next/router';
 
@@ -40,14 +41,16 @@ export default function App({ Component, pageProps }) {
 
   return (
     <Provider store={store}>
-      <Head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Next Management App</title>
-      </Head>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <PersistGate loading={null} persistor={persistor}>
+        <Head>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>Next Management App</title>
+        </Head>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </PersistGate>
     </Provider>
   );
 }
