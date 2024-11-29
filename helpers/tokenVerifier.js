@@ -1,6 +1,5 @@
 import jwt_decode from 'jsonwebtoken/decode'
 import { verify } from 'jsonwebtoken';
-import { clearUser } from '@/redux/userSlice';
 
 // Client side token verification
 export const isTokenExpiredClient = (token) => {
@@ -19,14 +18,5 @@ export const isTokenExpiredServer = (token) => {
         return decoded.exp < Math.floor(Date.now() / 1000);
     } catch (error) {
         return true;
-    }
-};
-
-// Auth guard for pages requiring authorization
-export const checkAuth = (token, router, dispatch) => {
-    if (!token || isTokenExpiredClient(token)) {
-        localStorage.removeItem('token');
-        dispatch(clearUser());
-        router.push('/login');
     }
 };

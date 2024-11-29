@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { isTokenExpiredClient } from "@/helpers/tokenVerifier";
 import { Col, Container, Row } from "react-bootstrap";
 import ProfileCard from "@/components/UserManagement/ViewUsers/UserProfile/ProfileCard";
-import { isStandardUser } from "@/helpers/authorityDetector";
 
 const UserDetailPage = () => {
     const [user, setUser] = useState(null);
@@ -74,7 +73,6 @@ const UserDetailPage = () => {
                         user={user}
                         loading={loading}
                         error={error}
-                        isStandardUser={isStandardUser(token)}
                         from={'viewUsers'}
                         getUserDetails={getUserDetails}
                     />

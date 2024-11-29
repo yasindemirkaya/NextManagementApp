@@ -7,7 +7,7 @@ import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
 import axios from '@/utils/axios';
 import ChangePassword from '../ChangePassword';
-import { isSelf, isStandardUser } from '@/helpers/authorityDetector';
+import { isSelf } from '@/helpers/isSelf';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
 

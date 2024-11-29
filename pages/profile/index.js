@@ -4,7 +4,6 @@ import styles from './index.module.scss';
 import { useEffect, useState } from 'react';
 import { isTokenExpiredClient } from '@/helpers/tokenVerifier';
 import axios from '@/utils/axios';
-import { isStandardUser } from '@/helpers/authorityDetector';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -44,7 +43,6 @@ const Profile = () => {
                         user={user}
                         loading={loading}
                         error={error}
-                        isStandardUser={isStandardUser(token)}
                         from={'profile'}
                         getUser={getUser}
                     />

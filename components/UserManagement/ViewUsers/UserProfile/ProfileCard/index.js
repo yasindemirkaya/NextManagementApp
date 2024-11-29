@@ -4,9 +4,9 @@ import styles from './index.module.scss';
 import { mobileFormatter } from '@/helpers/mobileFormatter';
 import { formatAccountRole, formatAccountStatus, formatAccountVerification } from '@/helpers/formatAccountItems';
 import EditProfileCard from '../EditProfile';
-import { isSelf } from '@/helpers/authorityDetector';
+import { isSelf } from '@/helpers/isSelf';
 
-const ProfileCard = ({ user, loading, error, isStandardUser, from, getUser, getUserDetails }) => {
+const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) => {
     const [isEditing, setIsEditing] = useState(false);
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
@@ -25,6 +25,21 @@ const ProfileCard = ({ user, loading, error, isStandardUser, from, getUser, getU
         }
         setIsEditing(false);
     };
+
+    const editButtonDisplayer = (loggedInUser, token, userId, from) => {
+        // Kullanıcı kendini güncelliyorsa edit butonunu görmeli
+        if (isSelf(token, userId)) {
+            return true
+        }
+
+        if (loggedInUser && loggedInUser.role !== 0) {
+            return true
+        }
+
+        if (from == 'profile') {
+            return true
+        }
+    }
 
     if (loading) {
         return <div className={styles.loadingContainer}><Spinner animation="border" variant="primary" /></div>;
@@ -49,7 +64,7 @@ const ProfileCard = ({ user, loading, error, isStandardUser, from, getUser, getU
                             <p><strong>Verification Status:</strong> {formatAccountVerification(user.is_verified)}</p>
                             <p><strong>Account Role:</strong> {formatAccountRole(user.role)}</p>
                         </div>
-                        {isSelf(token, user.id) || !isStandardUser || from == 'profile' ? (<Button variant="primary" onClick={handleEditClick}>Edit</Button>) : null}
+                        {editButtonDisplayer(loggedInUser, token, user.id, from) ? (<Button variant="primary" onClick={handleEditClick}>Edit</Button>) : null}
                     </Card.Body>
                 </Card>
             ) : (

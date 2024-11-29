@@ -5,26 +5,20 @@ import sidebarMenu from "@/static/components/sidebar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
 import styles from "./index.module.scss";
-import { isSuperAdmin, isAdmin, isStandardUser } from "@/helpers/authorityDetector";
+import { useSelector } from 'react-redux';
 
 const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const loggedInUser = useSelector(state => state.user.user);
 
     const [activeMenuId, setActiveMenuId] = useState(null);
 
     // Token yoksa, Sidebar'ı render etme
-    if (!token) {
+    if (!loggedInUser) {
         return null;
     }
 
-    // Giriş yapan kullanıcının rolünü al
-    const getUserRole = () => {
-        if (isSuperAdmin(token)) return 2;
-        if (isAdmin(token)) return 1;
-        if (isStandardUser(token)) return 0;
-        return -1; // Geçersiz rol
-    };
-    const userRole = getUserRole();
+    const userRole = loggedInUser ? loggedInUser.role : ''
 
     // Kullanıcının rolü menünün izin seviyesine uygun mu?
     const hasPermission = (menuPermission) => {
