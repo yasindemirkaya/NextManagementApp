@@ -59,12 +59,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
         updatedData.updatedBy = loggedInUser.id;
 
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.put('/private/user/update-user', updatedData, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            const response = await axios.put('/private/user/update-user', updatedData);
 
             if (response.code === 1) {
                 Swal.fire({
@@ -117,13 +112,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
         updatedData.id = userData.id
 
         try {
-            const response = await axios.put(`/private/user/update-user-by-id`, updatedData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await axios.put(`/private/user/update-user-by-id`, updatedData);
 
             if (response.code === 1) {
                 Swal.fire({
@@ -160,12 +149,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
         if (confirmation.isConfirmed) {
             try {
-                const token = localStorage.getItem('token');
-                const response = await axios.delete('/private/user/delete-user', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                const response = await axios.delete('/private/user/delete-user');
 
                 if (response.code === 1) {
                     Swal.fire({
@@ -210,9 +194,6 @@ const EditProfileCard = ({ userData, onCancel }) => {
             try {
                 const token = localStorage.getItem('token');
                 const response = await axios.delete('/private/user/delete-user-by-id', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
                     data: {
                         userId: userId,
                     },

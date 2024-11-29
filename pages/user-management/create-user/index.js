@@ -36,10 +36,6 @@ const CreateUser = () => {
                     isActive: data.isActive,
                     isVerified: data.isVerified,
                     role: data.role
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
                 })
 
                 if (response.code === 1) {

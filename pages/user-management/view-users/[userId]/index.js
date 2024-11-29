@@ -43,9 +43,6 @@ const UserDetailPage = () => {
         setLoading(true)
 
         axios.get('/private/user/get-user-by-id', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
             params: {
                 id,
             },

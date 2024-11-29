@@ -19,11 +19,7 @@ const Profile = () => {
     }, []);
 
     const getUser = () => {
-        axios.get('/private/user/get-user', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        axios.get('/private/user/get-user')
             .then(response => {
                 setUser(response.user);
                 setLoading(false);

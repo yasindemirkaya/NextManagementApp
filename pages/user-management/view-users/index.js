@@ -25,11 +25,7 @@ const ViewUsers = () => {
     const getUsers = () => {
         setLoading(true)
 
-        axios.get('/private/users/get-users', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        axios.get('/private/users/get-users')
             .then(response => {
                 if (response.code === 1) {
                     setUserData(response.users);

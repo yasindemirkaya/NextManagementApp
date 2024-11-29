@@ -15,12 +15,7 @@ const ChangePassword = ({ show, onHide }) => {
 
     const onSubmit = async (data) => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.patch('/private/user/change-password', data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axios.patch('/private/user/change-password', data);
 
             if (response.code === 1) {
                 Swal.fire({

@@ -5,10 +5,12 @@ import { mobileFormatter } from '@/helpers/mobileFormatter';
 import { formatAccountRole, formatAccountStatus, formatAccountVerification } from '@/helpers/formatAccountItems';
 import EditProfileCard from '../EditProfile';
 import { isSelf } from '@/helpers/isSelf';
+import { useSelector } from 'react-redux';
 
 const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) => {
     const [isEditing, setIsEditing] = useState(false);
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const loggedInUser = useSelector(state => state.user.user);
 
     // Handle Edit
     const handleEditClick = () => setIsEditing(true);
