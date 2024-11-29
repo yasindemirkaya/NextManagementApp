@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Spinner, Alert, Badge } from 'react-bootstrap';
 import Table from "@/components/Common/Table";
 import axios from "@/utils/axios";
-import { isTokenExpiredClient } from "@/helpers/tokenVerifier";
 import { mobileFormatter } from '@/helpers/mobileFormatter';
 import { useSelector } from "react-redux";
 
@@ -13,13 +12,9 @@ const ViewUsers = () => {
     const [error, setError] = useState(null)
 
     const loggedInUser = useSelector(state => state.user.user);
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
     useEffect(() => {
-        // Token varsa ve expire olmadıysa istek atabiliriz
-        if (token && !isTokenExpiredClient(token)) {
-            getUsers();
-        }
+        getUsers();
     }, [])
 
     const getUsers = () => {
@@ -41,7 +36,7 @@ const ViewUsers = () => {
     };
 
     // User verisini tabloya gönderilecek şekilde formatlıyoruz
-    const formatUserData = (userData, token) => {
+    const formatUserData = (userData) => {
         const formattedData = userData.map(user => ({
             id: user.id,
             Name: user.first_name,
@@ -84,7 +79,7 @@ const ViewUsers = () => {
 
     return (
         <div>
-            <Table headers={headers} data={formatUserData(userData, token)} itemsPerPage={5} />
+            <Table headers={headers} data={formatUserData(userData)} itemsPerPage={5} />
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Offcanvas, Nav } from "react-bootstrap";
+import { Offcanvas, Nav } from "react-bootstrap";
 import Link from "next/link";
 import sidebarMenu from "@/static/components/sidebar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,12 +8,11 @@ import styles from "./index.module.scss";
 import { useSelector } from 'react-redux';
 
 const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     const loggedInUser = useSelector(state => state.user.user);
 
     const [activeMenuId, setActiveMenuId] = useState(null);
 
-    // Token yoksa, Sidebar'ı render etme
+    // Login olan user yoksa, Sidebar'ı render etme
     if (!loggedInUser) {
         return null;
     }

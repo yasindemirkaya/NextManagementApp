@@ -2,7 +2,6 @@ import ProfileCard from '@/components/UserManagement/ViewUsers/UserProfile/Profi
 import { Container, Row, Col } from 'react-bootstrap';
 import styles from './index.module.scss';
 import { useEffect, useState } from 'react';
-import { isTokenExpiredClient } from '@/helpers/tokenVerifier';
 import axios from '@/utils/axios';
 
 const Profile = () => {
@@ -10,12 +9,8 @@ const Profile = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
     useEffect(() => {
-        if (token && !isTokenExpiredClient(token)) {
-            getUser();
-        }
+        getUser();
     }, []);
 
     const getUser = () => {

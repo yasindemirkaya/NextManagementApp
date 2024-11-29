@@ -6,12 +6,9 @@ import styles from './index.module.scss';
 import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useForm } from 'react-hook-form';
-import { isTokenExpiredClient } from '@/helpers/tokenVerifier';
 import Swal from 'sweetalert2';
 
 const CreateUser = () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
         mode: 'onBlur',
         defaultValues: {
@@ -24,41 +21,39 @@ const CreateUser = () => {
     // Submit form
     const onSubmit = async (data) => {
         try {
-            if (token && !isTokenExpiredClient(token)) {
-                const mobile = data.mobile.replace(/\D/g, '');
+            const mobile = data.mobile.replace(/\D/g, '');
 
-                const response = await axios.post('/private/user/create-user', {
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    email: data.email,
-                    password: data.password,
-                    mobile: mobile,
-                    isActive: data.isActive,
-                    isVerified: data.isVerified,
-                    role: data.role
-                })
+            const response = await axios.post('/private/user/create-user', {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                password: data.password,
+                mobile: mobile,
+                isActive: data.isActive,
+                isVerified: data.isVerified,
+                role: data.role
+            })
 
-                if (response.code === 1) {
-                    reset({
-                        firstName: '',
-                        lastName: '',
-                        email: '',
-                        password: '',
-                        mobile: '', // Diğer alanları sıfırla
-                        isActive: '1',
-                        isVerified: '1',
-                        role: '0',
-                    });
-                    Swal.fire({
-                        title: response.message,
-                        icon: 'success'
-                    });
-                } else {
-                    Swal.fire({
-                        title: response.message,
-                        icon: 'error'
-                    });
-                }
+            if (response.code === 1) {
+                reset({
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    password: '',
+                    mobile: '', // Diğer alanları sıfırla
+                    isActive: '1',
+                    isVerified: '1',
+                    role: '0',
+                });
+                Swal.fire({
+                    title: response.message,
+                    icon: 'success'
+                });
+            } else {
+                Swal.fire({
+                    title: response.message,
+                    icon: 'error'
+                });
             }
         } catch (error) {
             Swal.fire({

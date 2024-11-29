@@ -2,11 +2,12 @@ import React from 'react';
 import { Breadcrumb } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import styles from './index.module.scss';
+import { useSelector } from 'react-redux';
 
 const BreadcrumbComponent = () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const loggedInUser = useSelector(state => state.user.user);
 
-    if (!token) {
+    if (!loggedInUser) {
         return null;
     }
 

@@ -192,7 +192,6 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
         if (confirmation.isConfirmed) {
             try {
-                const token = localStorage.getItem('token');
                 const response = await axios.delete('/private/user/delete-user-by-id', {
                     data: {
                         userId: userId,
