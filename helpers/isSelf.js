@@ -1,16 +1,8 @@
-import { jwtDecode } from "jwt-decode"
-import { isTokenExpiredClient } from "./tokenVerifier"
-
-// Eğer kullanıcı profil componentında kendini görüyorsa diye kontrol edebilmek için helper
-export const isSelf = (token, otherId) => {
-    if (token && !isTokenExpiredClient(token)) {
-        const decoded = jwtDecode(token)
-        const ownId = decoded.id
-
-        if (ownId === otherId) {
-            return true
-        } else {
-            return false
-        }
+// Kullanıcının kendini mi düzenlediğini yoksa bir başka profili mi düzenlediğini tespit etmek için kullanılan helper
+export const isSelf = (userId, otherId) => {
+    if (userId === otherId) {
+        return true
+    } else {
+        return false
     }
 }

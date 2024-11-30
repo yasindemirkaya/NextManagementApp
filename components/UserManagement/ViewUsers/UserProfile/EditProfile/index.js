@@ -14,10 +14,9 @@ import Cookies from 'js-cookie';
 
 const EditProfileCard = ({ userData, onCancel }) => {
     const loggedInUser = useSelector(state => state.user.user);
-    const token = Cookies.get('token');
 
-    const changePasswordText = !isSelf(token, userData.id) ? "Change this user's password." : "I want to change my password."
-    const deleteAccountText = !isSelf(token, userData.id) ? "Delete this user's account." : "I want to delete my account."
+    const changePasswordText = !isSelf(loggedInUser.id, userData.id) ? "Change this user's password." : "I want to change my password."
+    const deleteAccountText = !isSelf(loggedInUser.id, userData.id) ? "Delete this user's account." : "I want to delete my account."
 
     const router = useRouter();
     const dispatch = useDispatch();
@@ -227,7 +226,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     };
 
     const handleSave = async (data) => {
-        if (isSelf(token, userData.id)) {
+        if (isSelf(loggedInUser.id, userData.id)) {
             updateUser(data)
         } else {
             updateUserById(data)
@@ -235,7 +234,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     };
 
     const handleDeleteAccount = async () => {
-        if (isSelf(token, userData.id)) {
+        if (isSelf(loggedInUser.id, userData.id)) {
             deleteUser()
         } else {
             deleteUserById(userData.id)
@@ -252,9 +251,9 @@ const EditProfileCard = ({ userData, onCancel }) => {
     }
 
     // Role hangi durumlarda ekranda gösterilecek
-    const roleDisplayer = (loggedInUser, token, userData) => {
+    const roleDisplayer = (loggedInUser, userData) => {
         // Kendini güncellerken role alanı görünmez. Çünkü kullanıcı kendi rolünü değiştiremez
-        if (isSelf(token, userData.id)) {
+        if (isSelf(loggedInUser.id, userData.id)) {
             return false
         } else {
             // Bir başkasını güncellerken role alanını sadece Adminler görür, standart kullanıcı zaten bir başkasını güncelleyemiyor.
@@ -267,9 +266,9 @@ const EditProfileCard = ({ userData, onCancel }) => {
     }
 
     // Account silme özelliği hangi durumlarda hangi kullanıcılara gösterilecek
-    const deleteAccountDisplayer = (loggedInUser, token, userData) => {
+    const deleteAccountDisplayer = (loggedInUser, userData) => {
         // Kullanıcını kendini düzenlerken hesap silme özelliğini görebilir
-        if (isSelf(token, userData.id)) {
+        if (isSelf(loggedInUser.id, userData.id)) {
             return true
         }
 
@@ -365,7 +364,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     </Form.Group>
 
                     {/* Role (Sadece adminler başkasını güncellerken görünür. Kullanıcı kendi rolünü değiştiremez */}
-                    {roleDisplayer(loggedInUser, token, userData) ? (
+                    {roleDisplayer(loggedInUser, userData) ? (
                         <Form.Group className="mb-3">
                             <Form.Label>Role</Form.Label>
                             <div>
@@ -438,7 +437,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     </Col>
 
                     {/* Bir admin sadece kendisinin ve rolü 0 olan bir kullanıcının hesabını silebilir */}
-                    {deleteAccountDisplayer(loggedInUser, token, userData) ? (
+                    {deleteAccountDisplayer(loggedInUser, userData) ? (
                         <Col md={12}>
                             <div onClick={handleDeleteAccount} className={styles.link}>
                                 <p className="text-danger">{deleteAccountText}</p>
@@ -447,7 +446,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     ) : null}
                 </Row>
 
-                <ChangePassword show={showModal} onHide={() => setShowModal(false)} isSelf={isSelf(token, userData.id)} userId={userData.id} />
+                <ChangePassword show={showModal} onHide={() => setShowModal(false)} isSelf={isSelf(loggedInUser.id, userData.id)} userId={userData.id} />
             </Card.Body>
         </Card>
     );
