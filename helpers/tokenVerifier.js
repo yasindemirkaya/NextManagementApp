@@ -1,9 +1,9 @@
-import jwt_decode from 'jsonwebtoken/decode'
+import { jwtDecode } from "jwt-decode"
 import { verify } from 'jsonwebtoken';
 
 // Client side token verification
 export const isTokenExpiredClient = (token) => {
-    const decoded = jwt_decode(token);
+    const decoded = jwtDecode(token)
     if (!decoded || !decoded.exp) return true
 
     const now = Date.now() / 1000;

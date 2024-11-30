@@ -61,6 +61,7 @@ export default async function handler(req, res) {
                             lastName: user.last_name,
                             role: user.role
                         },
+                        token: token
                     });
                 } else {
                     // Şifre yanlış

@@ -2,20 +2,70 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import axios from '@/utils/axios';
+import Cookies from 'js-cookie';
+import { useDispatch } from 'react-redux';
+import { clearUser } from '@/redux/userSlice';
+import { useRouter } from 'next/router';
 
-const ChangePassword = ({ show, onHide }) => {
+const ChangePassword = ({ show, onHide, isSelf, userId }) => {
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
-        setError,
         watch
     } = useForm();
 
-    const onSubmit = async (data) => {
+    const dispatch = useDispatch();
+    const router = useRouter();
+
+    // Kullanıcının kendi şifresini güncellediği servis
+    const changePassword = async (data) => {
         try {
             const response = await axios.patch('/private/user/change-password', data);
+
+            if (response.code === 1) {
+                Swal.fire({
+                    title: 'Password Changed',
+                    icon: 'success',
+                    text: response.message,
+                });
+                onHide();
+                reset();
+
+                // Kullanıcı şifresini değiştirdikten sonra logout edilir
+                setTimeout(() => {
+                    Swal.close();
+                    Cookies.remove('token')
+                    dispatch(clearUser());
+                    router.push('/login')
+                }, 2000);
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: response.message,
+                });
+            }
+        } catch (error) {
+            console.error('Error changing password:', error);
+            Swal.fire({
+                title: 'Error',
+                icon: 'error',
+                text: 'An error occurred. Please try again.',
+            });
+        }
+    }
+
+    // Yöneticilerin diğer kullanıcıların şifrelerini güncellediği servis
+    const changePasswordById = async (data) => {
+        try {
+            data = {
+                ...data,
+                userId
+            }
+
+            const response = await axios.patch('/private/user/change-password-by-id', data);
 
             if (response.code === 1) {
                 Swal.fire({
@@ -40,6 +90,14 @@ const ChangePassword = ({ show, onHide }) => {
                 text: 'An error occurred. Please try again.',
             });
         }
+    }
+
+    const onSubmit = async (data) => {
+        if (isSelf) {
+            changePassword(data)
+        } else {
+            changePasswordById(data)
+        }
     };
 
     const handleClose = () => {
@@ -54,22 +112,23 @@ const ChangePassword = ({ show, onHide }) => {
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    {/* Current Password */}
-                    <Form.Group className="mb-3">
-                        <Form.Label>Current Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            placeholder="Enter current password"
-                            isInvalid={!!errors.currentPassword}
-                            {...register("currentPassword", {
-                                required: "Current password is required"
-                            })}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errors.currentPassword?.message}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-
+                    {/* Current Password (Only visible when updating yourself) */}
+                    {isSelf ? (
+                        <Form.Group className="mb-3">
+                            <Form.Label>Current Password</Form.Label>
+                            <Form.Control
+                                type="password"
+                                placeholder="Enter current password"
+                                isInvalid={!!errors.currentPassword}
+                                {...register("currentPassword", {
+                                    required: "Current password is required"
+                                })}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.currentPassword?.message}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                    ) : null}
                     {/* New Password */}
                     <Form.Group className="mb-3">
                         <Form.Label>New Password</Form.Label>

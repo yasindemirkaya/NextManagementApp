@@ -447,7 +447,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     ) : null}
                 </Row>
 
-                <ChangePassword show={showModal} onHide={() => setShowModal(false)} />
+                <ChangePassword show={showModal} onHide={() => setShowModal(false)} isSelf={isSelf(token, userData.id)} userId={userData.id} />
             </Card.Body>
         </Card>
     );

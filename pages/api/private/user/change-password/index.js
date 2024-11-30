@@ -49,6 +49,7 @@ const handler = async (req, res) => {
                 });
             }
 
+            // Yeni şifre ve Şifreyi onayla alanları eşleşmelidir.
             if (newPassword !== confirmPassword) {
                 return res.status(200).json({
                     message: 'New password and confirm password do not match.',
@@ -56,6 +57,7 @@ const handler = async (req, res) => {
                 });
             }
 
+            // Kullanıcının varolan şifresini al
             const existingPassword = await getUserPasswordById(userId);
             if (!existingPassword) {
                 return res.status(200).json({
@@ -64,10 +66,19 @@ const handler = async (req, res) => {
                 });
             }
 
+            // currentPassword ve existingPassword eşleşmelidir.
             const isMatch = await bcrypt.compare(currentPassword, existingPassword);
             if (!isMatch) {
                 return res.status(200).json({
                     message: 'Current password is incorrect.',
+                    code: 0
+                });
+            }
+
+            // Yeni şifre mevcut şifreyle aynı olamaz
+            if (newPassword === currentPassword) {
+                return res.status(200).json({
+                    message: 'New password cannot be the same as the current password.',
                     code: 0
                 });
             }
