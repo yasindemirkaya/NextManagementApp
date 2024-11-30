@@ -231,7 +231,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     };
 
     const handleSave = async (data) => {
-        if (isSelf((loggedInUser.id ? loggedInUser.id : null), userData.id)) {
+        if (isSelf((loggedInUser ? loggedInUser.id : null), userData.id)) {
             updateUser(data)
         } else {
             updateUserById(data)
@@ -239,7 +239,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     };
 
     const handleDeleteAccount = async () => {
-        if (isSelf((loggedInUser.id ? loggedInUser.id : null), userData.id)) {
+        if (isSelf((loggedInUser ? loggedInUser.id : null), userData.id)) {
             deleteUser()
         } else {
             deleteUserById(userData.id)
@@ -258,7 +258,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     // Role hangi durumlarda ekranda gösterilecek
     const roleDisplayer = (loggedInUser, userData) => {
         // Kendini güncellerken role alanı görünmez. Çünkü kullanıcı kendi rolünü değiştiremez
-        if (isSelf((loggedInUser.id ? loggedInUser.id : null), userData.id)) {
+        if (isSelf((loggedInUser ? loggedInUser.id : null), userData.id)) {
             return false
         } else {
             // Bir başkasını güncellerken role alanını sadece Adminler görür, standart kullanıcı zaten bir başkasını güncelleyemiyor.
@@ -273,7 +273,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     // Account silme özelliği hangi durumlarda hangi kullanıcılara gösterilecek
     const deleteAccountDisplayer = (loggedInUser, userData) => {
         // Kullanıcını kendini düzenlerken hesap silme özelliğini görebilir
-        if (isSelf((loggedInUser.id ? loggedInUser.id : null), userData.id)) {
+        if (isSelf((loggedInUser ? loggedInUser.id : null), userData.id)) {
             return true
         }
 
@@ -451,7 +451,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     ) : null}
                 </Row>
 
-                <ChangePassword show={showModal} onHide={() => setShowModal(false)} isSelf={isSelf((loggedInUser.id ? loggedInUser.id : null), userData.id)} userId={userData.id} />
+                <ChangePassword show={showModal} onHide={() => setShowModal(false)} isSelf={isSelf((loggedInUser ? loggedInUser.id : null), userData.id)} userId={userData.id} />
             </Card.Body>
         </Card>
     );

@@ -29,7 +29,6 @@ const handler = async (req, res) => {
             const decoded = verify(token, process.env.JWT_SECRET);
 
             // İşlemi yapan kullanıcının bilgileri
-            const requestingUserId = decoded.id;
             const requestingUserRole = decoded.role;
 
             // Hesabı silinecek olan kullanıcının ID'si
