@@ -10,10 +10,11 @@ import ChangePassword from '../ChangePassword';
 import { isSelf } from '@/helpers/isSelf';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
+import Cookies from 'js-cookie';
 
 const EditProfileCard = ({ userData, onCancel }) => {
     const loggedInUser = useSelector(state => state.user.user);
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const token = Cookies.get('token');
 
     const changePasswordText = !isSelf(token, userData.id) ? "Change this user's password." : "I want to change my password."
     const deleteAccountText = !isSelf(token, userData.id) ? "Delete this user's account." : "I want to delete my account."
@@ -157,7 +158,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         text: 'Your account has been deleted successfully.',
                         icon: 'success'
                     });
-                    localStorage.removeItem('token')
+                    Cookies.remove('token');
                     dispatch(clearUser());
                     router.push('/login');
                 } else {

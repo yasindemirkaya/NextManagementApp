@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './index.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
+import Cookies from 'js-cookie';
 
 const Header = ({ toggleSidebar }) => {
     const router = useRouter();
@@ -16,7 +17,7 @@ const Header = ({ toggleSidebar }) => {
     let profileText = loggedInUser ? loggedInUser.email : "Profile";
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
+        Cookies.remove('token')
         dispatch(clearUser());
         router.push('/login');
     };

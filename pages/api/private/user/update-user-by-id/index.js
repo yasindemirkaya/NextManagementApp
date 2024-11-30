@@ -8,7 +8,7 @@
 // ------------------------------
 import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
-import { isTokenExpiredServer } from '@/helpers/tokenVerifier';
+import privateMiddleware from '@/middleware/private/index'
 
 // Kullanıcıyı ID'ye göre veritabanında bul
 const findUserById = async (id) => {

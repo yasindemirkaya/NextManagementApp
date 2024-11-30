@@ -6,10 +6,11 @@ import { formatAccountRole, formatAccountStatus, formatAccountVerification } fro
 import EditProfileCard from '../EditProfile';
 import { isSelf } from '@/helpers/isSelf';
 import { useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
 
 const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const token = Cookies.get('token');
     const loggedInUser = useSelector(state => state.user.user);
 
     // Handle Edit

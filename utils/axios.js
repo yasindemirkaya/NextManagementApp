@@ -1,5 +1,5 @@
 import axios from 'axios';
-import jwt from 'jsonwebtoken';
+import { parse } from 'cookie'; // Cookie'yi okumak için parse fonksiyonu
 import getConfig from 'next/config';
 
 const { publicRuntimeConfig } = getConfig();
@@ -8,44 +8,39 @@ const axiosInterceptorInstance = axios.create({
     baseURL: publicRuntimeConfig.apiUrl,
 });
 
-/* {{ Public routes tanımlayın }} */
+/* Public routes tanımlayın */
 const publicRoutes = ['/login', '/register'];
 
-/* {{ Request interceptor }} */
+/* Request interceptor */
 axiosInterceptorInstance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        // Tarayıcı ortamında cookie'yi al
+        if (typeof window !== 'undefined') {
+            const cookies = document.cookie;
+            const parsedCookies = parse(cookies);
+            const token = parsedCookies.token; // token cookie'de saklanmış token adı
 
-        // Eğer route public ise token kontrolü yapılmaz
-        if (publicRoutes.some((route) => config.url.includes(route))) {
-            return config;
-        }
-
-        // Private route ise token kontrolü yapılır
-        if (token) {
-            try {
-                const decoded = jwt.decode(token);
-
-                // Token süresi dolmuş mu kontrol et
-                if (decoded.exp * 1000 < Date.now()) {
-                    // Token expired: Kullanıcıyı logout et
-                    localStorage.removeItem('token');
-                    window.location.href = '/login';
-                    throw new axios.Cancel('Token expired, redirecting to login.');
-                }
-
-                // Token geçerliyse Authorization header'a ekle
-                config.headers.Authorization = `Bearer ${token}`;
-            } catch (err) {
-                localStorage.removeItem('token');
-                window.location.href = '/login';
-                throw new axios.Cancel('Invalid token, redirecting to login.');
+            // Eğer route public ise token kontrolü yapılmaz
+            if (publicRoutes.some((route) => config.url.includes(route))) {
+                return config;
             }
-        } else {
-            window.location.href = '/login';
-            throw new axios.Cancel('No token provided, redirecting to login.');
-        }
 
+            // Private route ise token kontrolü yapılır
+            if (token) {
+                try {
+                    // Authorization header'a ekle
+                    config.headers.Authorization = `Bearer ${token}`;
+                } catch (err) {
+                    // Cookie'de geçersiz bir token varsa yönlendirme yapılır
+                    window.location.href = '/login';
+                    throw new axios.Cancel('Invalid token, redirecting to login.');
+                }
+            } else {
+                // Token yoksa login sayfasına yönlendirme yapılır
+                window.location.href = '/login';
+                throw new axios.Cancel('No token provided, redirecting to login.');
+            }
+        }
         return config;
     },
     (error) => {
@@ -53,7 +48,7 @@ axiosInterceptorInstance.interceptors.request.use(
     }
 );
 
-/* {{ Response interceptor }} */
+/* Response interceptor */
 axiosInterceptorInstance.interceptors.response.use(
     (response) => {
         return response.data;

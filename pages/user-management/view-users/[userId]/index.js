@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { isTokenExpiredClient } from "@/helpers/tokenVerifier";
 import { Col, Container, Row } from "react-bootstrap";
 import ProfileCard from "@/components/UserManagement/ViewUsers/UserProfile/ProfileCard";
+import Cookies from "js-cookie";
 
 const UserDetailPage = () => {
     const [user, setUser] = useState(null);
@@ -14,7 +15,7 @@ const UserDetailPage = () => {
     const router = useRouter();
     const { userId } = router.query;
 
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const token = Cookies.get('token');
 
     useEffect(() => {
         const userDataFromQuery = queryFormatter(userId)

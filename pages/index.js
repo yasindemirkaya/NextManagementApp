@@ -3,13 +3,13 @@ import { Container, Card, Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import styles from './index.module.scss';
 import { isTokenExpiredClient } from '@/helpers/tokenVerifier';
-
+import Cookies from 'js-cookie';
 
 const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
 
     if (token && !isTokenExpiredClient(token)) {
       router.push('/dashboard');

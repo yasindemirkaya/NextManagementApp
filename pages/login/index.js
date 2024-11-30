@@ -44,15 +44,14 @@ const Login = () => {
                 reset();
                 toast('SUCCESS', 'Welcome. Redirecting to Dashboard...');
 
-                // Tokenı decode et ve redux'a yaz
-                const decodedToken = jwtDecode(response.token);
                 dispatch(setUser({
-                    id: decodedToken.id,
-                    email: decodedToken.email,
-                    role: decodedToken.role,
+                    id: response.user.id,
+                    email: response.user.email,
+                    firstName: response.user.firstName,
+                    lastName: response.user.lastName,
+                    role: response.user.role,
                 }))
 
-                localStorage.setItem('token', response.token);
                 router.push('/dashboard');
             } else {
                 setLoading(false);
