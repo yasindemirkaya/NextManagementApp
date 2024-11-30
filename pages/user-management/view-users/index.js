@@ -58,7 +58,8 @@ const ViewUsers = () => {
                     {user.is_verified ? "Yes" : "No"}
                 </Badge>
             ),
-            isSelf: user.id == loggedInUser.id
+            isSelf: loggedInUser ? user.id == loggedInUser.id : null,
+            userRole: user.role,
         }));
         return formattedData;
     };

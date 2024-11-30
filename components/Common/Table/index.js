@@ -5,6 +5,7 @@ import { icons } from '@/static/icons';
 import { Badge } from 'react-bootstrap';
 import Pagination from "../Pagination";
 import { useRouter } from "next/router";
+import Swal from 'sweetalert2';
 
 const Table = ({ headers, data, itemsPerPage }) => {
     const [searchTerm, setSearchTerm] = useState(''); // Search metni
@@ -62,9 +63,18 @@ const Table = ({ headers, data, itemsPerPage }) => {
 
     // Kullanıcının üzerine tıklandığında user detail sayfasına yönlendirme
     const handleRowClick = (row) => {
-        const { Name, Surname, id } = row;
-        const dynamicPath = `/user-management/view-users/${Name.toLowerCase()}-${Surname.toLowerCase()}-${id}`;
-        router.push(dynamicPath);
+        const { Name, Surname, id, userRole } = row;
+
+        if (userRole == 2) {
+            Swal.fire({
+                title: 'Error',
+                icon: 'error',
+                text: "You are not allowed to update this user's account.",
+            });
+        } else {
+            const dynamicPath = `/user-management/view-users/${Name.toLowerCase()}-${Surname.toLowerCase()}-${id}`;
+            router.push(dynamicPath);
+        }
     }
 
     // Sıralanan veriler arasında filtreleme

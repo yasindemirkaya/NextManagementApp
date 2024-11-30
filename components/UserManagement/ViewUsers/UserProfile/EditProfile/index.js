@@ -15,8 +15,13 @@ import Cookies from 'js-cookie';
 const EditProfileCard = ({ userData, onCancel }) => {
     const loggedInUser = useSelector(state => state.user.user);
 
-    const changePasswordText = !isSelf(loggedInUser.id, userData.id) ? "Change this user's password." : "I want to change my password."
-    const deleteAccountText = !isSelf(loggedInUser.id, userData.id) ? "Delete this user's account." : "I want to delete my account."
+    let changePasswordText = "";
+    let deleteAccountText = "";
+
+    if (loggedInUser) {
+        changePasswordText = !isSelf(loggedInUser.id, userData.id) ? "Change this user's password." : "I want to change my password."
+        deleteAccountText = !isSelf(loggedInUser.id, userData.id) ? "Delete this user's account." : "I want to delete my account."
+    }
 
     const router = useRouter();
     const dispatch = useDispatch();
@@ -226,7 +231,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     };
 
     const handleSave = async (data) => {
-        if (isSelf(loggedInUser.id, userData.id)) {
+        if (isSelf((loggedInUser.id ? loggedInUser.id : null), userData.id)) {
             updateUser(data)
         } else {
             updateUserById(data)
@@ -234,7 +239,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     };
 
     const handleDeleteAccount = async () => {
-        if (isSelf(loggedInUser.id, userData.id)) {
+        if (isSelf((loggedInUser.id ? loggedInUser.id : null), userData.id)) {
             deleteUser()
         } else {
             deleteUserById(userData.id)
@@ -253,7 +258,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     // Role hangi durumlarda ekranda gösterilecek
     const roleDisplayer = (loggedInUser, userData) => {
         // Kendini güncellerken role alanı görünmez. Çünkü kullanıcı kendi rolünü değiştiremez
-        if (isSelf(loggedInUser.id, userData.id)) {
+        if (isSelf((loggedInUser.id ? loggedInUser.id : null), userData.id)) {
             return false
         } else {
             // Bir başkasını güncellerken role alanını sadece Adminler görür, standart kullanıcı zaten bir başkasını güncelleyemiyor.
@@ -268,7 +273,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     // Account silme özelliği hangi durumlarda hangi kullanıcılara gösterilecek
     const deleteAccountDisplayer = (loggedInUser, userData) => {
         // Kullanıcını kendini düzenlerken hesap silme özelliğini görebilir
-        if (isSelf(loggedInUser.id, userData.id)) {
+        if (isSelf((loggedInUser.id ? loggedInUser.id : null), userData.id)) {
             return true
         }
 
@@ -446,7 +451,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     ) : null}
                 </Row>
 
-                <ChangePassword show={showModal} onHide={() => setShowModal(false)} isSelf={isSelf(loggedInUser.id, userData.id)} userId={userData.id} />
+                <ChangePassword show={showModal} onHide={() => setShowModal(false)} isSelf={isSelf((loggedInUser.id ? loggedInUser.id : null), userData.id)} userId={userData.id} />
             </Card.Body>
         </Card>
     );
