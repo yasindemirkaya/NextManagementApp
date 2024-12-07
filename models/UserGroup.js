@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '@/config/db';
-import User from './User';
 
 const UserGroup = sequelize.define('UserGroup', {
     id: {

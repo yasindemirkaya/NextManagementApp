@@ -13,6 +13,7 @@ const Header = ({ toggleSidebar }) => {
     const router = useRouter();
     const dispatch = useDispatch();
     const loggedInUser = useSelector(state => state.user.user);
+    const token = Cookies.get('token')
 
     let profileText = loggedInUser ? loggedInUser.email : "Profile";
 
@@ -23,7 +24,7 @@ const Header = ({ toggleSidebar }) => {
     };
 
     // Login olmuş user yoksa, Header'ı render etme
-    if (!loggedInUser) {
+    if (!loggedInUser || !token) {
         return null;
     }
 
