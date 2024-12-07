@@ -1,4 +1,4 @@
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import axios from '@/utils/axios';
@@ -6,6 +6,9 @@ import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { icons } from '@/static/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ChangePassword = ({ show, onHide, isSelf, userId }) => {
     const {
@@ -15,6 +18,20 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
         reset,
         watch
     } = useForm();
+
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const togglePasswordVisibility = (type) => {
+        if (type === 'current') {
+            setShowCurrentPassword((prev) => !prev);
+        } else if (type === 'new') {
+            setShowNewPassword((prev) => !prev);
+        } else if (type === 'confirm') {
+            setShowConfirmPassword((prev) => !prev);
+        }
+    };
 
     const dispatch = useDispatch();
     const router = useRouter();
@@ -116,14 +133,22 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
                     {isSelf ? (
                         <Form.Group className="mb-3">
                             <Form.Label>Current Password</Form.Label>
-                            <Form.Control
-                                type="password"
-                                placeholder="Enter current password"
-                                isInvalid={!!errors.currentPassword}
-                                {...register("currentPassword", {
-                                    required: "Current password is required"
-                                })}
-                            />
+                            <InputGroup>
+                                <Form.Control
+                                    type={showCurrentPassword ? "text" : "password"}
+                                    placeholder="Enter current password"
+                                    isInvalid={!!errors.currentPassword}
+                                    {...register("currentPassword", {
+                                        required: "Current password is required"
+                                    })}
+                                />
+                                <InputGroup.Text
+                                    onClick={() => togglePasswordVisibility('current')}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <FontAwesomeIcon icon={showCurrentPassword ? icons.faEyeSlash : icons.faEye} />
+                                </InputGroup.Text>
+                            </InputGroup>
                             <Form.Control.Feedback type="invalid">
                                 {errors.currentPassword?.message}
                             </Form.Control.Feedback>
@@ -132,18 +157,26 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
                     {/* New Password */}
                     <Form.Group className="mb-3">
                         <Form.Label>New Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            placeholder="Enter new password"
-                            isInvalid={!!errors.newPassword}
-                            {...register("newPassword", {
-                                required: "New password is required",
-                                minLength: {
-                                    value: 6,
-                                    message: "New password must be at least 6 characters"
-                                }
-                            })}
-                        />
+                        <InputGroup>
+                            <Form.Control
+                                type={showNewPassword ? "text" : "password"}
+                                placeholder="Enter new password"
+                                isInvalid={!!errors.newPassword}
+                                {...register("newPassword", {
+                                    required: "New password is required",
+                                    minLength: {
+                                        value: 6,
+                                        message: "New password must be at least 6 characters"
+                                    }
+                                })}
+                            />
+                            <InputGroup.Text
+                                onClick={() => togglePasswordVisibility('new')}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <FontAwesomeIcon icon={showNewPassword ? icons.faEyeSlash : icons.faEye} />
+                            </InputGroup.Text>
+                        </InputGroup>
                         <Form.Control.Feedback type="invalid">
                             {errors.newPassword?.message}
                         </Form.Control.Feedback>
@@ -152,16 +185,24 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
                     {/* Confirm Password */}
                     <Form.Group className="mb-3">
                         <Form.Label>Confirm New Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            placeholder="Confirm new password"
-                            isInvalid={!!errors.confirmPassword}
-                            {...register("confirmPassword", {
-                                required: "Please confirm your new password",
-                                validate: (value) =>
-                                    value === watch("newPassword") || "Passwords do not match"
-                            })}
-                        />
+                        <InputGroup>
+                            <Form.Control
+                                type={showConfirmPassword ? "text" : "password"}
+                                placeholder="Confirm new password"
+                                isInvalid={!!errors.confirmPassword}
+                                {...register("confirmPassword", {
+                                    required: "Please confirm your new password",
+                                    validate: (value) =>
+                                        value === watch("newPassword") || "Passwords do not match"
+                                })}
+                            />
+                            <InputGroup.Text
+                                onClick={() => togglePasswordVisibility('confirm')}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <FontAwesomeIcon icon={showConfirmPassword ? icons.faEyeSlash : icons.faEye} />
+                            </InputGroup.Text>
+                        </InputGroup>
                         <Form.Control.Feedback type="invalid">
                             {errors.confirmPassword?.message}
                         </Form.Control.Feedback>

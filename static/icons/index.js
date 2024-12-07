@@ -1,5 +1,5 @@
 import { faUser, faUsers, faUserPlus, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { faChevronUp, faChevronCircleUp, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronUp, faChevronCircleUp, faChevronLeft, faChevronRight, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 
 export const icons = {
@@ -10,5 +10,7 @@ export const icons = {
     faChevronUp,
     faChevronCircleUp,
     faChevronLeft,
-    faChevronRight
+    faChevronRight,
+    faEye,
+    faEyeSlash
 };
