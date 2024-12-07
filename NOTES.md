@@ -41,3 +41,9 @@
 * Standard Userlar sadece kendi profillerini güncelleyebilir.
 * Super Adminler bir başka hesabı güncellerken rollerini değiştirip istediği rolü verebilir.
 * Adminler bir başka hesabı güncellerken rollerini değiştirebilir ancak bir admin bir başka kullanıcıyı Super Admin yapamaz.
+
+<!-- * USER GROUP RULES * -->
+* Bir Super Admin'in yarattığı kullanıcı grubunu kimse silemez ya da güncelleyemez.
+* Bir Admin'in yarattığı kullanıcı grubu bir Super Admin tarafından silinebilir ya da güncellenebilir.
+* Bir Admin'in yarattığı kullanıcı grubu bir başka Admin tarafından silinemez ya da güncellenemez.
+* Standart bir kullanıcı sadece kendi içerisinde bulunduğu kullanıcı gruplarını görüntüleyebilir. 
