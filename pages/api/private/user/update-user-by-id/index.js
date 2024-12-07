@@ -6,6 +6,7 @@
 // | Endpoint: /api/private/user/update-user-by-id
 // |
 // ------------------------------
+
 import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index'
