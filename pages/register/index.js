@@ -1,5 +1,5 @@
-import React from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from './index.module.scss';
@@ -8,16 +8,24 @@ import axios from '@/utils/axios';
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { useForm } from 'react-hook-form';
+import { icons } from '@/static/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const SignUp = () => {
     const router = useRouter();
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
         mode: 'onChange',
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     // Geri dön butonu için yönlendirme
     const handleBack = () => {
         router.back();
+    };
+
+    // Şifreyi göster/gizle işlevi
+    const togglePasswordVisibility = () => {
+        setShowPassword((prevState) => !prevState);
     };
 
     // Form submit işlemi
@@ -110,16 +118,26 @@ const SignUp = () => {
                     {/* Password */}
                     <Form.Group controlId="formBasicPassword" className="mt-1">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control
-                            type="password"
-                            placeholder="Enter your password"
-                            isInvalid={!!errors.password}
-                            {...register("password", {
-                                required: "Password is required",
-                                minLength: { value: 6, message: "Password must be at least 6 characters" },
-                            })}
-                        />
-                        <Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>
+                        <InputGroup>
+                            <Form.Control
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Enter password"
+                                {...register("password", {
+                                    required: "Password is required",
+                                    minLength: {
+                                        value: 6,
+                                        message: "Password must be at least 6 characters"
+                                    }
+                                })}
+                                isInvalid={!!errors.password}
+                            />
+                            <InputGroup.Text onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
+                                <FontAwesomeIcon icon={showPassword ? icons.faEyeSlash : icons.faEye} />
+                            </InputGroup.Text>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.password?.message}
+                            </Form.Control.Feedback>
+                        </InputGroup>
                     </Form.Group>
 
                     {/* Mobile */}
