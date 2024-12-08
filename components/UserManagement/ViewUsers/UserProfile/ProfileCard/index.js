@@ -66,6 +66,8 @@ const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) =>
                             <p><strong>Account Status:</strong> {formatAccountStatus(user.is_active)}</p>
                             <p><strong>Verification Status:</strong> {formatAccountVerification(user.is_verified)}</p>
                             <p><strong>Account Role:</strong> {formatAccountRole(user.role)}</p>
+                            <p className={styles.infoText}>*This account is created by {user.created_by}</p>
+                            <p className={styles.infoText}>*The last update for this account is made by {user.created_by}</p>
                         </div>
                         {editButtonDisplayer(loggedInUser, token, user.id, from) ? (<Button variant="primary" onClick={handleEditClick}>Edit</Button>) : null}
                     </Card.Body>
