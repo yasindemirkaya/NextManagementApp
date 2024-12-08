@@ -3,6 +3,13 @@
     overflow-x: auto;
 }
 
+.searchContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
 .searchInput {
     margin-bottom: 10px;
     padding: 8px;

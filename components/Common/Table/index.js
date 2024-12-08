@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./index.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
-import { Badge } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
 import Pagination from "../Pagination";
 import { useRouter } from "next/router";
 import Swal from 'sweetalert2';
@@ -21,6 +21,27 @@ const Table = ({ headers, data, itemsPerPage, from }) => {
     useEffect(() => {
         setSortedData(data);
     }, [data]);
+
+    // Tablonun kullanıldığı sayfaya göre ekle butonunu özelleştirme
+    const buttonCustomizer = (from) => {
+        switch (from) {
+            case 'view-users':
+                return {
+                    text: 'Add New User',
+                    link: '/user-management/create-user'
+                };
+            case 'user-groups':
+                return {
+                    text: 'Add New User Group',
+                    link: '/user-management/create-user-group'
+                };
+            default:
+                return {
+                    text: 'Add New Item',
+                    link: '#'
+                };
+        }
+    }
 
     // Search methodu
     const handleSearchChange = (event) => {
@@ -71,7 +92,6 @@ const Table = ({ headers, data, itemsPerPage, from }) => {
         switch (from) {
             case "view-users":
                 ({ Name, Surname, id, userRole } = row);
-                console.log(row)
                 break;
             case "user-groups":
                 // Boşluk içeren anahtar adı için köşeli parantez kullanımı
@@ -121,13 +141,19 @@ const Table = ({ headers, data, itemsPerPage, from }) => {
     return (
         <div className={styles.tableContainer}>
             {/* Search */}
-            <input
-                type="text"
-                className={styles.searchInput}
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-            />
+            <div className={styles.searchContainer}>
+                <input
+                    type="text"
+                    className={styles.searchInput}
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
+                <Button variant="primary" type="submit" href={buttonCustomizer(from).link}>
+                    <FontAwesomeIcon icon={icons.faPlusCircle} className="me-2" />
+                    {buttonCustomizer(from).text}
+                </Button>
+            </div>
 
             {/* Table */}
             <table className={styles.table}>

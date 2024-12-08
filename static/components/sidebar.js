@@ -27,9 +27,18 @@ const sidebarMenu = [
             },
             {
                 id: 3,
-                name: "User Groups",
+                name: "View User Groups",
                 link: "/user-management/user-groups",
                 description: "Here you can see user groups and create a new user group.",
+                iconPrimary: "faUsers",
+                iconSecondary: "",
+                permission: 1
+            },
+            {
+                id: 3,
+                name: "Create User Group",
+                link: "/user-management/create-user-group",
+                description: "Here you can create user groups to manage common tasks for users.",
                 iconPrimary: "faUsers",
                 iconSecondary: "",
                 permission: 1
