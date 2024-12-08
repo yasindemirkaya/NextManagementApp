@@ -54,7 +54,7 @@ const handler = async (req, res) => {
         }
 
         // Base query
-        let query = 'SELECT id, group_name, description, type, is_active, group_leader, created_by, createdAt, updatedAt FROM user_groups WHERE 1=1';
+        let query = 'SELECT id, group_name, description, type, is_active, group_leader, created_by, updated_by, createdAt, updatedAt FROM user_groups WHERE 1=1';
         const replacements = [];
 
         // is_active
@@ -81,15 +81,51 @@ const handler = async (req, res) => {
             replacements.push(created_by);
         }
 
-        // İstekte bulunan kullanıcının rolüne göre dönen veriyi filtreleme
-        if (userRole === 1) {
-            // Eğer admin ise sadece kendi gibi adminleri ve standard userları görebilir
-            query += ' AND role IN (0, 1)';
-        } else if (userRole === 2) {
-            // Eğer rol 2 ise, tüm kullanıcıları döndür
-            // query'ye ek bir şey eklemeye gerek yok çünkü zaten tüm kullanıcılar çekiliyor
-        } else {
+        try {
+            const [groups] = await sequelize.query(query, { replacements });
 
+            // Benzersiz user ID'lerini topla
+            const userIds = new Set();
+            groups.forEach(group => {
+                if (group.created_by) userIds.add(group.created_by);
+                if (group.updated_by) userIds.add(group.updated_by);
+                if (group.group_leader) userIds.add(group.group_leader);  // group_leader ekle
+            });
+
+            // Kullanıcı bilgilerini al
+            let users = [];
+            if (userIds.size > 0) {
+                const userQuery = `
+                    SELECT id, first_name, last_name 
+                    FROM users 
+                    WHERE id IN (${Array.from(userIds).map(() => '?').join(',')})
+                `;
+                const [userResults] = await sequelize.query(userQuery, { replacements: Array.from(userIds) });
+                users = userResults;
+            }
+
+            // Kullanıcıları bir Map'e dönüştür
+            const userMap = new Map();
+            users.forEach(user => {
+                userMap.set(user.id, `${user.first_name} ${user.last_name}`);
+            });
+
+            // Gruplara kullanıcı adlarını ekle
+            const formattedGroups = groups.map(group => ({
+                ...group,
+                created_by: userMap.get(group.created_by) || group.created_by,
+                updated_by: userMap.get(group.updated_by) || group.updated_by,
+                group_leader: userMap.get(group.group_leader) || group.group_leader,
+            }));
+
+            res.status(200).json({
+                code: 1,
+                message: 'User groups successfully fetched.',
+                groups: formattedGroups
+            });
+        } catch (error) {
+            console.error('Error fetching user groups:', error);
+            res.status(500).json({ error: 'Failed to fetch user groups from the database' });
         }
 
         try {
