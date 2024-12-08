@@ -6,19 +6,22 @@ export default async function logger(req, res, next) {
         const userId = req.user ? req.user.userId : null;
 
         // IP adresi
-        const ip = req.connection.remoteAddress;
+        const ip = req.connection.remoteAddress || req.socket.remoteAddress;
 
         // User Agent bilgisi
         const userAgent = req.headers['user-agent'];
 
         // URL
-        const path = req.url;
+        const path = req.originalUrl || req.url;
 
         // HTTP Method (GET, POST, vb.)
         const method = req.method;
 
         // İstek verisi
-        const request = JSON.stringify({ ...req.query, ...req.body });
+        const request = {
+            query: req.query,
+            body: req.body,
+        };
 
         // Response yazılmadan önce orijinal send metodunu kaydediyoruz
         const originalSend = res.send;
@@ -27,14 +30,14 @@ export default async function logger(req, res, next) {
             const response = args[0] || {};
 
             try {
-                // Log verisini veritabanına kaydediyoruz
+                // Log verisini MongoDB'ye kaydediyoruz
                 await Log.create({
                     userId: userId,
                     ip: ip,
                     userAgent: userAgent,
                     path: path,
-                    request: request,
-                    response: JSON.stringify(response),  // response da JSON olarak saklanabilir
+                    request: request, // İstek verisini JSON formatında saklıyoruz
+                    response: response,  // Response'u doğrudan saklıyoruz
                     method: method,
                 });
             } catch (error) {
