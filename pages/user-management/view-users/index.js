@@ -38,7 +38,7 @@ const ViewUsers = () => {
     // User verisini tabloya gönderilecek şekilde formatlıyoruz
     const formatUserData = (userData) => {
         const formattedData = userData.map(user => ({
-            id: user.id,
+            id: user._id,
             Name: user.first_name,
             Surname: user.last_name,
             Email: user.email,

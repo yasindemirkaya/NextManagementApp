@@ -34,6 +34,8 @@ const handler = async (req, res) => {
 
             // Kullanıcı bilgilerini döndür
             return res.status(200).json({
+                message: 'User fetched successfully',
+                code: 1,
                 user: {
                     id: user._id,
                     first_name: user.first_name,

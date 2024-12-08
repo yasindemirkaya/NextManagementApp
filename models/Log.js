@@ -34,6 +34,13 @@ const logSchema = new mongoose.Schema({
     timestamps: true, // createdAt ve updatedAt alanları otomatik olarak ekler
 });
 
-const Log = mongoose.model('Log', logSchema);
+let Log;
+
+try {
+    Log = mongoose.model('Log');
+} catch (error) {
+    // Eğer model zaten tanımlanmışsa, tekrar tanımlamaya çalışmıyoruz
+    Log = mongoose.model('Log', logSchema);
+}
 
 export default Log;
