@@ -10,8 +10,6 @@ const UserGroups = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
-    const loggedInUser = useSelector(state => state.user.user);
-
     useEffect(() => {
         getUserGroups();
     }, [])
