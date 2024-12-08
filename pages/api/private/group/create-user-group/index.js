@@ -8,7 +8,7 @@
 // ------------------------------
 
 import { verify } from 'jsonwebtoken';
-import UserGroup from '@/models/UserGroup';
+import UserGroup from '@/models/UserGroup'; // MongoDB uyumlu model
 import privateMiddleware from "@/middleware/private/index";
 
 const handler = async (req, res) => {
@@ -46,7 +46,7 @@ const handler = async (req, res) => {
 
             // Yeni kullanıcı grubu oluştur
             try {
-                const newUserGroup = await UserGroup.create({
+                const newUserGroup = new UserGroup({
                     group_name: groupName,
                     description: description || null,
                     type: type,
@@ -54,6 +54,8 @@ const handler = async (req, res) => {
                     group_leader: groupLeader,
                     created_by: adminId,
                 });
+
+                await newUserGroup.save(); // MongoDB'ye kaydet
 
                 return res.status(200).json({
                     message: "User group successfully created.",

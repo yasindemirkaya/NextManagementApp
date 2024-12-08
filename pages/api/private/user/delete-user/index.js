@@ -6,18 +6,13 @@
 // |
 // ------------------------------
 
-import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
+import User from '@/models/User';
 import privateMiddleware from "@/middleware/private/index"
 
 const deleteUserById = async (userId) => {
     // Kullanıcıyı veritabanından sil
-    const [result] = await sequelize.query(
-        'DELETE FROM users WHERE id = ?',
-        {
-            replacements: [userId],
-        }
-    );
+    const result = await User.deleteOne({ _id: userId });
     return result;
 };
 
@@ -32,8 +27,8 @@ const handler = async (req, res) => {
             // Kullanıcıyı silme işlemi
             const result = await deleteUserById(userId);
 
-            // Etkilenen satır sayısını kontrol et
-            if (result.affectedRows === 0) {
+            // Silinen belge sayısını kontrol et
+            if (result.deletedCount === 0) {
                 return res.status(200).json({
                     message: 'User not found or already deleted',
                     code: 0

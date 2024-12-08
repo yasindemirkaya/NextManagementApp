@@ -12,9 +12,10 @@
 // |
 // ------------------------------
 
-import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from "@/middleware/private/index";
+import UserGroup from '@/models/UserGroup';
+import User from '@/models/User';
 
 const handler = async (req, res) => {
     if (req.method === 'GET') {
@@ -39,12 +40,11 @@ const handler = async (req, res) => {
             });
         }
 
-        // Query parametrelerini al
         const { is_active, type, group_leader, created_by } = req.query;
 
         // Kullanıcı rolüne göre parametre kontrolü
         if (userRole === 1) {
-            // Rol 1 ise, group_leader ve created_by parametrelerini kullanamaz
+            // Rol 1 (admin) ise, group_leader ve created_by parametrelerini kullanamaz
             if (group_leader || created_by) {
                 return res.status(200).json({
                     message: 'You are not allowed to use "group_leader" or "created_by" parameters.',
@@ -53,87 +53,65 @@ const handler = async (req, res) => {
             }
         }
 
-        // Base query
-        let query = 'SELECT id, group_name, description, type, is_active, group_leader, created_by, updated_by, createdAt, updatedAt FROM user_groups WHERE 1=1';
-        const replacements = [];
+        // MongoDB sorgusunu başlat
+        const filter = {};
 
         // is_active
         if (is_active) {
-            query += ' AND is_active = ?';
-            replacements.push(is_active === 'true' ? 1 : 0);
+            filter.is_active = is_active === 'true';
         }
 
         // type
         if (type) {
-            query += ' AND type = ?';
-            replacements.push(type);
+            filter.type = type;
         }
 
         // group_leader
         if (group_leader) {
-            query += ' AND group_leader = ?';
-            replacements.push(group_leader);
+            filter.group_leader = group_leader;
         }
 
         // created_by
         if (created_by) {
-            query += ' AND created_by = ?';
-            replacements.push(created_by);
+            filter.created_by = created_by;
         }
 
         try {
-            const [groups] = await sequelize.query(query, { replacements });
+            // Kullanıcı gruplarını MongoDB'den sorgula
+            const groups = await UserGroup.find(filter).exec();
 
             // Benzersiz user ID'lerini topla
             const userIds = new Set();
             groups.forEach(group => {
                 if (group.created_by) userIds.add(group.created_by);
                 if (group.updated_by) userIds.add(group.updated_by);
-                if (group.group_leader) userIds.add(group.group_leader);  // group_leader ekle
+                if (group.group_leader) userIds.add(group.group_leader);
             });
 
             // Kullanıcı bilgilerini al
             let users = [];
             if (userIds.size > 0) {
-                const userQuery = `
-                    SELECT id, first_name, last_name 
-                    FROM users 
-                    WHERE id IN (${Array.from(userIds).map(() => '?').join(',')})
-                `;
-                const [userResults] = await sequelize.query(userQuery, { replacements: Array.from(userIds) });
-                users = userResults;
+                users = await User.find({ '_id': { $in: Array.from(userIds) } }).exec();
             }
 
             // Kullanıcıları bir Map'e dönüştür
             const userMap = new Map();
             users.forEach(user => {
-                userMap.set(user.id, `${user.first_name} ${user.last_name}`);
+                userMap.set(user._id.toString(), `${user.first_name} ${user.last_name}`);
             });
 
             // Gruplara kullanıcı adlarını ekle
             const formattedGroups = groups.map(group => ({
-                ...group,
-                created_by: userMap.get(group.created_by) || group.created_by,
-                updated_by: userMap.get(group.updated_by) || group.updated_by,
-                group_leader: userMap.get(group.group_leader) || group.group_leader,
+                ...group.toObject(),
+                created_by: userMap.get(group.created_by?.toString()) || group.created_by,
+                updated_by: userMap.get(group.updated_by?.toString()) || group.updated_by,
+                group_leader: userMap.get(group.group_leader?.toString()) || group.group_leader,
             }));
 
             res.status(200).json({
                 code: 1,
                 message: 'User groups successfully fetched.',
                 groups: formattedGroups
-            });
-        } catch (error) {
-            console.error('Error fetching user groups:', error);
-            res.status(500).json({ error: 'Failed to fetch user groups from the database' });
-        }
-
-        try {
-            const [groups, metadata] = await sequelize.query(query, { replacements });
-            res.status(200).json({
-                code: 1,
-                message: 'User groups successfully fetched.',
-                groups
             });
         } catch (error) {
             console.error('Error fetching user groups:', error);

@@ -6,18 +6,14 @@
 // |
 // ------------------------------
 
-import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
+import UserGroup from '@/models/UserGroup';
 import privateMiddleware from "@/middleware/private/index";
 
 // Delete user group by ID method
 const deleteUserGroupById = async (groupId) => {
-    const [result] = await sequelize.query(
-        'DELETE FROM user_groups WHERE id = ?',
-        {
-            replacements: [groupId],
-        }
-    );
+    // MongoDB'de silme işlemi
+    const result = await UserGroup.findByIdAndDelete(groupId);
     return result;
 };
 
@@ -36,7 +32,7 @@ const handler = async (req, res) => {
             const { groupId: targetGroupId } = req.body;
 
             if (!targetGroupId) {
-                return res.status(200).json({
+                return res.status(400).json({
                     message: 'Target group ID is required',
                     code: 0
                 });
@@ -45,8 +41,8 @@ const handler = async (req, res) => {
             // Super Admin (role: 2) her grubu silebilir
             if (requestingUserRole === 2) {
                 const result = await deleteUserGroupById(targetGroupId);
-                if (result.affectedRows === 0) {
-                    return res.status(200).json({
+                if (!result) {
+                    return res.status(404).json({
                         message: 'Group not found or already deleted',
                         code: 0
                     });
@@ -60,29 +56,29 @@ const handler = async (req, res) => {
             // Admin (role: 1) sadece kendi oluşturduğu grupları silebilir
             if (requestingUserRole === 1) {
                 // Silinmek istenen grubun yaratıcısını kontrol et
-                const [groups] = await sequelize.query(
-                    'SELECT created_by FROM user_groups WHERE id = ?',
-                    {
-                        replacements: [targetGroupId],
-                    }
-                );
-
-                if (groups.length === 0) {
-                    return res.status(200).json({
+                const group = await UserGroup.findById(targetGroupId).select('created_by');
+                if (!group) {
+                    return res.status(404).json({
                         message: 'Group not found',
                         code: 0
                     });
                 }
 
-                const groupCreatorId = groups[0].created_by;
-                if (groupCreatorId !== requestingUserId) {
-                    return res.status(200).json({
+                if (group.created_by.toString() !== requestingUserId) {
+                    return res.status(403).json({
                         message: 'Admins can only delete groups they created',
                         code: 0
                     });
                 }
 
                 const result = await deleteUserGroupById(targetGroupId);
+                if (!result) {
+                    return res.status(404).json({
+                        message: 'Group not found or already deleted',
+                        code: 0
+                    });
+                }
+
                 return res.status(200).json({
                     message: 'User group has been deleted successfully',
                     code: 1
@@ -90,19 +86,24 @@ const handler = async (req, res) => {
             }
 
             // Standart kullanıcı (role: 0) bu endpointi kullanamaz
-            return res.status(200).json({
+            return res.status(403).json({
                 message: 'You are not authorized to perform this action',
                 code: 0
             });
         } catch (error) {
             console.error('Error deleting user group by ID:', error);
-            return res.status(200).json({ message: 'An error occurred', error: error.message });
+            return res.status(500).json({
+                message: 'An error occurred',
+                error: error.message,
+                code: 0
+            });
         }
     } else {
         // Sadece DELETE isteği kabul edilir
         res.setHeader('Allow', ['DELETE']);
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
-}
+};
+
 
 export default privateMiddleware(handler);

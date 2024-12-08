@@ -1,49 +1,38 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '@/config/db';
+import mongoose from 'mongoose';
 
-const UserGroup = sequelize.define('UserGroup', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-        allowNull: false,
-    },
+// Kullanıcı grubu şeması
+const userGroupSchema = new mongoose.Schema({
     group_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true,
     },
     description: {
-        type: DataTypes.STRING,
-        allowNull: true,
+        type: String,
+        required: false,
     },
     type: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true,
     },
     is_active: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: 1,
+        type: Boolean,
+        default: true,
     },
     group_leader: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id',
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // group_leader, User koleksiyonundaki bir belgeyi referans alacak
+        required: true,
     },
     created_by: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-            model: 'users',
-            key: 'id',
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // created_by, User koleksiyonundaki bir belgeyi referans alacak
+        required: false,
     }
 }, {
-    tableName: 'user_groups', // Veritabanında 'user_groups' tablosuna kaydedilir
-    timestamps: true, // createdAt ve updatedAt alanları otomatik olarak eklenir
-})
+    timestamps: true, // createdAt ve updatedAt alanlarını otomatik olarak ekler
+});
+
+// Modeli tanımlarken, var olan modeli kontrol et ve yeni model tanımla
+const UserGroup = mongoose.models.UserGroup || mongoose.model('UserGroup', userGroupSchema, 'userGroups');
 
 export default UserGroup;

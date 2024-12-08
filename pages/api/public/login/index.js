@@ -6,27 +6,19 @@
 // |
 // ------------------------------
 
-
-import sequelize from '@/config/db';
-import { sign } from 'jsonwebtoken'
-import { compare } from 'bcrypt'
+import User from '@/models/User';
+import { sign } from 'jsonwebtoken';
+import { compare } from 'bcrypt';
 import { serialize } from 'cookie';
+import publicMiddleware from "@/middleware/public/index";
 
-// Kullanıcıyı veritabanından bulup doğrulama işlemi
-const findUserByEmail = async (email) => {
-    const [users] = await sequelize.query('SELECT * FROM users WHERE email = ?', {
-        replacements: [email],
-    });
-    return users.length > 0 ? users[0] : null;
-};
-
-export default async function handler(req, res) {
+const handler = async (req, res) => {
     try {
         if (req.method === 'POST') {
             const { email, password } = req.body;
 
-            // Kullanıcıyı veritabanından bul
-            const user = await findUserByEmail(email);
+            // Kullanıcıyı MongoDB'den email ile bul
+            const user = await User.findOne({ email });
 
             if (user) {
                 // Kullanıcının şifresini kontrol et
@@ -35,7 +27,7 @@ export default async function handler(req, res) {
                 if (isPasswordValid) {
                     // Başarılı giriş, JWT oluştur
                     const token = sign({
-                        id: user.id,
+                        id: user._id, // MongoDB'de _id kullanılır
                         email: user.email,
                         role: user.role,
                     }, process.env.JWT_SECRET, {
@@ -55,7 +47,7 @@ export default async function handler(req, res) {
                         message: 'Success',
                         code: 1,
                         user: {
-                            id: user.id,
+                            id: user._id,  // MongoDB'nin _id'si
                             email: user.email,
                             firstName: user.first_name,
                             lastName: user.last_name,
@@ -87,7 +79,8 @@ export default async function handler(req, res) {
             message: error.message,
             data: [],
             code: 0
-        })
+        });
     }
-
 }
+
+export default publicMiddleware(handler);

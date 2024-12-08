@@ -35,7 +35,7 @@ const sidebarMenu = [
                 permission: 1
             },
             {
-                id: 3,
+                id: 4,
                 name: "Create User Group",
                 link: "/user-management/create-user-group",
                 description: "Here you can create user groups to manage common tasks for users.",

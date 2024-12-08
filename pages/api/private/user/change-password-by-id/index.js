@@ -6,45 +6,23 @@
 // |
 // ------------------------------
 
-import sequelize from '@/config/db';
-import bcrypt from 'bcrypt';
 import { verify } from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import hashPassword from '@/helpers/hash';
-import privateMiddleware from "@/middleware/private/index"
+import User from '@/models/User';
+import privateMiddleware from '@/middleware/private/index';
 
 // ID'si gönderilen kullanıcının şifresini getir
-const getUserPasswordById = async (userId) => {
-    const [user] = await sequelize.query(
-        'SELECT password FROM users WHERE id = ?',
-        {
-            replacements: [userId],
-            type: sequelize.QueryTypes.SELECT
-        }
-    );
-    return user ? user.password : null;
+const getUserById = async (userId) => {
+    return await User.findById(userId);
 };
 
 // Kullanıcının şifresini güncelle
 const updateUserPasswordById = async (userId, newPassword) => {
-    const [result] = await sequelize.query(
-        'UPDATE users SET password = ? WHERE id = ?',
-        {
-            replacements: [newPassword, userId],
-        }
+    return await User.updateOne(
+        { _id: userId },
+        { $set: { password: newPassword } }
     );
-    return result;
-};
-
-// Kullanıcıyı ID'sine göre veritabanından almak
-const getUserById = async (userId) => {
-    const [user] = await sequelize.query(
-        'SELECT id, role, password FROM users WHERE id = ?',
-        {
-            replacements: [userId],
-            type: sequelize.QueryTypes.SELECT
-        }
-    );
-    return user || null;  // Eğer kullanıcı bulunursa döndür, yoksa null
 };
 
 const handler = async (req, res) => {
@@ -76,7 +54,6 @@ const handler = async (req, res) => {
             // Şifresi değiştirilecek kullanıcıyı ID'si ile bul
             const userToChange = await getUserById(userId);
 
-            // Kullanıcı bulunamadıysa hata döndür
             if (!userToChange) {
                 return res.status(200).json({
                     message: 'User not found.',
@@ -84,43 +61,31 @@ const handler = async (req, res) => {
                 });
             }
 
-            // Standard user (role 0), sadece kendi şifresini değiştirebilir
+            // Yetki kontrolleri
             if (loggedInUserRole === 0) {
                 return res.status(403).json({
                     message: 'You are not authorized to change passwords.',
                     code: 0
                 });
             }
-            // Admin (role 1), sadece standard user (role 0) şifresini değiştirebilir
-            if (loggedInUserRole === 1) {
-                if (userToChange.role === 1 || userToChange.role === 2) {
-                    return res.status(403).json({
-                        message: 'You are not authorized to change passwords of other admins or super admins.',
-                        code: 0
-                    });
-                }
-            }
 
-            // Super admin (role 2), sadece admin (role 1) ve standard user (role 0) şifresini değiştirebilir
-            if (loggedInUserRole === 2) {
-                if (userToChange.role === 2) {
-                    return res.status(403).json({
-                        message: 'You are not authorized to change another super admin’s password.',
-                        code: 0
-                    });
-                }
-            }
-
-            // Kullanıcının mevcut şifresini kontrol et
-            const existingPassword = await getUserPasswordById(userId);
-            if (!existingPassword) {
-                return res.status(200).json({
-                    message: 'User not found.',
+            if (loggedInUserRole === 1 && (userToChange.role === 1 || userToChange.role === 2)) {
+                return res.status(403).json({
+                    message: 'You are not authorized to change passwords of other admins or super admins.',
                     code: 0
                 });
             }
 
-            const isMatch = await bcrypt.compare(newPassword, existingPassword);  // bcrypt.compare() kullanıyoruz
+            if (loggedInUserRole === 2 && userToChange.role === 2) {
+                return res.status(403).json({
+                    message: 'You are not authorized to change another super admin’s password.',
+                    code: 0
+                });
+            }
+
+            // Mevcut şifre kontrolü
+            const existingPassword = userToChange.password;
+            const isMatch = await bcrypt.compare(newPassword, existingPassword);
 
             if (isMatch) {
                 return res.status(200).json({
@@ -129,12 +94,12 @@ const handler = async (req, res) => {
                 });
             }
 
-            // Herhangi bir sorun yoksa şifreyi güncelle
+            // Şifreyi güncelle
             const hashedPassword = await hashPassword(newPassword, 10);
             const result = await updateUserPasswordById(userId, hashedPassword);
 
-            if (result.affectedRows === 0) {
-                return res.status(200).json({ message: 'Failed to update password.' });
+            if (result.modifiedCount === 0) {
+                return res.status(200).json({ message: 'Failed to update password.', code: 0 });
             }
 
             return res.status(200).json({

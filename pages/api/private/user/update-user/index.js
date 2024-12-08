@@ -7,21 +7,30 @@
 // |
 // ------------------------------
 
-import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from "@/middleware/private/index"
+import User from '@/models/User'; // User modelini import ediyoruz
 
 // Update methodu
 const updateUserById = async (id, userData) => {
     const { firstName, lastName, email, mobile, isActive, isVerified, updatedBy } = userData;
 
-    const [result] = await sequelize.query(
-        'UPDATE users SET first_name = ?, last_name = ?, email = ?, mobile = ?, is_active = ?, is_verified = ?, updated_by = ? WHERE id = ?',
+    // Kullanıcıyı id ile bul ve güncelle
+    const user = await User.findByIdAndUpdate(
+        id,
         {
-            replacements: [firstName, lastName, email, mobile, isActive, isVerified, updatedBy, id],
-        }
+            first_name: firstName,
+            last_name: lastName,
+            email,
+            mobile,
+            is_active: isActive,
+            is_verified: isVerified,
+            updated_by: updatedBy // updatedBy artık token'dan alınıyor
+        },
+        { new: true } // Güncellenen kullanıcıyı geri döndür
     );
-    return { success: true, result };
+
+    return { success: true, user };
 };
 
 const handler = async (req, res) => {
@@ -32,33 +41,44 @@ const handler = async (req, res) => {
             const decoded = verify(token, process.env.JWT_SECRET);
             const userId = decoded.id;
 
-            // Kullanıcıyı veritabanından al
-            const [user] = await sequelize.query(
-                'SELECT email, mobile FROM users WHERE id = ?',
-                {
-                    replacements: [userId],
-                }
-            );
+            // Kullanıcıyı MongoDB'den al
+            const user = await User.findById(userId);
 
-            // User not found
-            if (!user || user.length === 0) {
+            // Kullanıcı bulunamazsa
+            if (!user) {
                 return res.status(200).json({
                     message: 'User not found',
                     code: 0
                 });
             }
 
-            const currentEmail = user[0].email;
-            const currentMobile = user[0].mobile;
-
             // Gelen veriyi al
-            const { firstName, lastName, email, mobile, isActive, isVerified, updatedBy } = req.body;
+            const { firstName, lastName, email, mobile, isActive, isVerified } = req.body;
+
+            // Email ya da mobil numara zaten var mı diye kontrol et
+            const emailExists = await User.findOne({ email });
+            const mobileExists = await User.findOne({ mobile });
+
+            if ((emailExists && emailExists.id !== userId) || (mobileExists && mobileExists.id !== userId)) {
+                return res.status(200).json({
+                    message: 'Email or mobile number already in use.',
+                    code: 0
+                });
+            }
 
             // Güncelleme işlemi
-            const result = await updateUserById(userId, { firstName, lastName, email, mobile, isActive, isVerified, updatedBy }, currentEmail, currentMobile);
+            const result = await updateUserById(userId, {
+                firstName,
+                lastName,
+                email,
+                mobile,
+                isActive,
+                isVerified,
+                updatedBy: userId // updatedBy değeri burada token'dan alınan userId olarak atanır
+            });
 
-            // Etkilenen satır sayısını kontrol et
-            if (result.result && result.result.affectedRows === 0) {
+            // Eğer kullanıcı güncellenemediyse
+            if (!result.user) {
                 return res.status(200).json({
                     message: 'No changes were made.',
                     code: 0
@@ -71,14 +91,7 @@ const handler = async (req, res) => {
                 code: 1
             });
         } catch (error) {
-            if (error.name === 'SequelizeUniqueConstraintError') {
-                return res.status(200).json({
-                    message: 'Email or mobile number already in use.',
-                    code: 0
-                });
-            }
-
-            // Diğer hatalar için genel hata mesajı
+            // Hata mesajı
             console.error('Error updating user data:', error);
             return res.status(500).json({
                 message: 'An error occurred',

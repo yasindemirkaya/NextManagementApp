@@ -1,4 +1,19 @@
-import sequelize from '@/config/db';
+// --------------------------------
+// |
+// | Service Name: Get All Users
+// | Description: Service that fetches all users based on various filters.
+// | Parameters: is_active, is_verified, role, created_by, updated_by
+// | Endpoints:
+// | /api/private/users/get-users
+// | /api/private/users/get-users?is_active=true
+// | /api/private/users/get-users?is_verified=true
+// | /api/private/users/get-users?role=2
+// | /api/private/users/get-users?created_by=035275ae-69fd-4fab-ad58-c0f3ed2a18d9
+// | /api/private/users/get-users?updated_by=035275ae-69fd-4fab-ad58-c0f3ed2a18d9
+// |
+// ------------------------------
+
+import User from '@/models/User';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from "@/middleware/private/index"
 
@@ -25,86 +40,68 @@ const handler = async (req, res) => {
             });
         }
 
-        const { is_active, is_verified, status, created_by, updated_by } = req.query;
+        const { is_active, is_verified, role, created_by, updated_by } = req.query;
 
-        // Base query
-        let query = 'SELECT id, first_name, last_name, email, mobile, is_active, is_verified, role, created_by, updated_by, createdAt, updatedAt FROM users WHERE 1=1';
-        const replacements = [];
+        // Base query options
+        let queryOptions = {};
 
-        // is_active 
+        // is_active
         if (is_active) {
-            query += ' AND is_active = ?';
-            replacements.push(is_active === 'true' ? 1 : 0);
+            queryOptions.is_active = is_active === 'true';
         }
 
         // is_verified
         if (is_verified) {
-            query += ' AND is_verified = ?';
-            replacements.push(is_verified === 'true' ? 1 : 0);
+            queryOptions.is_verified = is_verified === 'true';
         }
 
-        // status
-        if (status) {
-            query += ' AND role = ?';
-            replacements.push(status);
+        // role
+        if (role) {
+            queryOptions.role = role;
         }
 
         // created_by
         if (created_by) {
-            query += ' AND created_by = ?';
-            replacements.push(created_by);
+            queryOptions.created_by = created_by;
         }
 
         // updated_by
         if (updated_by) {
-            query += ' AND updated_by = ?';
-            replacements.push(updated_by);
+            queryOptions.updated_by = updated_by;
         }
 
         // İstekte bulunan kullanıcının rolüne göre dönen veriyi filtreleme
         if (userRole === 1) {
             // Eğer admin ise sadece kendi gibi adminleri ve standard userları görebilir
-            query += ' AND role IN (0, 1)';
+            queryOptions.role = { $in: [0, 1] };
         } else if (userRole === 2) {
             // Eğer rol 2 ise, tüm kullanıcıları döndür
-            // query'ye ek bir şey eklemeye gerek yok çünkü zaten tüm kullanıcılar çekiliyor
-        } else {
-            // Diğer durumlar için
+            // queryOptions eklenmesine gerek yok çünkü zaten tüm kullanıcılar çekiliyor
         }
 
         try {
-            const [users, metadata] = await sequelize.query(query, { replacements });
+            const users = await User.find(queryOptions);
 
-            // Benzersiz created_by ve updated_by ID'lerini topla
+            // Kullanıcıları `created_by` ve `updated_by` ile birlikte almak için populate kullanımı
             const userIds = new Set();
             users.forEach(user => {
                 if (user.created_by) userIds.add(user.created_by);
                 if (user.updated_by) userIds.add(user.updated_by);
             });
 
-            // Kullanıcı bilgilerini al
-            let usersInfo = [];
+            let userInfoMap = {};
             if (userIds.size > 0) {
-                const userQuery = `
-                    SELECT id, first_name, last_name 
-                    FROM users 
-                    WHERE id IN (${Array.from(userIds).map(() => '?').join(',')})
-                `;
-                const [userResults] = await sequelize.query(userQuery, { replacements: Array.from(userIds) });
-                usersInfo = userResults;
+                const userInfos = await User.find({ '_id': { $in: Array.from(userIds) } }, 'first_name last_name');
+                userInfos.forEach(user => {
+                    userInfoMap[user._id.toString()] = `${user.first_name} ${user.last_name}`;
+                });
             }
-
-            // Kullanıcıları bir Map'e dönüştür
-            const userMap = new Map();
-            usersInfo.forEach(user => {
-                userMap.set(user.id, `${user.first_name} ${user.last_name}`);
-            });
 
             // Kullanıcı bilgilerini "created_by" ve "updated_by" alanlarına ekle
             const formattedUsers = users.map(user => ({
-                ...user,
-                created_by: userMap.get(user.created_by) || user.created_by,
-                updated_by: userMap.get(user.updated_by) || user.updated_by,
+                ...user.toObject(),
+                created_by: userInfoMap[user.created_by?.toString()] || user.created_by,
+                updated_by: userInfoMap[user.updated_by?.toString()] || user.updated_by,
             }));
 
             res.status(200).json({

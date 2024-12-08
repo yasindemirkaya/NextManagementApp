@@ -130,8 +130,8 @@ const Table = ({ headers, data, itemsPerPage, from }) => {
 
     // Sıralanan veriler arasında filtreleme
     const filteredData = getSortedData().filter((item) =>
-        Object.values(item).some((value) =>
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        item && Object.values(item).some((value) =>
+            value && value.toString().toLowerCase().includes(searchTerm.toLowerCase())
         )
     );
 

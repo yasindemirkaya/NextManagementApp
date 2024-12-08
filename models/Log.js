@@ -1,38 +1,39 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '@/config/db';
+import mongoose from 'mongoose';
 
-const Log = sequelize.define('Log', {
+const logSchema = new mongoose.Schema({
     userId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // userId, User koleksiyonundaki bir belgeyi referans alacak
+        required: false,
     },
     ip: {
-        type: DataTypes.STRING,
-        allowNull: true,
+        type: String,
+        required: false,
     },
     userAgent: {
-        type: DataTypes.STRING,
-        allowNull: true,
+        type: String,
+        required: false,
     },
     path: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true,
     },
     request: {
-        type: DataTypes.JSON,
-        allowNull: true,
+        type: mongoose.Schema.Types.Mixed, // JSON verisi için Mixed tipi kullanılır
+        required: false,
     },
     response: {
-        type: DataTypes.JSON,
-        allowNull: true,
+        type: mongoose.Schema.Types.Mixed, // JSON verisi için Mixed tipi kullanılır
+        required: false,
     },
     method: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true,
     },
 }, {
-    timestamps: true, // Log kayıtları için timestamp ekler
-    tableName: 'logs', // Tablo adı
+    timestamps: true, // createdAt ve updatedAt alanları otomatik olarak ekler
 });
+
+const Log = mongoose.model('Log', logSchema);
 
 export default Log;

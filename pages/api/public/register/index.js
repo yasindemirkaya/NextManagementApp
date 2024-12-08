@@ -9,8 +9,9 @@
 
 import User from '@/models/User';
 import hashPassword from '@/helpers/hash';
+import publicMiddleware from "@/middleware/public/index";
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
     if (req.method === 'POST') {
         const { firstName, lastName, email, password, mobile } = req.body;
 
@@ -20,9 +21,9 @@ export default async function handler(req, res) {
         }
 
         try {
-            // E-posta adresinin ve mobil numaranın var olup olmadığını kontrol et
-            const existingUser = await User.findOne({ where: { email } });
-            const existingMobile = await User.findOne({ where: { mobile } });
+            // MongoDB'de e-posta adresi ve mobil numaranın var olup olmadığını kontrol et
+            const existingUser = await User.findOne({ email });
+            const existingMobile = await User.findOne({ mobile });
 
             if (existingUser) {
                 return res.status(409).json({ message: 'Email already in use' });
@@ -35,21 +36,27 @@ export default async function handler(req, res) {
             const hashedPassword = await hashPassword(password, 10);
 
             // Yeni kullanıcı oluştur
-            const newUser = await User.create({
+            const newUser = new User({
                 first_name: firstName,
                 last_name: lastName,
                 email,
                 password: hashedPassword,
                 mobile,
-                is_active: 1, // Kullanıcı aktif
-                is_verified: 0, // Kullanıcı doğrulanmamış
+                is_active: true, // Kullanıcı aktif
+                is_verified: false, // Kullanıcı doğrulanmamış
                 role: 0, // Standart kullanıcı rolü
-                created_by: null
+                created_by: null, // Başlangıçta null olacak
+                updated_by: null, // Başlangıçta null olacak
             });
 
-            newUser.created_by = newUser.id;  // Kendi ID'si ile created_by'yi güncelle
+            // Kullanıcının ID'si ile created_by ve updated_by'yi ayarla
+            newUser.created_by = newUser._id;
+            newUser.updated_by = newUser._id;
+
+            // Yeni kullanıcıyı veritabanına kaydet
             await newUser.save();
 
+            // Kayıt başarılı olduğunda, HTTP yanıtını döndür
             res.status(200).json({
                 result: true,
                 message: 'User registered successfully',
@@ -63,3 +70,5 @@ export default async function handler(req, res) {
         res.status(405).json({ message: 'Method not allowed' });
     }
 }
+
+export default publicMiddleware(handler)

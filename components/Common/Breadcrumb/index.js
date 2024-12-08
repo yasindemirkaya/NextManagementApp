@@ -3,11 +3,13 @@ import { Breadcrumb } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import styles from './index.module.scss';
 import { useSelector } from 'react-redux';
+import Cookies from 'js-cookie';
 
 const BreadcrumbComponent = () => {
     const loggedInUser = useSelector(state => state.user.user);
+    const token = Cookies.get('token')
 
-    if (!loggedInUser) {
+    if (!loggedInUser || !token) {
         return null;
     }
 

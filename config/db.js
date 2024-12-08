@@ -1,22 +1,22 @@
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
-dotenv.config();
-
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
-});
-
-const testConnection = async () => {
+const connectToDatabase = async (req, res, next) => {
+    if (mongoose.connection.readyState >= 1) {
+        return next(); // Bağlantı zaten sağlanmışsa, bir sonraki middleware'a geç
+    }
     try {
-        await sequelize.authenticate();
-        console.log('Successfully connected to MySQL database.');
+        const dbUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/ManagementApp';
+        if (!dbUri) {
+            throw new Error('MongoDB URI is not defined in environment variables');
+        }
+
+        await mongoose.connect(dbUri);
+        console.log('MongoDB connection successful');
+        next(); // Bağlantı başarılıysa bir sonraki middleware'a geç
     } catch (error) {
-        console.error('Database connection could not be established:', error);
+        console.error('MongoDB connection error:', error);
+        res.status(500).json({ message: 'Database connection failed', error: error.message });
     }
 };
 
-testConnection();
-
-export default sequelize;
+export default connectToDatabase;

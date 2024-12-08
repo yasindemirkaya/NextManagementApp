@@ -7,39 +7,19 @@
 // |
 // ------------------------------
 
-import sequelize from '@/config/db';
+import User from '@/models/User';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index'
 
 // Kullanıcıyı ID'ye göre veritabanında bul
 const findUserById = async (id) => {
-    const query = `SELECT * FROM users WHERE id = ? LIMIT 1`;
-    const [results] = await sequelize.query(query, {
-        replacements: [id],
-    });
-
-    return results[0] || null; // Kullanıcı bulunmazsa null döndür
+    return await User.findById(id);
 };
 
 const updateUserById = async (id, updateData) => {
-    const fields = [];
-    const replacements = [];
-
-    // Güncellenebilir alanları dinamik olarak ekle
-    Object.keys(updateData).forEach((key) => {
-        fields.push(`${key} = ?`);
-        replacements.push(updateData[key]);
-    });
-
-    // ID'yi replacements array'ine ekle
-    replacements.push(id);
-
-    const query = `
-        UPDATE users 
-        SET ${fields.join(', ')}, updatedAt = NOW() 
-        WHERE id = ?`;
-    const [result] = await sequelize.query(query, { replacements });
-    return result.affectedRows > 0;
+    // ID'yi de updateData'ya ekleyelim
+    updateData.updatedAt = new Date();
+    return await User.findByIdAndUpdate(id, updateData, { new: true });
 };
 
 const handler = async (req, res) => {
@@ -62,7 +42,7 @@ const handler = async (req, res) => {
             const { id: requestedUserId, ...updateData } = req.body;
 
             if (!requestedUserId) {
-                return res.status(200).json({
+                return res.status(400).json({
                     message: 'User ID is required.',
                     code: 0
                 });
@@ -71,7 +51,7 @@ const handler = async (req, res) => {
             // Güncellenen kullanıcıyı bul
             const requestedUser = await findUserById(requestedUserId);
             if (!requestedUser) {
-                return res.status(200).json({
+                return res.status(404).json({
                     message: 'User not found.',
                     code: 0
                 });
@@ -81,7 +61,7 @@ const handler = async (req, res) => {
             if (loggedInUserRole === 1) {
                 // Admin, sadece Standard User'ları (role: 0) güncelleyebilir
                 if (requestedUser.role !== 0) {
-                    return res.status(200).json({
+                    return res.status(403).json({
                         message: 'You are not authorized to update this user.',
                         code: 0
                     });
@@ -89,7 +69,7 @@ const handler = async (req, res) => {
             } else if (loggedInUserRole === 2) {
                 // Super Admin, kendisi gibi Super Adminler hariç herkesi güncelleyebilir.
                 if (requestedUser.role === 2) {
-                    return res.status(200).json({
+                    return res.status(403).json({
                         message: 'You are not authorized to update this user.',
                         code: 0
                     });
@@ -103,7 +83,7 @@ const handler = async (req, res) => {
             });
 
             if (!isUpdated) {
-                return res.status(200).json({
+                return res.status(500).json({
                     message: 'Failed to update user.',
                     code: 0
                 });
@@ -114,14 +94,15 @@ const handler = async (req, res) => {
                 code: 1
             });
         } catch (error) {
-            if (error.name === 'SequelizeUniqueConstraintError') {
-                return res.status(200).json({
+            // Mongoose hatası kontrolü
+            if (error.name === 'MongoError' && error.code === 11000) {
+                return res.status(400).json({
                     message: 'Email or mobile number already in use.',
                     code: 0
                 });
             }
 
-            return res.status(200).json({
+            return res.status(500).json({
                 message: 'An error occurred.',
                 error: error.message,
                 code: 0
@@ -132,6 +113,6 @@ const handler = async (req, res) => {
         res.setHeader('Allow', ['PUT']);
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
-}
+};
 
 export default privateMiddleware(handler);

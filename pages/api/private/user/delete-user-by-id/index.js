@@ -6,18 +6,14 @@
 // |
 // ------------------------------
 
-import sequelize from '@/config/db';
 import { verify } from 'jsonwebtoken';
+import User from '@/models/User';
 import privateMiddleware from "@/middleware/private/index";
 
 // Delete user by ID method
 const deleteUserById = async (userId) => {
-    const [result] = await sequelize.query(
-        'DELETE FROM users WHERE id = ?',
-        {
-            replacements: [userId],
-        }
-    );
+    // Kullanıcıyı veritabanından sil
+    const result = await User.deleteOne({ _id: userId });
     return result;
 };
 
@@ -28,7 +24,7 @@ const handler = async (req, res) => {
             const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
 
-            // İşlemi yapan kullanıcının bilgileri
+            // İşlemi yapan kullanıcının rolünü al
             const requestingUserRole = decoded.role;
 
             // Hesabı silinecek olan kullanıcının ID'si
@@ -44,7 +40,7 @@ const handler = async (req, res) => {
             // Super Admin (role: 2) her kullanıcıyı silebilir
             if (requestingUserRole === 2) {
                 const result = await deleteUserById(targetUserId);
-                if (result.affectedRows === 0) {
+                if (result.deletedCount === 0) {
                     return res.status(200).json({
                         message: 'User not found or already deleted',
                         code: 0
@@ -58,22 +54,16 @@ const handler = async (req, res) => {
 
             // Admin (role: 1) sadece standart kullanıcıları (role: 0) silebilir
             if (requestingUserRole === 1) {
-                // Silinmek istenen kullanıcının rolünü kontrol et
-                const [users] = await sequelize.query(
-                    'SELECT role FROM users WHERE id = ?',
-                    {
-                        replacements: [targetUserId],
-                    }
-                );
+                const targetUser = await User.findById(targetUserId);
 
-                if (users.length === 0) {
+                if (!targetUser) {
                     return res.status(200).json({
                         message: 'User not found',
                         code: 0
                     });
                 }
 
-                const targetUserRole = users[0].role;
+                const targetUserRole = targetUser.role;
                 if (targetUserRole !== 0) {
                     return res.status(200).json({
                         message: 'Admins can only delete standard user accounts',
@@ -95,13 +85,13 @@ const handler = async (req, res) => {
             });
         } catch (error) {
             console.error('Error deleting user by ID:', error);
-            return res.status(200).json({ message: 'An error occurred', error: error.message });
+            return res.status(500).json({ message: 'An error occurred', error: error.message });
         }
     } else {
         // Sadece DELETE isteği kabul edilir
         res.setHeader('Allow', ['DELETE']);
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
-}
+};
 
 export default privateMiddleware(handler);

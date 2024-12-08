@@ -6,29 +6,21 @@
 // |
 // ------------------------------
 
-import sequelize from '@/config/db';
-import bcrypt from 'bcrypt';
 import { verify } from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import hashPassword from '@/helpers/hash';
+import User from '@/models/User';
 import privateMiddleware from "@/middleware/private/index"
 
 const getUserPasswordById = async (userId) => {
-    const [user] = await sequelize.query(
-        'SELECT password FROM users WHERE id = ?',
-        {
-            replacements: [userId],
-            type: sequelize.QueryTypes.SELECT
-        }
-    );
+    const user = await User.findById(userId);
     return user ? user.password : null;
 };
 
 const updateUserPasswordById = async (userId, newPassword) => {
-    const [result] = await sequelize.query(
-        'UPDATE users SET password = ? WHERE id = ?',
-        {
-            replacements: [newPassword, userId],
-        }
+    const result = await User.updateOne(
+        { _id: userId },
+        { $set: { password: newPassword } }
     );
     return result;
 };
@@ -86,7 +78,7 @@ const handler = async (req, res) => {
             const hashedPassword = await hashPassword(newPassword, 10);
             const result = await updateUserPasswordById(userId, hashedPassword);
 
-            if (result.affectedRows === 0) {
+            if (result.modifiedCount === 0) {
                 return res.status(200).json({ message: 'Failed to update password.' });
             }
 

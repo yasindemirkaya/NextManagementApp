@@ -1,61 +1,55 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '@/config/db';
+import mongoose from 'mongoose';
 
-const User = sequelize.define('User', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-        allowNull: false,
-    },
+const userSchema = new mongoose.Schema({
     first_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true,
     },
     last_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true,
     },
     email: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true,
         unique: true,
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: true,
     },
     mobile: {
-        type: DataTypes.STRING,
-        allowNull: true,
+        type: String,
         unique: true,
+        sparse: true,
     },
     is_active: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: 1,
+        type: Boolean,
+        default: true,
     },
     is_verified: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: 0,
+        type: Boolean,
+        default: false,
     },
     role: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
+        type: Number,
+        default: 0,
     },
     created_by: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-            model: 'users',
-            key: 'id',
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // created_by alanı başka bir kullanıcıyı referans alacak
+        required: false,
+    },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // updated_by alanı başka bir kullanıcıyı referans alacak
+        required: false,
     }
 }, {
-    tableName: 'users', // Veritabanında 'users' tablosuna kaydedilir
-    timestamps: true, // createdAt ve updatedAt alanları otomatik olarak eklenir
+    timestamps: true,
 });
+
+// 'User' modelini oluşturur ve 'users' koleksiyonuna bağlar
+const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 export default User;

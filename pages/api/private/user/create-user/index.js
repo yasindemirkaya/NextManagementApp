@@ -52,7 +52,7 @@ const handler = async (req, res) => {
 
             // Yeni kullanıcı oluştur
             try {
-                const newUser = await User.create({
+                const newUser = new User({
                     first_name: firstName,
                     last_name: lastName,
                     email: email,
@@ -64,14 +64,16 @@ const handler = async (req, res) => {
                     created_by: adminId,
                 });
 
+                await newUser.save();
+
                 return res.status(200).json({
                     message: "User successfully created.",
                     code: 1,
                     user: email
                 });
             } catch (error) {
-                if (error.name === 'SequelizeUniqueConstraintError') {
-                    // UNIQUE constraint hatasını yakala
+                // MongoDB Unique constraint hatası
+                if (error.code === 11000) {
                     return res.status(200).json({
                         message: "Email or mobile number already in use.",
                         code: 0,

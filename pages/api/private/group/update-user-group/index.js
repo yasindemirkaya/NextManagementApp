@@ -6,53 +6,48 @@
 // | Endpoint: /api/private/user/update-user-group-by-id
 // |
 // ------------------------------
-import sequelize from '@/config/db';
+
 import { verify } from 'jsonwebtoken';
-import privateMiddleware from '@/middleware/private/index'
+import privateMiddleware from '@/middleware/private/index';
+import UserGroup from '@/models/UserGroup';
+import User from '@/models/User';
 
 // UserGroup'u ID'ye göre veritabanında bul
 const findUserGroupById = async (id) => {
-    const query = `SELECT * FROM user_groups WHERE id = ? LIMIT 1`;
-    const [results] = await sequelize.query(query, {
-        replacements: [id],
-    });
-
-    return results[0] || null; // Kullanıcı grubu bulunmazsa null döndür
+    const userGroup = await UserGroup.findById(id);
+    return userGroup || null; // Kullanıcı grubu bulunmazsa null döndür
 };
 
 // Kullanıcıyı ID'ye göre veritabanında bul
 const findUserById = async (id) => {
-    const query = `SELECT * FROM users WHERE id = ? LIMIT 1`;
-    const [results] = await sequelize.query(query, {
-        replacements: [id],
-    });
-
-    return results[0] || null; // Kullanıcı bulunmazsa null döndür
+    const user = await User.findById(id);
+    return user || null; // Kullanıcı bulunmazsa null döndür
 };
 
 // ID'si gönderilen UserGroup'u güncelle
 const updateUserGroupById = async (id, updateData) => {
-    const fields = [];
-    const replacements = [];
+    // Dinamik alanlar için kontrol
+    const allowedFields = ['group_name', 'description', 'type', 'is_active', 'group_leader'];
+    const updateFields = {};
 
-    // Güncellenebilir alanları dinamik olarak ekle
+    // Sadece izin verilen alanları updateData'dan al
     Object.keys(updateData).forEach((key) => {
-        if (key !== 'created_by') { // created_by güncellenmesin
-            fields.push(`${key} = ?`);
-            replacements.push(updateData[key]);
+        if (allowedFields.includes(key)) {
+            updateFields[key] = updateData[key];
         }
     });
 
-    // ID'yi replacements array'ine ekle
-    replacements.push(id);
+    // created_by alanının güncellenmesini engelle
+    if ('created_by' in updateFields) {
+        delete updateFields.created_by;
+    }
 
-    const query = `
-        UPDATE user_groups 
-        SET ${fields.join(', ')}, updatedAt = NOW() 
-        WHERE id = ?`;
-    const [result] = await sequelize.query(query, { replacements });
+    // Güncellenen alanları veritabanında güncelle
+    const updatedGroup = await UserGroup.findByIdAndUpdate(id, updateFields, {
+        new: true, // Güncellenmiş veriyi döndür
+    });
 
-    return result; // Değişiklik yapılıp yapılmadığını kontrol et
+    return updatedGroup;
 };
 
 const handler = async (req, res) => {
@@ -99,7 +94,6 @@ const handler = async (req, res) => {
                 });
             }
 
-
             // Eğer bu grup bir Super Admin tarafından oluşturulmuşsa, sadece o Super Admin bu grubu güncelleyebilir
             if (creatorUser.role === 2) {
                 // Bir Admin, bir Super Admin tarafından oluşturulan bir grubu güncelleyemez.
@@ -110,7 +104,7 @@ const handler = async (req, res) => {
                     });
                 }
                 // Eğer loggedInUser bir Super Admin değilse, işlem engellenir
-                if (loggedInUserId !== requestedGroup.created_by) {
+                if (loggedInUserId !== String(requestedGroup.created_by)) {
                     return res.status(200).json({
                         message: 'You are not authorized to update this group.',
                         code: 0
@@ -119,7 +113,7 @@ const handler = async (req, res) => {
             }
 
             // Bir Admin sadece kendi yarattığı grubu düzenleyebilir.
-            if (loggedInUserRole === 1 && loggedInUserId !== requestedGroup.created_by) {
+            if (loggedInUserRole === 1 && loggedInUserId !== String(requestedGroup.created_by)) {
                 return res.status(200).json({
                     message: 'You are not authorized to update this group as it was not created by you.',
                     code: 0
@@ -137,12 +131,12 @@ const handler = async (req, res) => {
             }
 
             // Güncelleme işlemi (updatedBy alanını backend'de belirtiyoruz)
-            const result = await updateUserGroupById(requestedGroupId, {
+            const updatedGroup = await updateUserGroupById(requestedGroupId, {
                 ...updateData,
                 updated_by: loggedInUserId
             });
 
-            if (result.affectedRows === 0) {
+            if (!updatedGroup) {
                 return res.status(200).json({
                     message: 'No changes were made.',
                     code: 0
