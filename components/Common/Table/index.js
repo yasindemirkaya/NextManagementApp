@@ -6,12 +6,14 @@ import { Badge } from 'react-bootstrap';
 import Pagination from "../Pagination";
 import { useRouter } from "next/router";
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 
 const Table = ({ headers, data, itemsPerPage, from }) => {
     const [searchTerm, setSearchTerm] = useState(''); // Search metni
     const [sortedData, setSortedData] = useState([]); // Verilerin sortlanmış hali
     const [currentPage, setCurrentPage] = useState(1);
     const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" }); // Sıralamanın hangi sütunda olduğunu ve sıralama yönünü tutar
+    const loggedInUser = useSelector(state => state.user.user);
 
     const router = useRouter()
 
@@ -80,7 +82,7 @@ const Table = ({ headers, data, itemsPerPage, from }) => {
                 return;
         }
 
-        if (userRole == 2) {
+        if (userRole == 2 && loggedInUser.id !== id) {
             Swal.fire({
                 title: 'Error',
                 icon: 'error',
