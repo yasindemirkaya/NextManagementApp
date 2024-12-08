@@ -9,13 +9,13 @@ export const formatAccountRole = (role) => (
 );
 
 export const formatAccountStatus = (status) => (
-    <Badge bg={status === 1 ? "success" : "danger"}>
-        {status === 1 ? "Active" : "Not Active"}
+    <Badge bg={status === true ? "success" : "danger"}>
+        {status === true ? "Active" : "Not Active"}
     </Badge>
 );
 
 export const formatAccountVerification = (verification) => (
-    <Badge bg={verification === 1 ? "success" : "danger"}>
-        {verification === 1 ? "Verified" : "Not Verified"}
+    <Badge bg={verification === true ? "success" : "danger"}>
+        {verification === true ? "Verified" : "Not Verified"}
     </Badge>
 );

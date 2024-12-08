@@ -33,6 +33,12 @@ const handler = async (req, res) => {
                 });
             }
 
+            // created_by ve updated_by kullanıcılarını paralel olarak bul
+            const [createdByUser, updatedByUser] = await Promise.all([
+                findUserById(user.created_by),
+                findUserById(user.updated_by)
+            ]);
+
             // Kullanıcı bilgilerini döndür
             return res.status(200).json({
                 user: {
@@ -44,7 +50,8 @@ const handler = async (req, res) => {
                     is_active: user.is_active,
                     is_verified: user.is_verified,
                     role: user.role,
-                    created_by: user.created_by,
+                    created_by: createdByUser ? `${createdByUser.first_name} ${createdByUser.last_name}` : null,
+                    updated_by: updatedByUser ? `${updatedByUser.first_name} ${updatedByUser.last_name}` : null,
                 },
             });
         } catch (error) {
