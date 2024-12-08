@@ -16,11 +16,16 @@ const BreadcrumbComponent = () => {
 
     // Breadcrumb linklerini formatlamak için
     const segmentFormatter = (segment) => {
-        if (segment.includes('[userId]')) {
-            return 'User Detail';
+        switch (true) {
+            case segment.includes('[userId]'):
+                return 'User Detail';
+            case segment.includes('[groupId]'):
+                return 'Group Detail';
+            default:
+                return segment.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
-        return segment.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
-    }
+    };
+
 
     return (
         <Breadcrumb className={styles.breadcrumb}>
