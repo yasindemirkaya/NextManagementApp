@@ -7,7 +7,7 @@ import Pagination from "../Pagination";
 import { useRouter } from "next/router";
 import Swal from 'sweetalert2';
 
-const Table = ({ headers, data, itemsPerPage }) => {
+const Table = ({ headers, data, itemsPerPage, from }) => {
     const [searchTerm, setSearchTerm] = useState(''); // Search metni
     const [sortedData, setSortedData] = useState([]); // Verilerin sortlanmış hali
     const [currentPage, setCurrentPage] = useState(1);
@@ -61,18 +61,47 @@ const Table = ({ headers, data, itemsPerPage }) => {
         return sorted;
     };
 
-    // Kullanıcının üzerine tıklandığında user detail sayfasına yönlendirme
+    // Satırın üzerine tıklandığında detay sayfasına yönlendirme
     const handleRowClick = (row) => {
-        const { Name, Surname, id, userRole } = row;
+        // Datayı Table hangi sayfada kullanılacaksa ona göre dizayn etmeliyiz.
+        let Name, Surname, id, userRole, GroupName;
+
+        switch (from) {
+            case "view-users":
+                ({ Name, Surname, id, userRole } = row);
+                console.log(row)
+                break;
+            case "user-groups":
+                // Boşluk içeren anahtar adı için köşeli parantez kullanımı
+                GroupName = row["Group Name"];
+                ({ id } = row);
+                break;
+            default:
+                return;
+        }
 
         if (userRole == 2) {
             Swal.fire({
                 title: 'Error',
                 icon: 'error',
-                text: "You are not allowed to update this user's account.",
+                text: "You are not allowed to update this data",
             });
         } else {
-            const dynamicPath = `/user-management/view-users/${Name.toLowerCase()}-${Surname.toLowerCase()}-${id}`;
+            let dynamicPath = "";
+
+            // Dynamic path değerini table hangi sayfada kullanılacaksa ona göre dizayn etmeliyiz
+            switch (from) {
+                case "view-users":
+                    dynamicPath = `/user-management/${from}/${Name.toLowerCase()}-${Surname.toLowerCase()}-${id}`;
+                    break;
+                case "user-groups":
+                    // Boşlukları "-" ile değiştirerek URL dostu hale getiriyoruz
+                    const formattedGroupName = GroupName.toLowerCase().replace(/\s+/g, "-");
+                    dynamicPath = `/user-management/${from}/${formattedGroupName}-${id}`;
+                    break;
+                default:
+                    return;
+            }
             router.push(dynamicPath);
         }
     }

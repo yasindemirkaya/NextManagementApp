@@ -93,11 +93,11 @@ const handler = async (req, res) => {
         }
 
         try {
-            const [userGroups, metadata] = await sequelize.query(query, { replacements });
+            const [groups, metadata] = await sequelize.query(query, { replacements });
             res.status(200).json({
                 code: 1,
                 message: 'User groups successfully fetched.',
-                userGroups
+                groups
             });
         } catch (error) {
             console.error('Error fetching user groups:', error);

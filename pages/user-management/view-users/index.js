@@ -80,7 +80,7 @@ const ViewUsers = () => {
 
     return (
         <div>
-            <Table headers={headers} data={formatUserData(userData)} itemsPerPage={5} />
+            <Table headers={headers} data={formatUserData(userData)} itemsPerPage={5} from="view-users" />
         </div>
     );
 }
