@@ -1,2 +1,1 @@
-* UserGroupProfile > ProfileCard component
-* UserGroupProfile > EditProfile component
+* public/get-group-types servisinin yazılması
