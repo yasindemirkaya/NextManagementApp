@@ -12,7 +12,7 @@ import hashPassword from '@/helpers/hash';
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
-        const { firstName, lastName, email, password, mobile } = req.body;
+        const { firstName, lastName, email, password, mobile, userGroups } = req.body;
 
         // Data check
         if (!firstName || !lastName || !email || !password || !mobile) {
@@ -44,7 +44,13 @@ export default async function handler(req, res) {
                 is_active: 1, // Kullanıcı aktif
                 is_verified: 0, // Kullanıcı doğrulanmamış
                 role: 0, // Standart kullanıcı rolü
+<<<<<<< Updated upstream
                 created_by: null
+=======
+                created_by: null, // Başlangıçta null olacak
+                updated_by: null, // Başlangıçta null olacak
+                user_groups: userGroups || [] // Başlangıçta boş bir array olacak
+>>>>>>> Stashed changes
             });
 
             newUser.created_by = newUser.id;  // Kendi ID'si ile created_by'yi güncelle

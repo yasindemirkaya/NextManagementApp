@@ -46,6 +46,7 @@ const User = sequelize.define('User', {
         defaultValue: 0,
     },
     created_by: {
+<<<<<<< Updated upstream
         type: DataTypes.UUID,
         allowNull: true,
         references: {
@@ -53,6 +54,23 @@ const User = sequelize.define('User', {
             key: 'id',
         }
     }
+=======
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // created_by alanı başka bir kullanıcıyı referans alacak
+        required: false,
+    },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // updated_by alanı başka bir kullanıcıyı referans alacak
+        required: false,
+    },
+    user_groups: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserGroup', // UserGroup koleksiyonunu referans alır
+        default: [],
+        required: false
+    }],
+>>>>>>> Stashed changes
 }, {
     tableName: 'users', // Veritabanında 'users' tablosuna kaydedilir
     timestamps: true, // createdAt ve updatedAt alanları otomatik olarak eklenir
