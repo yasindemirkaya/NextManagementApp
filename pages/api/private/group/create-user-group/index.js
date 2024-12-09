@@ -17,7 +17,7 @@ const handler = async (req, res) => {
             // Token'ı decode et ve kullanıcı rolünü al
             const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
-            const { id: adminId, role } = decoded;
+            const { id: loggedInUserId, role } = decoded;
 
             // Kullanıcı admin (1) veya super admin (2) değilse işlem reddedilir
             if (role !== 1 && role !== 2) {
@@ -34,12 +34,21 @@ const handler = async (req, res) => {
                 type,
                 isActive,
                 groupLeader,
+                members = [], // members opsiyonel, default olarak boş bir array
             } = req.body;
 
             // Gerekli alanların eksik olup olmadığını kontrol et
             if (!groupName || !type || groupLeader === undefined || isActive === undefined) {
                 return res.status(200).json({
                     message: "Group name, type, group leader, and active status are required.",
+                    code: 0,
+                });
+            }
+
+            // Eğer members varsa, en az 2 kullanıcı olmalı
+            if (members && members.length < 2) {
+                return res.status(400).json({
+                    message: "A group must have at least 2 members.",
                     code: 0,
                 });
             }
@@ -52,7 +61,8 @@ const handler = async (req, res) => {
                     type: type,
                     is_active: isActive,
                     group_leader: groupLeader,
-                    created_by: adminId,
+                    created_by: loggedInUserId,
+                    members: members,
                 });
 
                 await newUserGroup.save(); // MongoDB'ye kaydet

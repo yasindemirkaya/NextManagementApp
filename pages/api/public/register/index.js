@@ -13,7 +13,7 @@ import publicMiddleware from "@/middleware/public/index";
 
 const handler = async (req, res) => {
     if (req.method === 'POST') {
-        const { firstName, lastName, email, password, mobile } = req.body;
+        const { firstName, lastName, email, password, mobile, userGroups } = req.body;
 
         // Data check
         if (!firstName || !lastName || !email || !password || !mobile) {
@@ -47,6 +47,7 @@ const handler = async (req, res) => {
                 role: 0, // Standart kullanıcı rolü
                 created_by: null, // Başlangıçta null olacak
                 updated_by: null, // Başlangıçta null olacak
+                user_groups: userGroups || [] // Başlangıçta boş bir array olacak
             });
 
             // Kullanıcının ID'si ile created_by ve updated_by'yi ayarla

@@ -44,7 +44,13 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', // updated_by alanı başka bir kullanıcıyı referans alacak
         required: false,
-    }
+    },
+    user_groups: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserGroup', // UserGroup koleksiyonunu referans alır
+        default: [],
+        required: false
+    }],
 }, {
     timestamps: true,
 });
