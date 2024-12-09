@@ -43,7 +43,10 @@
 * Adminler bir başka hesabı güncellerken rollerini değiştirebilir ancak bir admin bir başka kullanıcıyı Super Admin yapamaz.
 
 <!-- * USER GROUP RULES * -->
-* Bir Super Admin'in yarattığı kullanıcı grubunu kimse silemez ya da güncelleyemez.
+* Bir Super Admin'in yarattığı kullanıcı grubunu kimse silemez ya da güncelleyemez. Sadece kendisi yapabilir.
 * Bir Admin'in yarattığı kullanıcı grubu bir Super Admin tarafından silinebilir ya da güncellenebilir.
-* Bir Admin'in yarattığı kullanıcı grubu bir başka Admin tarafından silinemez ya da güncellenemez.
+* Bir Admin'in yarattığı kullanıcı grubu bir başka Admin tarafından silinemez ya da güncellenemez. Sadece kendisi yapabilir ya da bir Super Admin yapabilir.
 * Standart bir kullanıcı sadece kendi içerisinde bulunduğu kullanıcı gruplarını görüntüleyebilir. 
+* Bir Super Admin kullanıcı grubu oluştururken Group Members kısmında tüm kullanıcıları görüp o gruba ekleyebilir.
+* Bir Admin kullanıcı grubu oluştururken Super Admin'leri listede göremez. Sadece kendisi gibi Adminleri ve Standard User'ları görebilir.
+* Standard User'lar kullanıcı grubu oluşturamaz.
