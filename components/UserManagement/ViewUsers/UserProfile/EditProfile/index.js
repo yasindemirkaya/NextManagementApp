@@ -31,14 +31,14 @@ const EditProfileCard = ({ userData, onCancel }) => {
             lastName: userData.last_name,
             email: userData.email,
             mobile: userData.mobile,
-            isActive: userData.is_active === 1,
-            isVerified: userData.is_verified === 1,
+            isActive: userData.is_active === true,
+            isVerified: userData.is_verified === true,
             role: userData.role || 0,
         }
     });
 
-    const [isActive, setIsActive] = useState(userData.is_active === 1);
-    const [isVerified, setIsVerified] = useState(userData.is_verified === 1);
+    const [isActive, setIsActive] = useState(userData.is_active === true);
+    const [isVerified, setIsVerified] = useState(userData.is_verified === true);
     const [role, setRole] = useState(userData.role || 0);
     const [showModal, setShowModal] = useState(false);
 

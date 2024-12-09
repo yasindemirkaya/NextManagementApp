@@ -17,6 +17,7 @@ const Profile = () => {
         axios.get('/private/user/get-user')
             .then(response => {
                 setUser(response.user);
+                console.log(response.user)
                 setLoading(false);
                 setError(null);
             })
