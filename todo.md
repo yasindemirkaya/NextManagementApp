@@ -11,4 +11,3 @@
     - Grup oluşturan loggedInUser bir Admin ise o zaman getUsers methodundan role=0 ve role=1'ler dönsün.
 
 * getUsers gibi tekrar tekrar kullanılacak API isteklerini yapan methodların merkezileştirilmesi.
-

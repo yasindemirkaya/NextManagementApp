@@ -15,7 +15,7 @@
 
 import User from '@/models/User';
 import { verify } from 'jsonwebtoken';
-import privateMiddleware from "@/middleware/private/index"
+import privateMiddleware from "@/middleware/private/index";
 
 const handler = async (req, res) => {
     if (req.method === 'GET') {
@@ -40,7 +40,7 @@ const handler = async (req, res) => {
             });
         }
 
-        const { is_active, is_verified, role, created_by, updated_by } = req.query;
+        const { is_active, is_verified, role, created_by, updated_by, limit = 10, page = 1 } = req.query;
 
         // Base query options
         let queryOptions = {};
@@ -72,15 +72,22 @@ const handler = async (req, res) => {
 
         // İstekte bulunan kullanıcının rolüne göre dönen veriyi filtreleme
         if (userRole === 1) {
-            // Eğer admin ise sadece kendi gibi adminleri ve standard userları görebilir
             queryOptions.role = { $in: [0, 1] };
-        } else if (userRole === 2) {
-            // Eğer rol 2 ise, tüm kullanıcıları döndür
-            // queryOptions eklenmesine gerek yok çünkü zaten tüm kullanıcılar çekiliyor
         }
 
+        // Sayfalama ayarları
+        const limitValue = parseInt(limit);
+        const pageValue = parseInt(page);
+        const skipValue = (pageValue - 1) * limitValue;
+
         try {
-            const users = await User.find(queryOptions);
+            // Toplam kullanıcı sayısını al
+            const totalUsers = await User.countDocuments(queryOptions);
+
+            // Kullanıcıları getir
+            const users = await User.find(queryOptions)
+                .limit(limitValue)
+                .skip(skipValue);
 
             // Kullanıcıları `created_by` ve `updated_by` ile birlikte almak için populate kullanımı
             const userIds = new Set();
@@ -107,7 +114,10 @@ const handler = async (req, res) => {
             res.status(200).json({
                 code: 1,
                 message: 'Users successfully fetched.',
-                users: formattedUsers
+                users: formattedUsers,
+                total: totalUsers,
+                page: pageValue,
+                limit: limitValue,
             });
         } catch (error) {
             console.error('Error fetching users:', error);

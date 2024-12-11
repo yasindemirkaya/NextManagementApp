@@ -40,7 +40,7 @@ const handler = async (req, res) => {
             });
         }
 
-        const { is_active, type, group_leader, created_by } = req.query;
+        const { is_active, type, group_leader, created_by, limit, page } = req.query;
 
         // Kullanıcı rolüne göre parametre kontrolü
         if (userRole === 1) {
@@ -76,9 +76,20 @@ const handler = async (req, res) => {
             filter.created_by = created_by;
         }
 
+        // Sayfalama için limit ve skip hesaplaması
+        const limitValue = limit ? Number(limit) : 10;
+        const pageValue = page ? Number(page) : 1;
+        const skipValue = (pageValue - 1) * limitValue;
+
         try {
+            // Toplam grup sayısını al
+            const totalGroups = await UserGroup.countDocuments(filter);
+
             // Kullanıcı gruplarını MongoDB'den sorgula
-            const groups = await UserGroup.find(filter).exec();
+            const groups = await UserGroup.find(filter)
+                .limit(limitValue)
+                .skip(skipValue)
+                .exec();
 
             // Benzersiz user ID'lerini topla
             const userIds = new Set();
@@ -111,6 +122,9 @@ const handler = async (req, res) => {
             res.status(200).json({
                 code: 1,
                 message: 'User groups successfully fetched.',
+                total: totalGroups,
+                currentPage: pageValue,
+                totalPages: Math.ceil(totalGroups / limitValue),
                 groups: formattedGroups
             });
         } catch (error) {
