@@ -77,9 +77,15 @@ const handler = async (req, res) => {
         }
 
         // Sayfalama için limit ve skip hesaplaması
-        const limitValue = limit ? Number(limit) : 10;
-        const pageValue = page ? Number(page) : 1;
-        const skipValue = (pageValue - 1) * limitValue;
+        let limitValue = limit ? Number(limit) : null;
+        let pageValue = page ? Number(page) : 1;
+        let skipValue = (pageValue - 1) * limitValue;
+
+        // Eğer limit ve page parametreleri yoksa, tüm veriler döndürülecek
+        if (!limitValue) {
+            limitValue = await UserGroup.countDocuments(filter); // Tüm kullanıcı gruplarını döndür
+            skipValue = 0; // Sayfalama yapılmayacak
+        }
 
         try {
             // Toplam grup sayısını al

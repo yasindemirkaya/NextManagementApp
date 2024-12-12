@@ -40,7 +40,7 @@ const handler = async (req, res) => {
             });
         }
 
-        const { is_active, is_verified, role, created_by, updated_by, limit = 10, page = 1 } = req.query;
+        const { is_active, is_verified, role, created_by, updated_by, limit, page } = req.query;
 
         // Base query options
         let queryOptions = {};
@@ -75,19 +75,21 @@ const handler = async (req, res) => {
             queryOptions.role = { $in: [0, 1] };
         }
 
-        // Sayfalama ayarları
-        const limitValue = parseInt(limit);
-        const pageValue = parseInt(page);
-        const skipValue = (pageValue - 1) * limitValue;
+        // Sayfalama ayarları (Varsayılan değerler kullanılırsa tüm verileri getiririz)
+        let limitValue = limit ? parseInt(limit) : null;
+        let pageValue = page ? parseInt(page) : null;
+        let skipValue = (pageValue && limitValue) ? (pageValue - 1) * limitValue : 0;
 
         try {
             // Toplam kullanıcı sayısını al
             const totalUsers = await User.countDocuments(queryOptions);
 
             // Kullanıcıları getir
-            const users = await User.find(queryOptions)
-                .limit(limitValue)
-                .skip(skipValue);
+            const users = limitValue && pageValue
+                ? await User.find(queryOptions)
+                    .limit(limitValue)
+                    .skip(skipValue)
+                : await User.find(queryOptions);
 
             // Kullanıcıları `created_by` ve `updated_by` ile birlikte almak için populate kullanımı
             const userIds = new Set();
