@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
-const Table = ({ headers, data, itemsPerPage, from, totalPages, currentPage, getUsers, getUserGroups }) => {
+const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, getUsers, getUserGroups }) => {
     const [currentPageState, setCurrentPageState] = useState(currentPage);
 
     // Sorting
@@ -238,9 +238,13 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, currentPage, get
                 </tbody>
             </table>
 
+            <div className={styles.pageInfo}>
+                There are {totalData} records in the table. Page {currentPage} of {totalPages} is currently displayed.
+            </div>
+
             {/* Pagination */}
             <div className={styles.pagination}>
-                <Pagination>
+                <Pagination size="md">
                     <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPageState === 1} />
                     <Pagination.Prev onClick={() => handlePageChange(currentPageState - 1)} disabled={currentPageState === 1} />
 
