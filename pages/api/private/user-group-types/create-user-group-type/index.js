@@ -8,7 +8,7 @@
 // ------------------------------
 
 import { verify } from 'jsonwebtoken';
-import GroupType from '@/models/GroupType';
+import UserGroupType from '@/models/UserGroupType';
 import User from '@/models/User';
 import privateMiddleware from "@/middleware/private/index"
 
@@ -38,6 +38,15 @@ const handler = async (req, res) => {
                 });
             }
 
+            // Aynı type_name mevcut mu kontrol et
+            const existingGroupType = await UserGroupType.findOne({ type_name: typeName });
+            if (existingGroupType) {
+                return res.status(200).json({
+                    message: `A group type with the name "${typeName}" already exists.`,
+                    code: 0
+                });
+            }
+
             // created_by ve updated_by kullanıcı bilgilerini al
             const createdByUser = await User.findById(adminId);
             if (!createdByUser) {
@@ -48,20 +57,20 @@ const handler = async (req, res) => {
             }
             const createdByName = `${createdByUser.first_name} ${createdByUser.last_name}`;
 
-            // Yeni GroupType ekleme işlemi
-            const newGroupType = new GroupType({
+            // Yeni UserGroupType ekleme işlemi
+            const newUserGroupType = new UserGroupType({
                 type_name: typeName,
                 created_by: createdByName,
                 updated_by: createdByName,
             });
 
-            await newGroupType.save();
+            await newUserGroupType.save();
 
             return res.status(200).json({
                 message: "User group type successfully created.",
                 code: 1,
                 group_type: typeName,
-                _id: newGroupType._id,
+                _id: newUserGroupType._id,
             });
         } catch (error) {
             console.error('Error creating user group type:', error);
