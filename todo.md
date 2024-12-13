@@ -1,5 +1,4 @@
 * public/get-user-group-types
-* private/create-user-group-type
 * private/delete-user-group-type
 * private/update-user-group-type
 

@@ -18,7 +18,7 @@ const ViewUsers = () => {
     const loggedInUser = useSelector(state => state.user.user);
 
     useEffect(() => {
-        getUsers(1, 5);
+        getUsers(1, 10);
     }, [])
 
     const getUsers = (page, limit, search) => {
