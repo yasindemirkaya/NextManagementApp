@@ -10,17 +10,30 @@ const UserGroups = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
+    const [totalData, setTotalData] = useState(0)
+    const [totalPages, setTotalPages] = useState(0)
+    const [currentPage, setCurrentPage] = useState(1)
+
     useEffect(() => {
-        getUserGroups();
+        getUserGroups(1, 5);
     }, [])
 
-    const getUserGroups = () => {
+    const getUserGroups = (page, limit, search) => {
         setLoading(true)
 
-        axios.get('/private/groups/get-user-groups')
+        axios.get('/private/groups/get-user-groups', {
+            params: {
+                page: page,
+                limit: limit,
+                search: search
+            }
+        })
             .then(response => {
                 if (response.code === 1) {
                     setGroupData(response.groups);
+                    setTotalData(response.pagination.totalData)
+                    setTotalPages(response.pagination.totalPages)
+                    setCurrentPage(response.pagination.currentPage)
                     setLoading(false)
                     setError(null)
                 }
@@ -67,7 +80,16 @@ const UserGroups = () => {
 
     return (
         <div>
-            <Table headers={headers} data={formatGroupData(groupData)} itemsPerPage={5} from="user-groups" />
+            <Table
+                headers={headers}
+                data={formatGroupData(groupData)}
+                itemsPerPage={5}
+                from="user-groups"
+                getUserGroups={getUserGroups}
+                totalData={totalData}
+                totalPages={totalPages}
+                currentPage={currentPage}
+            />
         </div>
     );
 }

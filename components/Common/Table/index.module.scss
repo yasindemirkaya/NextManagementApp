@@ -20,6 +20,29 @@
     border-radius: 4px;
 }
 
+.searchButton {
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.searchWrapper {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.searchContainer .inputGroup {
+    width: 25%;
+
+    @media (max-width: 1200px) {
+        width: 75%;
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
+}
+
 .table {
     width: 100%;
     border-collapse: collapse;

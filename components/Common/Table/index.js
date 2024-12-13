@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./index.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
-import { Badge, Button, Pagination } from 'react-bootstrap';
+import { Badge, Button, Pagination, Form, InputGroup } from 'react-bootstrap';
 import { useRouter } from "next/router";
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
-const Table = ({ headers, data, itemsPerPage, from, getUsers, totalPages }) => {
-    const [searchTerm, setSearchTerm] = useState(''); // Search metni
-    const [sortedData, setSortedData] = useState([]); // Verilerin sortlanmış hali
-    const [currentPage, setCurrentPage] = useState(1);
-    const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" }); // Sıralamanın hangi sütunda olduğunu ve sıralama yönünü tutar
+const Table = ({ headers, data, itemsPerPage, from, totalPages, currentPage, getUsers, getUserGroups }) => {
+    const [currentPageState, setCurrentPageState] = useState(currentPage);
+
+    // Sorting
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+    const [sortedData, setSortedData] = useState(data);
+
+    // Searching
+    const [searchQuery, setSearchQuery] = useState("");
+
     const loggedInUser = useSelector(state => state.user.user);
 
     const router = useRouter()
 
-    // Başlangıçta sortedData'yı default şekilde data ile setliyoruz
     useEffect(() => {
         setSortedData(data);
     }, [data]);
-
 
     // Tablonun kullanıldığı sayfaya göre ekle butonunu özelleştirme
     const buttonCustomizer = (from) => {
@@ -43,44 +46,74 @@ const Table = ({ headers, data, itemsPerPage, from, getUsers, totalPages }) => {
         }
     }
 
-    // Search methodu
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
-        // Arama sonucu 1. sayfada gösterilmeli
-        setCurrentPage(1);
-    };
-
     // Sayfa değişimi
     const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
-    // Sıralama methodu
-    const handleSort = (column) => {
-        const newSortConfig = { ...sortConfig };
-        // Eğer aynı sütuna tekrar tıklanırsa sırayla asc ve desc arasında geçiş yapılır
-        if (newSortConfig.key === column) {
-            newSortConfig.direction = newSortConfig.direction === "asc" ? "desc" : "asc";
+        setCurrentPageState(page)
+
+        switch (from) {
+            case "view-users":
+                getUsers(page, itemsPerPage)
+                break;
+            case "user-groups":
+                getUserGroups(page, itemsPerPage)
+                break;
+            default:
+                return;
         }
-        // Başka sütuna tıklanırsa önce asc sıralama yapılır
-        else {
-            newSortConfig.key = column;
-            newSortConfig.direction = "asc";
-        }
-        setSortConfig(newSortConfig);
     };
 
-    // Data sıralama
-    const getSortedData = () => {
-        const sorted = [...sortedData];
-        // asc seçili ise önce küçük değerler, desc seçili ise önce büyük değerler olacak şekilde sort yapılır
-        if (sortConfig.key) {
-            sorted.sort((a, b) => {
-                if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "asc" ? -1 : 1;
-                if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "asc" ? 1 : -1;
-                return 0;
-            });
+    // Sütuna göre sıralama methodu
+    const handleSort = (column) => {
+        let direction = "asc";
+        if (sortConfig.key === column && sortConfig.direction === "asc") {
+            direction = "desc";
         }
-        return sorted;
+        setSortConfig({ key: column, direction });
+
+        // Sıralama işlemi
+        const sorted = [...data].sort((a, b) => {
+            const aValue = a[column] || "";
+            const bValue = b[column] || "";
+
+            if (aValue < bValue) return direction === "asc" ? -1 : 1;
+            if (aValue > bValue) return direction === "asc" ? 1 : -1;
+            return 0;
+        });
+
+        setSortedData(sorted);
+    };
+
+    // Search
+    const handleSearch = () => {
+        if (searchQuery.length >= 3) {
+
+            switch (from) {
+                case "view-users":
+                    getUsers(currentPage, itemsPerPage, searchQuery);
+                    break;
+                case "user-groups":
+                    getUserGroups(currentPage, itemsPerPage, searchQuery);
+                    break;
+                default:
+                    return;
+            }
+        }
+    }
+
+    // Clear search
+    const handleClearSearch = () => {
+        setSearchQuery(''); // Arama sorgusunu temizle
+
+        switch (from) {
+            case "view-users":
+                getUsers(currentPage, itemsPerPage, '');
+                break;
+            case "user-groups":
+                getUserGroups(currentPage, itemsPerPage, '')
+                break;
+            default:
+                return;
+        }
     };
 
     // Satırın üzerine tıklandığında detay sayfasına yönlendirme
@@ -127,26 +160,27 @@ const Table = ({ headers, data, itemsPerPage, from, getUsers, totalPages }) => {
         }
     }
 
-    // Sıralanan veriler arasında filtreleme
-    const filteredData = getSortedData().filter((item) =>
-        item && Object.values(item).some((value) =>
-            value && value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        )
-    );
-
-    const currentData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
     return (
         <div className={styles.tableContainer}>
             {/* Search */}
             <div className={styles.searchContainer}>
-                <input
-                    type="text"
-                    className={styles.searchInput}
-                    placeholder="Search..."
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                />
+                {/* Search Input ve Button */}
+                <InputGroup className={`${styles.inputGroup} me-3`}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    {/* Search */}
+                    <InputGroup.Text style={{ cursor: "pointer" }} onClick={handleSearch}>
+                        <FontAwesomeIcon icon={icons.faSearch} />
+                    </InputGroup.Text>
+                    {/* Clear Search */}
+                    <Button variant="danger" onClick={handleClearSearch}>
+                        <FontAwesomeIcon icon={icons.faDeleteLeft} />
+                    </Button>
+                </InputGroup>
                 <Button variant="primary" type="submit" href={buttonCustomizer(from).link}>
                     <FontAwesomeIcon icon={icons.faPlusCircle} className="me-2" />
                     {buttonCustomizer(from).text}
@@ -177,14 +211,14 @@ const Table = ({ headers, data, itemsPerPage, from, getUsers, totalPages }) => {
                 </thead>
                 {/* Body */}
                 <tbody>
-                    {currentData.length === 0 ? (
+                    {sortedData.length === 0 ? (
                         <tr>
                             <td colSpan={headers.length} className={styles.noData}>
                                 No data available
                             </td>
                         </tr>
                     ) : (
-                        currentData.map((row, rowIndex) => (
+                        sortedData.map((row, rowIndex) => (
                             <tr
                                 key={rowIndex}
                                 className={styles.tableRow}
@@ -207,21 +241,21 @@ const Table = ({ headers, data, itemsPerPage, from, getUsers, totalPages }) => {
             {/* Pagination */}
             <div className={styles.pagination}>
                 <Pagination>
-                    <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
-                    <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                    <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPageState === 1} />
+                    <Pagination.Prev onClick={() => handlePageChange(currentPageState - 1)} disabled={currentPageState === 1} />
 
                     {[...Array(totalPages)].map((_, index) => (
                         <Pagination.Item
                             key={index + 1}
-                            active={index + 1 === currentPage}
+                            active={index + 1 === currentPageState}
                             onClick={() => handlePageChange(index + 1)}
                         >
                             {index + 1}
                         </Pagination.Item>
                     ))}
 
-                    <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                    <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+                    <Pagination.Next onClick={() => handlePageChange(currentPageState + 1)} disabled={currentPageState === totalPages} />
+                    <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPageState === totalPages} />
                 </Pagination>
             </div>
         </div>

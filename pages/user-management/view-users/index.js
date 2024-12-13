@@ -13,27 +13,30 @@ const ViewUsers = () => {
 
     const [totalData, setTotalData] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
+    const [currentPage, setCurrentPage] = useState(1)
 
     const loggedInUser = useSelector(state => state.user.user);
 
     useEffect(() => {
-        getUsers(1, 10);
+        getUsers(1, 5);
     }, [])
 
-    const getUsers = (page, limit) => {
+    const getUsers = (page, limit, search) => {
         setLoading(true)
 
         axios.get('/private/users/get-users', {
             params: {
                 page: page,
-                limit: limit
+                limit: limit,
+                search: search
             }
         })
             .then(response => {
                 if (response.code === 1) {
                     setUserData(response.users);
-                    setTotalData(response.totalData);
-                    setTotalPages(response.totalPages);
+                    setTotalData(response.pagination.totalData)
+                    setTotalPages(response.pagination.totalPages)
+                    setCurrentPage(response.pagination.currentPage)
                     setLoading(false)
                     setError(null)
                 }
@@ -90,7 +93,16 @@ const ViewUsers = () => {
 
     return (
         <div>
-            <Table headers={headers} data={formatUserData(userData)} itemsPerPage={5} from="view-users" getUsers={getUsers} totalData={totalData} totalPages={totalPages} />
+            <Table
+                headers={headers}
+                data={formatUserData(userData)}
+                itemsPerPage={5}
+                from="view-users"
+                getUsers={getUsers}
+                totalData={totalData}
+                totalPages={totalPages}
+                currentPage={currentPage}
+            />
         </div>
     );
 }

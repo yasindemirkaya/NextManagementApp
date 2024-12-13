@@ -40,7 +40,7 @@ const handler = async (req, res) => {
             });
         }
 
-        const { is_active, type, group_leader, created_by, limit, page } = req.query;
+        const { is_active, type, group_leader, created_by, limit, page, search } = req.query;
 
         // Kullanıcı rolüne göre parametre kontrolü
         if (userRole === 1) {
@@ -53,27 +53,37 @@ const handler = async (req, res) => {
             }
         }
 
-        // MongoDB sorgusunu başlat
-        const filter = {};
+        // Base query options
+        let queryOptions = {};
 
         // is_active
         if (is_active) {
-            filter.is_active = is_active === 'true';
+            queryOptions.is_active = is_active === 'true';
         }
 
         // type
         if (type) {
-            filter.type = type;
+            queryOptions.type = type;
         }
 
         // group_leader
         if (group_leader) {
-            filter.group_leader = group_leader;
+            queryOptions.group_leader = group_leader;
         }
 
         // created_by
         if (created_by) {
-            filter.created_by = created_by;
+            queryOptions.created_by = created_by;
+        }
+
+        // Search functionality
+        if (search) {
+            // `search` parametresiyle kullanıcı adı, soyadı veya e-posta adresinde arama yapılabilir
+            queryOptions.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+                { type: { $regex: search, $options: 'i' } },
+            ];
         }
 
         // Sayfalama için limit ve skip hesaplaması
@@ -83,18 +93,18 @@ const handler = async (req, res) => {
 
         // Eğer limit ve page parametreleri yoksa, tüm veriler döndürülecek
         if (!limitValue) {
-            limitValue = await UserGroup.countDocuments(filter); // Tüm kullanıcı gruplarını döndür
+            limitValue = await UserGroup.countDocuments(queryOptions); // Tüm kullanıcı gruplarını döndür
             skipValue = 0; // Sayfalama yapılmayacak
         }
 
         try {
             // Toplam grup sayısını al
-            const totalGroups = await UserGroup.countDocuments(filter);
+            const totalGroups = await UserGroup.countDocuments(queryOptions);
             // Toplam sayfa sayısını hesapla
-            const totalPages = limitValue ? Math.ceil(totalUsers / limitValue) : 1;
+            const totalPages = limitValue ? Math.ceil(totalGroups / limitValue) : 1;
 
             // Kullanıcı gruplarını MongoDB'den sorgula
-            const groups = await UserGroup.find(filter)
+            const groups = await UserGroup.find(queryOptions)
                 .limit(limitValue)
                 .skip(skipValue)
                 .exec();
@@ -130,10 +140,13 @@ const handler = async (req, res) => {
             res.status(200).json({
                 code: 1,
                 message: 'User groups successfully fetched.',
-                total: totalGroups,
-                currentPage: pageValue,
-                totalPages: totalPages,
-                groups: formattedGroups
+                groups: formattedGroups,
+                pagination: {
+                    totalData: totalGroups,
+                    totalPages: totalPages,
+                    currentPage: pageValue,
+                    limit: limitValue
+                }
             });
         } catch (error) {
             console.error('Error fetching user groups:', error);

@@ -40,7 +40,7 @@ const handler = async (req, res) => {
             });
         }
 
-        const { is_active, is_verified, role, created_by, updated_by, limit, page } = req.query;
+        const { is_active, is_verified, role, created_by, updated_by, limit, page, search } = req.query;
 
         // Base query options
         let queryOptions = {};
@@ -68,6 +68,16 @@ const handler = async (req, res) => {
         // updated_by
         if (updated_by) {
             queryOptions.updated_by = updated_by;
+        }
+
+        // Search functionality
+        if (search) {
+            // `search` parametresiyle kullanıcı adı, soyadı veya e-posta adresinde arama yapılabilir
+            queryOptions.$or = [
+                { first_name: { $regex: search, $options: 'i' } },
+                { last_name: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } },
+            ];
         }
 
         // İstekte bulunan kullanıcının rolüne göre dönen veriyi filtreleme
@@ -119,10 +129,12 @@ const handler = async (req, res) => {
                 code: 1,
                 message: 'Users successfully fetched.',
                 users: formattedUsers,
-                totalData: totalUsers,
-                totalPages: totalPages,
-                page: pageValue,
-                limit: limitValue,
+                pagination: {
+                    totalData: totalUsers,
+                    totalPages: totalPages,
+                    currentPage: pageValue,
+                    limit: limitValue
+                }
             });
         } catch (error) {
             console.error('Error fetching users:', error);
