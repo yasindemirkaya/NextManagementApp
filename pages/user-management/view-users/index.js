@@ -11,19 +11,29 @@ const ViewUsers = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
+    const [totalData, setTotalData] = useState(0)
+    const [totalPages, setTotalPages] = useState(0)
+
     const loggedInUser = useSelector(state => state.user.user);
 
     useEffect(() => {
-        getUsers();
+        getUsers(1, 10);
     }, [])
 
-    const getUsers = () => {
+    const getUsers = (page, limit) => {
         setLoading(true)
 
-        axios.get('/private/users/get-users')
+        axios.get('/private/users/get-users', {
+            params: {
+                page: page,
+                limit: limit
+            }
+        })
             .then(response => {
                 if (response.code === 1) {
                     setUserData(response.users);
+                    setTotalData(response.totalData);
+                    setTotalPages(response.totalPages);
                     setLoading(false)
                     setError(null)
                 }
@@ -80,7 +90,7 @@ const ViewUsers = () => {
 
     return (
         <div>
-            <Table headers={headers} data={formatUserData(userData)} itemsPerPage={5} from="view-users" />
+            <Table headers={headers} data={formatUserData(userData)} itemsPerPage={5} from="view-users" getUsers={getUsers} totalData={totalData} totalPages={totalPages} />
         </div>
     );
 }

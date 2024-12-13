@@ -83,6 +83,8 @@ const handler = async (req, res) => {
         try {
             // Toplam kullanıcı sayısını al
             const totalUsers = await User.countDocuments(queryOptions);
+            // Toplam sayfa sayısını hesapla
+            const totalPages = limitValue ? Math.ceil(totalUsers / limitValue) : 1;
 
             // Kullanıcıları getir
             const users = limitValue && pageValue
@@ -117,7 +119,8 @@ const handler = async (req, res) => {
                 code: 1,
                 message: 'Users successfully fetched.',
                 users: formattedUsers,
-                total: totalUsers,
+                totalData: totalUsers,
+                totalPages: totalPages,
                 page: pageValue,
                 limit: limitValue,
             });

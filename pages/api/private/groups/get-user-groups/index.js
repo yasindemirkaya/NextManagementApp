@@ -90,6 +90,8 @@ const handler = async (req, res) => {
         try {
             // Toplam grup sayısını al
             const totalGroups = await UserGroup.countDocuments(filter);
+            // Toplam sayfa sayısını hesapla
+            const totalPages = limitValue ? Math.ceil(totalUsers / limitValue) : 1;
 
             // Kullanıcı gruplarını MongoDB'den sorgula
             const groups = await UserGroup.find(filter)
@@ -130,7 +132,7 @@ const handler = async (req, res) => {
                 message: 'User groups successfully fetched.',
                 total: totalGroups,
                 currentPage: pageValue,
-                totalPages: Math.ceil(totalGroups / limitValue),
+                totalPages: totalPages,
                 groups: formattedGroups
             });
         } catch (error) {

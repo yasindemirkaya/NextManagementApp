@@ -2,13 +2,12 @@ import React, { useState, useEffect } from "react";
 import styles from "./index.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
-import { Badge, Button } from 'react-bootstrap';
-import Pagination from "../Pagination";
+import { Badge, Button, Pagination } from 'react-bootstrap';
 import { useRouter } from "next/router";
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
-const Table = ({ headers, data, itemsPerPage, from }) => {
+const Table = ({ headers, data, itemsPerPage, from, getUsers, totalPages }) => {
     const [searchTerm, setSearchTerm] = useState(''); // Search metni
     const [sortedData, setSortedData] = useState([]); // Verilerin sortlanmış hali
     const [currentPage, setCurrentPage] = useState(1);
@@ -21,6 +20,7 @@ const Table = ({ headers, data, itemsPerPage, from }) => {
     useEffect(() => {
         setSortedData(data);
     }, [data]);
+
 
     // Tablonun kullanıldığı sayfaya göre ekle butonunu özelleştirme
     const buttonCustomizer = (from) => {
@@ -54,7 +54,6 @@ const Table = ({ headers, data, itemsPerPage, from }) => {
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
-
     // Sıralama methodu
     const handleSort = (column) => {
         const newSortConfig = { ...sortConfig };
@@ -135,7 +134,6 @@ const Table = ({ headers, data, itemsPerPage, from }) => {
         )
     );
 
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const currentData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
@@ -207,12 +205,26 @@ const Table = ({ headers, data, itemsPerPage, from }) => {
             </table>
 
             {/* Pagination */}
-            <Pagination
-                totalPages={totalPages}
-                currentPage={currentPage}
-                onPageChange={handlePageChange}
-            />
-        </div >
+            <div className={styles.pagination}>
+                <Pagination>
+                    <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
+                    <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+
+                    {[...Array(totalPages)].map((_, index) => (
+                        <Pagination.Item
+                            key={index + 1}
+                            active={index + 1 === currentPage}
+                            onClick={() => handlePageChange(index + 1)}
+                        >
+                            {index + 1}
+                        </Pagination.Item>
+                    ))}
+
+                    <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+                    <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+                </Pagination>
+            </div>
+        </div>
     );
 };
 
