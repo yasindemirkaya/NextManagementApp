@@ -1,4 +1,4 @@
-const Login = () => {
+const GroupDetail = () => {
     return (
         <>
             Group Detail
@@ -6,4 +6,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default GroupDetail;
