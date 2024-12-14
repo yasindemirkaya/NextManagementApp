@@ -19,8 +19,8 @@ const handler = async (req, res) => {
             const decoded = verify(token, process.env.JWT_SECRET);
             const { role } = decoded;
 
-            // Super admin (2) değilse işlem reddedilir
-            if (role !== 2) {
+            // Super admin (2) ya da Admin (1) değilse işlem reddedilir
+            if (role !== 2 || role !== 1) {
                 return res.status(403).json({
                     message: "You do not have permission to access the user group types.",
                     code: 0,

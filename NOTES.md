@@ -50,3 +50,9 @@
 * Bir Super Admin kullanıcı grubu oluştururken Group Members kısmında tüm kullanıcıları görüp o gruba ekleyebilir.
 * Bir Admin kullanıcı grubu oluştururken Super Admin'leri listede göremez. Sadece kendisi gibi Adminleri ve Standard User'ları görebilir.
 * Standard User'lar kullanıcı grubu oluşturamaz.
+
+<!-- * USER GROUP TYPE RULES * -->
+* Kullanıcı grubu tiplerini Super Adminler tanımlar. Yani create servisini sadece role (2) olanlar kullanabilir.
+* Kullanıcı grubu tiplerini Super Adminler ve Admin'ler görebilir. Yani get servisini standart kullanıcılar kullanamaz.
+* Kullanıcı grubu tiplerini Super Adminler silebilir. 
+* Kullanıcı grubu tiplerini Super Adminler update edebilir.
