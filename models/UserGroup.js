@@ -28,6 +28,11 @@ const userGroupSchema = new mongoose.Schema({
         ref: 'User', // created_by, User koleksiyonundaki bir belgeyi referans alacak
         required: false,
     },
+    updated_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // updated_by, User koleksiyonundaki bir belgeyi referans alacak
+        required: false,
+    },
     members: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', // members, User koleksiyonundaki belgeleri referans alacak

@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
 const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, getUsers, getUserGroups }) => {
+    console.log(data)
     const [currentPageState, setCurrentPageState] = useState(currentPage);
 
     // Sorting
@@ -33,7 +34,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                     text: 'Add New User',
                     link: '/user-management/create-user'
                 };
-            case 'user-groups':
+            case 'view-user-groups':
                 return {
                     text: 'Add New User Group',
                     link: '/user-management/create-user-group'
@@ -54,7 +55,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             case "view-users":
                 getUsers(page, itemsPerPage)
                 break;
-            case "user-groups":
+            case "view-user-groups":
                 getUserGroups(page, itemsPerPage)
                 break;
             default:
@@ -91,7 +92,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                 case "view-users":
                     getUsers(currentPage, itemsPerPage, searchQuery);
                     break;
-                case "user-groups":
+                case "view-user-groups":
                     getUserGroups(currentPage, itemsPerPage, searchQuery);
                     break;
                 default:
@@ -108,7 +109,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             case "view-users":
                 getUsers(currentPage, itemsPerPage, '');
                 break;
-            case "user-groups":
+            case "view-user-groups":
                 getUserGroups(currentPage, itemsPerPage, '')
                 break;
             default:
@@ -125,7 +126,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             case "view-users":
                 ({ Name, Surname, id, userRole } = row);
                 break;
-            case "user-groups":
+            case "view-user-groups":
                 // Boşluk içeren anahtar adı için köşeli parantez kullanımı
                 GroupName = row["Group Name"];
                 ({ id } = row);
@@ -148,10 +149,10 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                 case "view-users":
                     dynamicPath = `/user-management/${from}/${Name.toLowerCase()}-${Surname.toLowerCase()}-${id}`;
                     break;
-                case "user-groups":
+                case "view-user-groups":
                     // Boşlukları "-" ile değiştirerek URL dostu hale getiriyoruz
                     const formattedGroupName = GroupName.toLowerCase().replace(/\s+/g, "-");
-                    dynamicPath = `/user-management/${from}/${formattedGroupName}-${id}`;
+                    dynamicPath = `/group-management/user-groups/${from}/${formattedGroupName}-${id}`;
                     break;
                 default:
                     return;
