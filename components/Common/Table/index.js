@@ -8,7 +8,6 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
 const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, getUsers, getUserGroups }) => {
-    console.log(data)
     const [currentPageState, setCurrentPageState] = useState(currentPage);
 
     // Sorting
