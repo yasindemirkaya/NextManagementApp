@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Offcanvas, Nav } from "react-bootstrap";
-import Link from "next/link";
+import { Offcanvas, Nav, Button } from "react-bootstrap";
 import sidebarMenu from "@/static/components/sidebar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
 import styles from "./index.module.scss";
 import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 
 const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
+    const router = useRouter();
     const loggedInUser = useSelector(state => state.user.user);
 
     const [activeMenuId, setActiveMenuId] = useState(null);
@@ -19,10 +20,12 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
 
     const userRole = loggedInUser.role || '';
 
+    // İzin kontrol
     const hasPermission = (menuPermission) => {
         return userRole >= menuPermission;
     };
 
+    // Ana menu click
     const handleMenuClick = (menuId, link) => {
         setActiveMenuId(prevActiveId => (prevActiveId === menuId ? null : menuId));
 
@@ -33,6 +36,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
         }
     };
 
+    // Alt menu click
     const handleSubMenuClick = (subMenuId, link) => {
         setActiveSubMenuId(prevActiveId => (prevActiveId === subMenuId ? null : subMenuId));
         window.location.href = link;
@@ -66,6 +70,17 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                         }}
                     />
                 )}
+                {/* <Button
+                    className="ms-3"
+                    variant="secondary"
+                    size="sm"
+                    onClick={(e) => {
+                        e.stopPropagation(); // Buton tıklamasının üst menüye yayılmasını engeller
+                        window.location.href = menu.link; // Yönlendirme işlemi
+                    }}
+                >
+                    <FontAwesomeIcon icon={icons.faChevronRight} />
+                </Button> */}
             </Nav.Link>
 
             {/* Alt menüler */}
@@ -105,6 +120,21 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                                             }}
                                         />
                                     )}
+
+                                    {/* Alt menünün alt menüsü yoksa buton göster */}
+                                    {/* {subMenu.subMenus && (
+                                        <Button
+                                            className="ms-3"
+                                            variant="secondary"
+                                            size="sm"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Buton tıklamasının üst menüye yayılmasını engeller
+                                                window.location.href = subMenu.link; // Yönlendirme işlemi
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={icons.faChevronRight} />
+                                        </Button>
+                                    )} */}
                                 </Nav.Link>
 
                                 {/* Alt menülerin alt menüleri */}

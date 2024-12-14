@@ -31,7 +31,7 @@ const BreadcrumbComponent = () => {
 
     return (
         <Breadcrumb className={styles.breadcrumb}>
-            <Breadcrumb.Item className={styles.breadcrumbItem} href="/">Home</Breadcrumb.Item>
+            <Breadcrumb.Item className={styles.breadcrumbItem} href="/dashboard">Home</Breadcrumb.Item>
             {pathSegments.map((segment, index) => {
                 const segmentPath = `/${pathSegments.slice(0, index + 1).join('/')}`;
 

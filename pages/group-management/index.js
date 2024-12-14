@@ -4,15 +4,15 @@ import { Card, Button, Row, Col } from "react-bootstrap";
 import sidebarMenu from "@/static/components/sidebar";
 import styles from './index.module.scss'
 
-const UserGroups = () => {
+const GroupManagement = () => {
     // User Management menüsünü ve alt menülerini bul
-    const UserGroupsMenu = sidebarMenu.flatMap(menu => menu.subMenus || []).find(subMenu => subMenu.name === "User Groups");
+    const GroupManagementMenu = sidebarMenu.find(menu => menu.name === "Group Management");
 
     return (
         <div className="container mt-5">
-            <h1 className="mb-4">User Groups</h1>
+            <h1 className="mb-4">Group Management</h1>
             <Row>
-                {UserGroupsMenu?.subMenus.map(subMenu => (
+                {GroupManagementMenu?.subMenus.map(subMenu => (
                     <Col key={subMenu.id} md={4} className="mb-3">
                         <Card className="h-100">
                             <Card.Body className="d-flex flex-column justify-content-between">
@@ -32,4 +32,4 @@ const UserGroups = () => {
     );
 };
 
-export default UserGroups;
+export default GroupManagement;

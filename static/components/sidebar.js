@@ -43,6 +43,7 @@ const sidebarMenu = [
             {
                 id: 21,
                 name: "User Groups",
+                description: "From here you can create user groups, edit and delete existing groups.",
                 link: "/group-management/user-groups",
                 iconPrimary: "faUsers",
                 iconSecondary: "",
@@ -65,6 +66,38 @@ const sidebarMenu = [
                         link: "/group-management/user-groups/create-user-group",
                         description: "Here you can create user groups to manage common tasks for users.",
                         iconPrimary: "faUserPlus",
+                        iconSecondary: "",
+                        permission: 1
+                    },
+                ],
+            },
+            // TEST GROUPS
+            {
+                id: 31,
+                name: "Test Groups",
+                description: "Test decription",
+                link: "",
+                iconPrimary: "faUsers",
+                iconSecondary: "",
+                permission: 1,
+                subMenus: [
+                    // VIEW USER GROUPS
+                    {
+                        id: 311,
+                        name: "View User Groups",
+                        link: "",
+                        description: "Here you can see user groups and create a new user group.",
+                        iconPrimary: "",
+                        iconSecondary: "",
+                        permission: 1
+                    },
+                    // CREATE NEW USER GROUP
+                    {
+                        id: 312,
+                        name: "Create New User Group",
+                        link: "",
+                        description: "Here you can create user groups to manage common tasks for users.",
+                        iconPrimary: "",
                         iconSecondary: "",
                         permission: 1
                     },
