@@ -1,0 +1,27 @@
+.mainMenu {
+    border-radius: 0.5rem;
+    margin-bottom: .5rem;
+    margin-top: .5rem;
+}
+
+.mainMenu:hover {
+    cursor: pointer;
+    // text-decoration: underline;
+    background-color: #e6e6e6;
+}
+
+
+.subMenuItem {
+    border-radius: 0.5rem;
+}
+
+.subMenuItem:hover {
+    cursor: pointer;
+    // text-decoration: underline;
+    background-color: #e6e6e6;
+    border-radius: 0.5rem;
+}
+
+.activeMenu {
+    background-color: #e6e6e6;
+}

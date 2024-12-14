@@ -11,97 +11,157 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
     const loggedInUser = useSelector(state => state.user.user);
 
     const [activeMenuId, setActiveMenuId] = useState(null);
+    const [activeSubMenuId, setActiveSubMenuId] = useState(null);
 
-    // Login olan user yoksa, Sidebar'ı render etme
     if (!loggedInUser) {
         return null;
     }
 
-    const userRole = loggedInUser ? loggedInUser.role : ''
+    const userRole = loggedInUser.role || '';
 
-    // Kullanıcının rolü menünün izin seviyesine uygun mu?
     const hasPermission = (menuPermission) => {
         return userRole >= menuPermission;
     };
 
     const handleMenuClick = (menuId, link) => {
-        // Menü tıklandığında alt menü açma/kapatma durumu
-        setActiveMenuId(prevActiveId => prevActiveId === menuId ? null : menuId);
+        setActiveMenuId(prevActiveId => (prevActiveId === menuId ? null : menuId));
 
-        // Alt menü yoksa ana menüye yönlendirme yap
-        if (!sidebarMenu.find(menu => menu.id === menuId).subMenus.length) {
+        const menu = sidebarMenu.find(menu => menu.id === menuId);
+        if (menu && (!menu.subMenus || !menu.subMenus.length)) {
             toggleSidebar();
             window.location.href = link;
         }
     };
 
-    return (
-        <>
-            {/* Offcanvas Sidebar */}
-            <Offcanvas
-                show={isSidebarVisible}
-                onHide={toggleSidebar}
-                placement="start"
-                className={styles.sidebar}
+    const handleSubMenuClick = (subMenuId, link) => {
+        setActiveSubMenuId(prevActiveId => (prevActiveId === subMenuId ? null : subMenuId));
+        window.location.href = link;
+    };
+
+    const renderMenu = (menu, level = 0) => (
+        <div key={menu.id} className={level === 0 ? styles.mainMenuWrapper : styles.subMenuWrapper}>
+            {/* Ana menüler */}
+            <Nav.Link
+                className={`text-primary fw-bold ${styles.mainMenu} ${level > 0 ? styles.subMenu : ''} ${activeMenuId === menu.id ? styles.activeMenu : ''}`}
+                as="button"
+                onClick={() => {
+                    if (!menu.subMenus || !menu.subMenus.length) {
+                        handleMenuClick(menu.id, menu.link);
+                    } else {
+                        setActiveMenuId(menu.id); // Alt menüsünü aç
+                    }
+                }}
             >
-                <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Menu</Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                    <Nav className="flex-column">
-                        {sidebarMenu
-                            .filter((menu) => hasPermission(menu.permission))
-                            .map((menu) => (
-                                <div key={menu.id}>
-                                    <Nav.Link
-                                        className={`text-dark fw-bold ${styles.mainMenu}`}
-                                        as="button"
-                                        onClick={() => handleMenuClick(menu.id, menu.link)}
-                                    >
-                                        {menu.name}
+                {/* Ana menü adı */}
+                {menu.name}
 
-                                        {/* Menüde alt menüler varsa ikon göster */}
-                                        {menu.subMenus.length > 0 && (
-                                            <FontAwesomeIcon
-                                                icon={icons[menu.iconPrimary || menu.iconSecondary]}
-                                                className={`${styles.chevron} ms-2`}
-                                                style={{
-                                                    transform: activeMenuId === menu.id ? "rotate(180deg)" : "rotate(0deg)",
-                                                    transition: "transform 0.3s ease-in-out",
-                                                }}
-                                            />
-                                        )}
-                                    </Nav.Link>
+                {/* Ana menünün alt menüsü varsa ok işareti ekle */}
+                {menu.subMenus && menu.subMenus.length > 0 && (
+                    <FontAwesomeIcon
+                        icon={icons[menu.iconPrimary || menu.iconSecondary]}
+                        className={`${styles.chevron} ms-2`}
+                        style={{
+                            transform: activeMenuId === menu.id ? "rotate(180deg)" : "rotate(0deg)",
+                            transition: "transform 0.3s ease-in-out",
+                        }}
+                    />
+                )}
+            </Nav.Link>
 
-                                    {/* Alt menüler açık mı? */}
-                                    {menu.subMenus.length > 0 && activeMenuId === menu.id && (
-                                        <Nav className="ms-3 flex-column">
-                                            {menu.subMenus
-                                                .filter((subMenu) => hasPermission(subMenu.permission))
-                                                .map((subMenu) => (
+            {/* Alt menüler */}
+            {menu.subMenus && activeMenuId === menu.id && (
+                <Nav className="ms-3 flex-column">
+                    {menu.subMenus
+                        .filter((subMenu) => hasPermission(subMenu.permission))
+                        .map((subMenu) => (
+                            <div key={subMenu.id}>
+                                <Nav.Link
+                                    className={`text-dark ${styles.subMenuItem}`}
+                                    as="button"
+                                    onClick={() => {
+                                        if (!subMenu.subMenus || !subMenu.subMenus.length) {
+                                            handleSubMenuClick(subMenu.id, subMenu.link);
+                                        } else {
+                                            setActiveSubMenuId(subMenu.id);
+                                        }
+                                    }}
+                                >
+                                    {/* Alt menü ikon */}
+                                    <FontAwesomeIcon
+                                        icon={icons[subMenu.iconPrimary || subMenu.iconSecondary]}
+                                        className="me-2"
+                                    />
+                                    {/* Alt menü adı */}
+                                    {subMenu.name}
+
+                                    {/* Alt menü ok işareti */}
+                                    {subMenu.subMenus && subMenu.subMenus.length > 0 && (
+                                        <FontAwesomeIcon
+                                            icon={icons.faChevronUp}
+                                            className={`${styles.chevron} ms-2`}
+                                            style={{
+                                                transform: activeSubMenuId === subMenu.id ? "rotate(180deg)" : "rotate(0deg)",
+                                                transition: "transform 0.3s ease-in-out",
+                                            }}
+                                        />
+                                    )}
+                                </Nav.Link>
+
+                                {/* Alt menülerin alt menüleri */}
+                                {subMenu.subMenus && activeSubMenuId === subMenu.id && (
+                                    <Nav className="ms-3 flex-column">
+                                        {subMenu.subMenus
+                                            .filter((subSubMenu) => hasPermission(subSubMenu.permission))
+                                            .map((subSubMenu) => (
+                                                <div key={subSubMenu.id}>
                                                     <Nav.Link
-                                                        onClick={toggleSidebar}
-                                                        className={`text-primary fw-bold ${styles.subMenu}`}
-                                                        key={subMenu.id}
-                                                        as={Link}
-                                                        href={subMenu.link}
-                                                        passHref
+                                                        className={`text-dark ${styles.subMenuItem}`}
+                                                        as="button"
+                                                        onClick={() => {
+                                                            if (!subSubMenu.subMenus || !subSubMenu.subMenus.length) {
+                                                                handleSubMenuClick(subSubMenu.id, subSubMenu.link);
+                                                            } else {
+                                                                setActiveSubMenuId(subSubMenu.id);
+                                                            }
+                                                        }}
                                                     >
+                                                        {/* Alt menülerin alt menüsü ikon */}
                                                         <FontAwesomeIcon
-                                                            icon={icons[subMenu.iconPrimary || subMenu.iconSecondary]}
+                                                            icon={icons[subSubMenu.iconPrimary || subSubMenu.iconSecondary]}
                                                             className="me-2"
                                                         />
-                                                        {subMenu.name}
+                                                        {/* Alt menülerin alt menüsü adı */}
+                                                        {subSubMenu.name}
                                                     </Nav.Link>
-                                                ))}
-                                        </Nav>
-                                    )}
-                                </div>
-                            ))}
-                    </Nav>
-                </Offcanvas.Body>
-            </Offcanvas>
-        </>
+                                                </div>
+                                            ))}
+                                    </Nav>
+                                )}
+                            </div>
+                        ))}
+                </Nav>
+            )}
+        </div>
+    );
+
+    return (
+        <Offcanvas
+            show={isSidebarVisible}
+            onHide={toggleSidebar}
+            placement="start"
+            className={styles.sidebar}
+        >
+            <Offcanvas.Header closeButton>
+                <Offcanvas.Title>Menu</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+                <Nav className="flex-column">
+                    {sidebarMenu
+                        .filter((menu) => hasPermission(menu.permission))
+                        .map((menu) => renderMenu(menu))}
+                </Nav>
+            </Offcanvas.Body>
+        </Offcanvas>
     );
 };
 
