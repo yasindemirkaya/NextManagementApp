@@ -78,7 +78,6 @@ const handler = async (req, res) => {
 
         // Search functionality
         if (search) {
-            // `search` parametresiyle kullanıcı adı, soyadı veya e-posta adresinde arama yapılabilir
             queryOptions.$or = [
                 { name: { $regex: search, $options: 'i' } },
                 { description: { $regex: search, $options: 'i' } },

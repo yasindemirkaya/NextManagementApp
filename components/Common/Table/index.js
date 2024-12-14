@@ -37,7 +37,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             case 'view-user-groups':
                 return {
                     text: 'Add New User Group',
-                    link: '/user-management/create-user-group'
+                    link: '/group-management/user-groups/create-user-group'
                 };
             default:
                 return {

@@ -20,16 +20,12 @@ const CreateUserGroup = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [userGroupTypes, setUserGroupTypes] = useState([]);
+
     useEffect(() => {
         getUsers()
+        getUserGroupTypes()
     }, []);
-
-    // Dummy veriler
-    const typeOptions = [
-        { value: 'Web', label: 'Web' },
-        { value: 'Mobile', label: 'Mobile' },
-        { value: 'API', label: 'API' },
-    ];
 
     // Get users
     const getUsers = async () => {
@@ -41,6 +37,26 @@ const CreateUserGroup = () => {
                     setError(null);
                 } else {
                     setError('Failed to fetch users');
+                    setLoading(false);
+                }
+            })
+            .catch(error => {
+                setUserData([]);
+                setError(error.message);
+                setLoading(false);
+            });
+    }
+
+    // Get user group types
+    const getUserGroupTypes = async () => {
+        await axios.get('/private/user-group-types/get-user-group-types')
+            .then(response => {
+                if (response.code === 1) {
+                    setUserGroupTypes(response.user_group_types);
+                    setLoading(false);
+                    setError(null);
+                } else {
+                    setError('Failed to fetch user group types');
                     setLoading(false);
                 }
             })
@@ -146,7 +162,7 @@ const CreateUserGroup = () => {
                                 <Form.Group controlId="type">
                                     <Form.Label>Group Type</Form.Label>
                                     <Select
-                                        options={typeOptions}
+                                        options={userGroupTypes.map(type => ({ value: type.type_name, label: type.type_name }))}
                                         onChange={(selectedOption) => setValue('type', selectedOption.value)}
                                         placeholder="Select group type"
                                     />
