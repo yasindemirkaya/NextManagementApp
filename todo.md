@@ -1,7 +1,3 @@
-* public/get-user-group-types
-* private/delete-user-group-type
-* private/update-user-group-type
-
 * User Group Detail sayfasının yapılması (Detaylı gösterim için)
 * Edit User Group sayfasının yapılması (Delete ve Update için)
 
