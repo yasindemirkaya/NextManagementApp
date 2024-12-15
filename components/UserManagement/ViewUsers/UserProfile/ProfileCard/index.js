@@ -23,7 +23,7 @@ const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) =>
             getUser();
         }
         // Eğer component viewUsers sayfasından bir başkasının profilini görüntülemek için kullanıldıysa o zaman back yapıldığında yine o kullanıcının bilgilerini setlemeliyiz, login olan kişininkini değil!
-        else if (from == 'viewUsers') {
+        else if (from == 'view-users') {
             getUserDetails(user.id)
         }
         setIsEditing(false);

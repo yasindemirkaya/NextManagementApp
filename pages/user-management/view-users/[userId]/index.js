@@ -68,7 +68,7 @@ const UserDetailPage = () => {
                         user={user}
                         loading={loading}
                         error={error}
-                        from={'viewUsers'}
+                        from={'view-users'}
                         getUserDetails={getUserDetails}
                     />
                 </Col>

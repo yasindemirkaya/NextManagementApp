@@ -10,10 +10,6 @@ import privateMiddleware from '@/middleware/private/index';
 import UserGroup from '@/models/UserGroup';
 import User from '@/models/User';
 
-const findUserById = async (id) => {
-    return await User.findById(id).lean();
-};
-
 const handler = async (req, res) => {
     if (req.method === 'GET') {
         try {
