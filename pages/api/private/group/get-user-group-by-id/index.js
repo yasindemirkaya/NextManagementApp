@@ -49,6 +49,7 @@ const handler = async (req, res) => {
                 created_by: userMap.get(group.created_by?.toString()) || group.created_by,
                 updated_by: userMap.get(group.updated_by?.toString()) || group.updated_by,
                 group_leader: userMap.get(group.group_leader?.toString()) || group.group_leader,
+                group_leader_id: group.group_leader ? group.group_leader.toString() : null, // ID'yi ekliyoruz
             };
 
             return res.status(200).json({

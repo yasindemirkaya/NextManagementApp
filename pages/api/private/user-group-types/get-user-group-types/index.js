@@ -20,7 +20,7 @@ const handler = async (req, res) => {
             const { role } = decoded;
 
             // Super admin (2) ya da Admin (1) değilse işlem reddedilir
-            if (role == 1) {
+            if (role == 0) {
                 return res.status(403).json({
                     message: "You do not have permission to access the user group types.",
                     code: 0,

@@ -27,7 +27,7 @@ const findUserById = async (id) => {
 // ID'si gönderilen UserGroup'u güncelle
 const updateUserGroupById = async (id, updateData) => {
     // Dinamik alanlar için kontrol
-    const allowedFields = ['group_name', 'description', 'type', 'is_active', 'group_leader'];
+    const allowedFields = ['group_name', 'description', 'type', 'is_active', 'group_leader', 'members', 'updated_by'];
     const updateFields = {};
 
     // Sadece izin verilen alanları updateData'dan al

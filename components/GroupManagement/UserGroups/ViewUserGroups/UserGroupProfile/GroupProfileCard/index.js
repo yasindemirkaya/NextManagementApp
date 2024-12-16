@@ -4,11 +4,10 @@ import { formatAccountStatus } from '@/helpers/formatAccountItems';
 import styles from './index.module.scss';
 import axios from '@/utils/axios';
 import { useSelector } from 'react-redux';
-import Cookies from 'js-cookie';
 import Link from 'next/link';
+import EditGroupProfileCard from '../EditGroup';
 
-const GroupProfileCard = ({ userGroup, loading, error, from }) => {
-    console.log(userGroup)
+const GroupProfileCard = ({ userGroup, loading, error, getUserGroupDetails }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [membersInfo, setMembersInfo] = useState([]);
     const loggedInUser = useSelector(state => state.user.user);
@@ -42,6 +41,13 @@ const GroupProfileCard = ({ userGroup, loading, error, from }) => {
 
     // Handle Edit
     const handleEditClick = () => setIsEditing(true);
+
+    // Handle Cancle
+    const handleCancelClick = () => {
+        getUserGroupDetails(userGroup._id);
+        fetchMembers()
+        setIsEditing(false);
+    };
 
     const editButtonDisplayer = (loggedInUser) => {
         if (loggedInUser && loggedInUser.role !== 0) {
@@ -114,7 +120,7 @@ const GroupProfileCard = ({ userGroup, loading, error, from }) => {
                 </Card>
             ) : (
                 <div className={styles.editProfileContainer}>
-                    <EditProfileCard userData={user} onCancel={handleCancelClick} />
+                    <EditGroupProfileCard userGroupData={userGroup} onCancel={handleCancelClick} />
                 </div>
             )}
         </div>

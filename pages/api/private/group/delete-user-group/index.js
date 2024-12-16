@@ -32,7 +32,7 @@ const handler = async (req, res) => {
             const { groupId: targetGroupId } = req.body;
 
             if (!targetGroupId) {
-                return res.status(400).json({
+                return res.status(200).json({
                     message: 'Target group ID is required',
                     code: 0
                 });

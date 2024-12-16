@@ -47,7 +47,7 @@ const handler = async (req, res) => {
 
             // Eğer members varsa, en az 2 kullanıcı olmalı
             if (members && members.length < 2) {
-                return res.status(400).json({
+                return res.status(200).json({
                     message: "A group must have at least 2 members.",
                     code: 0,
                 });
