@@ -6,6 +6,7 @@ import axios from '@/utils/axios';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import EditGroupProfileCard from '../EditGroup';
+import { getUserById } from '@/services/userApi';
 
 const GroupProfileCard = ({ userGroup, loading, error, getUserGroupDetails }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -21,17 +22,13 @@ const GroupProfileCard = ({ userGroup, loading, error, getUserGroupDetails }) =>
     // Get User Group Members
     const fetchMembers = async () => {
         try {
-            const memberPromises = userGroup.members.map(id =>
-                axios.get('/private/user/get-user-by-id', {
-                    params: { id },
-                })
-            );
+            const memberPromises = userGroup.members.map(id => getUserById(id));
 
             const responses = await Promise.all(memberPromises);
 
             const successfulMembers = responses
-                .filter(response => response.code === 1)
-                .map(response => response.user);
+                .filter(response => response.success)
+                .map(response => response.data);
 
             setMembersInfo(successfulMembers);
         } catch (err) {

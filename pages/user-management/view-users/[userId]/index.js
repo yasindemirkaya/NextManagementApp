@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
-import axios from '@/utils/axios';
 import styles from './index.module.scss';
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import ProfileCard from "@/components/UserManagement/ViewUsers/UserProfile/ProfileCard";
+import { getUserById } from "@/services/userApi";
 
 const UserDetailPage = () => {
     const [user, setUser] = useState(null);
@@ -37,28 +37,21 @@ const UserDetailPage = () => {
     };
 
     // Get User By ID
-    const getUserDetails = (id) => {
-        setLoading(true)
+    const getUserDetails = async (userId) => {
+        setLoading(true);
 
-        axios.get('/private/user/get-user-by-id', {
-            params: {
-                id,
-            },
-        })
-            .then((response) => {
-                if (response.code === 1) {
-                    setUser(response.user)
-                    setLoading(false)
-                } else {
-                    setLoading(false)
-                    setError(response.message)
-                }
-            })
-            .catch((error) => {
-                setLoading(false)
-                setError('An error occured when receiving user data. Please try again later.')
-            })
-    }
+        const result = await getUserById(userId);
+
+        if (result.success) {
+            setUser(result.data);
+            setError(null);
+        } else {
+            setError(result.error);
+            setUser(null);
+        }
+
+        setLoading(false);
+    };
 
     return (
         <Container className={styles.profilePage}>
