@@ -4,6 +4,7 @@ import Table from "@/components/Common/Table";
 import axios from "@/utils/axios";
 import { mobileFormatter } from '@/helpers/mobileFormatter';
 import { useSelector } from "react-redux";
+import { getUsers } from "@/services/userApi";
 
 const ViewUsers = () => {
     const headers = ["Name", "Surname", "Email", 'Role', 'Mobile', 'Is Active', 'Is Verified']
@@ -18,34 +19,27 @@ const ViewUsers = () => {
     const loggedInUser = useSelector(state => state.user.user);
 
     useEffect(() => {
-        getUsers(1, 10);
+        fetchUsers({ page: 1, limit: 10 });
     }, [])
 
-    const getUsers = (page, limit, search) => {
-        setLoading(true)
+    const fetchUsers = async (params) => {
+        setLoading(true);
+        const result = await getUsers(params);
 
-        axios.get('/private/users/get-users', {
-            params: {
-                page: page,
-                limit: limit,
-                search: search
+        if (result.success) {
+            setUserData(result.data);
+            if (result.pagination) {
+                setTotalData(result.pagination.totalData)
+                setTotalPages(result.pagination.totalPages)
+                setCurrentPage(result.pagination.currentPage)
             }
-        })
-            .then(response => {
-                if (response.code === 1) {
-                    setUserData(response.users);
-                    setTotalData(response.pagination.totalData)
-                    setTotalPages(response.pagination.totalPages)
-                    setCurrentPage(response.pagination.currentPage)
-                    setLoading(false)
-                    setError(null)
-                }
-            })
-            .catch(error => {
-                setUserData([])
-                setError(error.message);
-                setLoading(false);
-            });
+            setError(null);
+        } else {
+            setError(result.error);
+            setUserData([]);
+        }
+
+        setLoading(false);
     };
 
     // User verisini tabloya gönderilecek şekilde formatlıyoruz

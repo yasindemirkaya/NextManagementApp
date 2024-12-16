@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import Select from 'react-select';
+import { getUsers } from '@/services/userApi';
 
 const CreateUserGroup = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
@@ -23,28 +24,25 @@ const CreateUserGroup = () => {
     const [userGroupTypes, setUserGroupTypes] = useState([]);
 
     useEffect(() => {
-        getUsers()
+        fetchUsers()
         getUserGroupTypes()
     }, []);
 
     // Get users
-    const getUsers = async () => {
-        await axios.get('/private/users/get-users')
-            .then(response => {
-                if (response.code === 1) {
-                    setUserData(response.users);
-                    setLoading(false);
-                    setError(null);
-                } else {
-                    setError('Failed to fetch users');
-                    setLoading(false);
-                }
-            })
-            .catch(error => {
-                setUserData([]);
-                setError(error.message);
-                setLoading(false);
-            });
+    const fetchUsers = async () => {
+        setLoading(true)
+
+        const result = await getUsers();
+
+        if (result.success) {
+            setUserData(result.data)
+            setError(null)
+        } else {
+            setUserData([])
+            setError(result.error)
+        }
+
+        setLoading(false)
     }
 
     // Get user group types

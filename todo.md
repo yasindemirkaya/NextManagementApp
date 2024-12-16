@@ -1,1 +1,5 @@
-* getUsers gibi tekrar tekrar kullanılacak API isteklerini yapan methodların merkezileştirilmesi.
+MERKEZİLEŞTİRİLECEK API ÇAĞIRIMLARI
+
+getUserGroups
+getUserGroupTypes
+GetUserById
