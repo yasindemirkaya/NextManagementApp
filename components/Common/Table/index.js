@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 
-const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, getUsers, getUserGroups }) => {
+const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, fetchUsers, getUserGroups }) => {
     const [currentPageState, setCurrentPageState] = useState(currentPage);
 
     // Sorting
@@ -52,7 +52,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
 
         switch (from) {
             case "view-users":
-                getUsers(page, itemsPerPage)
+                fetchUsers({ page: page, limit: itemsPerPage });
                 break;
             case "view-user-groups":
                 getUserGroups(page, itemsPerPage)

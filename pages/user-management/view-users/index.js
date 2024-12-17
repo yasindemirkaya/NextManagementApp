@@ -92,7 +92,7 @@ const ViewUsers = () => {
                 data={formatUserData(userData)}
                 itemsPerPage={5}
                 from="view-users"
-                getUsers={getUsers}
+                fetchUsers={fetchUsers}
                 totalData={totalData}
                 totalPages={totalPages}
                 currentPage={currentPage}
