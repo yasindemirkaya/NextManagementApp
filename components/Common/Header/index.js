@@ -41,18 +41,33 @@ const Header = ({ toggleSidebar }) => {
 
                     <Navbar.Collapse id="basic-navbar-nav">
                         {/* Menu */}
-                        {headerMenu.map(menu => (
-                            <Nav key={menu.id}>
-                                <Nav.Link as={Link} href={menu.link}>{menu.name}</Nav.Link>
-                            </Nav>
-                        ))}
+                        {headerMenu
+                            .filter(menu => menu.id <= 2)
+                            .map(menu => (
+                                <Nav key={menu.id} className={styles.menuItem}>
+                                    <Nav.Link as={Link} href={menu.link}>{menu.name}</Nav.Link>
+                                </Nav>
+                            ))
+                        }
 
                         <Nav className="ms-auto">
+                            {headerMenu
+                                .filter(menu => menu.id > 2)
+                                .map(menu => (
+                                    <Nav key={menu.id} className={styles.menuItem}>
+                                        <Nav.Link as={Link} href={menu.link}>
+                                            <FontAwesomeIcon icon={icons[menu.icon]} />
+                                        </Nav.Link>
+                                    </Nav>
+                                ))
+                            }
+
+                            {/* Profile / Log Out */}
                             {loggedInUser ? (
                                 <>
-                                    <Nav.Link as={Link} href="/profile">{profileText}</Nav.Link>
+                                    <Nav.Link as={Link} href="/profile" className={styles.menuItem}>{profileText}</Nav.Link>
                                     <Nav.Link as="span" onClick={handleLogout} className={styles.logout}>
-                                        Log Out
+                                        <FontAwesomeIcon icon={icons.faRightFromBracket} />
                                     </Nav.Link>
                                 </>
                             ) : (

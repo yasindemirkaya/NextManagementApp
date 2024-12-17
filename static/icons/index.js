@@ -1,4 +1,4 @@
-import { faSearch, faUser, faUsers, faUserPlus, faInfoCircle, faChevronDown, faChevronUp, faChevronCircleUp, faChevronLeft, faChevronRight, faEye, faEyeSlash, faPlusCircle, faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faRightFromBracket, faSearch, faUser, faUsers, faUserPlus, faInfoCircle, faChevronDown, faChevronUp, faChevronCircleUp, faChevronLeft, faChevronRight, faEye, faEyeSlash, faPlusCircle, faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
 
 
 export const icons = {
@@ -15,5 +15,7 @@ export const icons = {
     faEyeSlash,
     faPlusCircle,
     faSearch,
-    faDeleteLeft
+    faDeleteLeft,
+    faRightFromBracket,
+    faBell
 };

@@ -4,4 +4,19 @@
 
 .logout {
     cursor: pointer;
+    margin-left: .5rem;
+}
+
+.logout:hover {
+    border-radius: .5rem;
+    background-color: #cececee6;
+}
+
+.menuItem {
+    margin-right: .5rem;
+}
+
+.menuItem:hover {
+    border-radius: .5rem;
+    background-color: #cececee6;
 }
