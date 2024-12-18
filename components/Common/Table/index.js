@@ -90,8 +90,11 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
 
             switch (from) {
                 case "view-users":
-                    let search = searchQuery
-                    fetchUsers({ currentPage, itemsPerPage, search });
+                    fetchUsers({
+                        page: '',
+                        limit: '',
+                        search: searchQuery
+                    });
                     break;
                 case "view-user-groups":
                     getUserGroups(currentPage, itemsPerPage, searchQuery);
@@ -104,11 +107,15 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
 
     // Clear search
     const handleClearSearch = () => {
-        setSearchQuery(''); // Arama sorgusunu temizle
+        setSearchQuery("");
 
         switch (from) {
             case "view-users":
-                getUsers(currentPage, itemsPerPage, '');
+                fetchUsers({
+                    page: 1,
+                    limit: 5,
+                    search: ''
+                });
                 break;
             case "view-user-groups":
                 getUserGroups(currentPage, itemsPerPage, '')
@@ -226,7 +233,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                         <FontAwesomeIcon icon={icons.faSearch} />
                     </InputGroup.Text>
                     {/* Clear Search */}
-                    <Button variant="danger" onClick={handleClearSearch}>
+                    <Button variant="danger" onClick={handleClearSearch} disabled={searchQuery == null}>
                         <FontAwesomeIcon icon={icons.faDeleteLeft} />
                     </Button>
                 </InputGroup>
