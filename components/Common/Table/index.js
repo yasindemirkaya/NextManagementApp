@@ -90,7 +90,8 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
 
             switch (from) {
                 case "view-users":
-                    getUsers(currentPage, itemsPerPage, searchQuery);
+                    let search = searchQuery
+                    fetchUsers({ currentPage, itemsPerPage, search });
                     break;
                 case "view-user-groups":
                     getUserGroups(currentPage, itemsPerPage, searchQuery);
