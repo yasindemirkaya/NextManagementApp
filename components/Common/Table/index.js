@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import styles from "./index.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
-import { Badge, Button, Pagination, Form, InputGroup } from 'react-bootstrap';
+import { Row, Col, Badge, Button, Pagination, Form, InputGroup } from 'react-bootstrap';
 import { useRouter } from "next/router";
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
+import * as XLSX from 'xlsx'
 
 const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, fetchUsers, getUserGroups }) => {
     const [currentPageState, setCurrentPageState] = useState(currentPage);
@@ -160,12 +161,59 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
         }
     }
 
+    // To format the data before exporting to excel
+    const processExportData = (data, from) => {
+        switch (from) {
+            case 'view-users':
+                return data.map((item) => ({
+                    // id: item.id,
+                    Name: item.Name,
+                    Surname: item.Surname,
+                    Email: item.Email,
+                    Mobile: item.Mobile,
+                    Role: item.Role?.props?.children || '',
+                    'Is Active': item['Is Active']?.props?.children || '',
+                    'Is Verified': item['Is Verified']?.props?.children || '',
+                    // isSelf: item.isSelf ? 'Yes' : 'No',
+                    // userRole: item.userRole,
+                }));
+
+            case 'view-user-groups':
+                return data.map((item) => ({
+                    id: item.id,
+                    'Group Name': item['Group Name'],
+                    'Group Leader': item['Group Leader'],
+                    Description: item.Description,
+                    'Created By': item['Created By'],
+                    'Updated By': item['Updated By'],
+                    Type: item.Type,
+                    'Is Active': item['Is Active']?.props?.children || '',
+                }));
+
+            default:
+                return {
+                    text: 'Add New Item',
+                    link: '#',
+                };
+        }
+    };
+
+    // Excel export method
+    const exportToExcel = () => {
+        const processedData = processExportData(data, from);
+
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(processedData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        XLSX.writeFile(workbook, `${from}-data.xlsx`);
+    };
+
     return (
         <div className={styles.tableContainer}>
             {/* Search */}
-            <div className={styles.searchContainer}>
+            <div className={`d-flex justify-content-between ${styles.searchContainer}`}>
                 {/* Search Input ve Button */}
-                <InputGroup className={`${styles.inputGroup} me-3`}>
+                <InputGroup className={`${styles.inputGroup} me-3`} style={{ maxWidth: '400px' }}>
                     <Form.Control
                         type="text"
                         placeholder="Search..."
@@ -181,10 +229,17 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                         <FontAwesomeIcon icon={icons.faDeleteLeft} />
                     </Button>
                 </InputGroup>
-                <Button variant="primary" type="submit" href={buttonCustomizer(from).link}>
-                    <FontAwesomeIcon icon={icons.faPlusCircle} className="me-2" />
-                    {buttonCustomizer(from).text}
-                </Button>
+
+                {/* Sağdaki Butonlar */}
+                <div className="d-flex">
+                    <Button variant="primary" type="submit" href={buttonCustomizer(from).link} className="me-2">
+                        <FontAwesomeIcon icon={icons.faPlusCircle} className="me-2" />
+                        {buttonCustomizer(from).text}
+                    </Button>
+                    <Button variant="success" onClick={exportToExcel}>
+                        <FontAwesomeIcon icon={icons.faFileExcel} />
+                    </Button>
+                </div>
             </div>
 
             {/* Table */}
