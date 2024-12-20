@@ -11,6 +11,7 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { login } from '@/services/loginApi';
 
 const Login = () => {
     const router = useRouter();
@@ -42,10 +43,7 @@ const Login = () => {
 
         try {
             // API'ye giriş isteği gönder
-            const response = await axios.post('/public/login', {
-                email: data.email,
-                password: data.password
-            });
+            const response = await login(data.email, data.password)
 
             if (response.message === 'Success') {
                 setLoading(false);

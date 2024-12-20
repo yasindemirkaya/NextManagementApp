@@ -175,11 +175,11 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             case 'view-users':
                 return data.map((item) => ({
                     // id: item.id,
-                    Name: item.Name,
-                    Surname: item.Surname,
-                    Email: item.Email,
-                    Mobile: item.Mobile,
-                    Role: item.Role?.props?.children || '',
+                    'Name': item.Name,
+                    'Surname': item.Surname,
+                    'Email': item.Email,
+                    'Mobile': item.Mobile,
+                    'Role': item.Role?.props?.children || '',
                     'Is Active': item['Is Active']?.props?.children || '',
                     'Is Verified': item['Is Verified']?.props?.children || '',
                     // isSelf: item.isSelf ? 'Yes' : 'No',
@@ -188,13 +188,13 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
 
             case 'view-user-groups':
                 return data.map((item) => ({
-                    id: item.id,
+                    // id: item.id,
                     'Group Name': item['Group Name'],
                     'Group Leader': item['Group Leader'],
-                    Description: item.Description,
+                    'Description': item.Description,
                     'Created By': item['Created By'],
                     'Updated By': item['Updated By'],
-                    Type: item.Type,
+                    'Type': item.Type,
                     'Is Active': item['Is Active']?.props?.children || '',
                 }));
 

@@ -7,6 +7,7 @@ import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
+import { createUser } from '@/services/userApi';
 
 const CreateUser = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
@@ -21,18 +22,7 @@ const CreateUser = () => {
     // Submit form
     const onSubmit = async (data) => {
         try {
-            const mobile = data.mobile.replace(/\D/g, '');
-
-            const response = await axios.post('/private/user/create-user', {
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                password: data.password,
-                mobile: mobile,
-                isActive: data.isActive,
-                isVerified: data.isVerified,
-                role: data.role
-            })
+            const response = await createUser(data);
 
             if (response.code === 1) {
                 reset({
@@ -47,19 +37,19 @@ const CreateUser = () => {
                 });
                 Swal.fire({
                     title: response.message,
-                    icon: 'success'
+                    icon: 'success',
                 });
             } else {
                 Swal.fire({
                     title: response.message,
-                    icon: 'error'
+                    icon: 'error',
                 });
             }
         } catch (error) {
             Swal.fire({
                 title: 'Error',
                 text: 'An error occurred when creating a new user. Please try again later.',
-                icon: 'error'
+                icon: 'error',
             });
         }
     };

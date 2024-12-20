@@ -10,6 +10,7 @@ import { ToastContainer } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { signUp } from '@/services/registerApi';
 
 const SignUp = () => {
     const router = useRouter();
@@ -35,13 +36,7 @@ const SignUp = () => {
 
         try {
             // Register API isteği gönderiliyor
-            const response = await axios.post('/public/register', {
-                firstName,
-                lastName,
-                email,
-                password,
-                mobile,
-            });
+            const response = await signUp({ firstName, lastName, email, password, mobile });
 
             if (response.result) {
                 toast('SUCCESS', response.message);

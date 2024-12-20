@@ -2,7 +2,7 @@ import ProfileCard from '@/components/UserManagement/ViewUsers/UserProfile/Profi
 import { Container, Row, Col } from 'react-bootstrap';
 import styles from './index.module.scss';
 import { useEffect, useState } from 'react';
-import axios from '@/utils/axios';
+import { getUser } from '@/services/userApi';
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -10,21 +10,20 @@ const Profile = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        getUser();
+        fetchUser();
     }, []);
 
-    const getUser = () => {
-        axios.get('/private/user/get-user')
-            .then(response => {
-                setUser(response.user);
-                setLoading(false);
-                setError(null);
-            })
-            .catch(error => {
-                setError(error.message);
-                setLoading(false);
-            });
-    };
+    const fetchUser = async () => {
+        try {
+            const response = await getUser();
+            setUser(response.user);
+            setLoading(false);
+            setError(null);
+        } catch (error) {
+            setError(error.message);
+            setLoading(false);
+        }
+    }
 
     return (
         <Container className={styles.profilePage}>

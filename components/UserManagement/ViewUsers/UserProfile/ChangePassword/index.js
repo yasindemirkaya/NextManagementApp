@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { changePassword, changePasswordById } from '@/services/userApi';
 
 const ChangePassword = ({ show, onHide, isSelf, userId }) => {
     const {
@@ -37,9 +38,9 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
     const router = useRouter();
 
     // Kullanıcının kendi şifresini güncellediği servis
-    const changePassword = async (data) => {
+    const handleChangePassword = async (data) => {
         try {
-            const response = await axios.patch('/private/user/change-password', data);
+            const response = await changePassword(data);
 
             if (response.code === 1) {
                 Swal.fire({
@@ -53,9 +54,9 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
                 // Kullanıcı şifresini değiştirdikten sonra logout edilir
                 setTimeout(() => {
                     Swal.close();
-                    Cookies.remove('token')
+                    Cookies.remove('token');
                     dispatch(clearUser());
-                    router.push('/login')
+                    router.push('/login');
                 }, 2000);
             } else {
                 Swal.fire({
@@ -72,17 +73,12 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
                 text: 'An error occurred. Please try again.',
             });
         }
-    }
+    };
 
     // Yöneticilerin diğer kullanıcıların şifrelerini güncellediği servis
-    const changePasswordById = async (data) => {
+    const handleChangePasswordById = async (data) => {
         try {
-            data = {
-                ...data,
-                userId
-            }
-
-            const response = await axios.patch('/private/user/change-password-by-id', data);
+            const response = await changePasswordById(data, userId);
 
             if (response.code === 1) {
                 Swal.fire({
@@ -111,9 +107,9 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
 
     const onSubmit = async (data) => {
         if (isSelf) {
-            changePassword(data)
+            handleChangePassword(data)
         } else {
-            changePasswordById(data)
+            handleChangePasswordById(data)
         }
     };
 

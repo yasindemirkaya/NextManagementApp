@@ -11,6 +11,7 @@ import { isSelf } from '@/helpers/isSelf';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
 import Cookies from 'js-cookie';
+import { deleteUser, deleteUserById } from '@/services/userApi';
 
 const EditProfileCard = ({ userData, onCancel }) => {
     const loggedInUser = useSelector(state => state.user.user);
@@ -141,26 +142,26 @@ const EditProfileCard = ({ userData, onCancel }) => {
     }
 
     // Kullanıcının kendi profilini sildiği servis
-    const deleteUser = async () => {
+    const handleDeleteUser = async () => {
         const confirmation = await Swal.fire({
             title: 'Are you sure?',
-            text: "Your account will be permanently deleted and cannot be recovered.",
+            text: 'Your account will be permanently deleted and cannot be recovered.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, delete it!',
         });
 
         if (confirmation.isConfirmed) {
             try {
-                const response = await axios.delete('/private/user/delete-user');
+                const response = await deleteUser();
 
                 if (response.code === 1) {
                     Swal.fire({
                         title: 'Account Deleted',
                         text: 'Your account has been deleted successfully.',
-                        icon: 'success'
+                        icon: 'success',
                     });
                     Cookies.remove('token');
                     dispatch(clearUser());
@@ -169,7 +170,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     Swal.fire({
                         title: 'Error',
                         text: response.message || 'Account could not be deleted. Please try again.',
-                        icon: 'error'
+                        icon: 'error',
                     });
                 }
             } catch (error) {
@@ -177,46 +178,42 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 Swal.fire({
                     title: 'Error',
                     text: 'An error occurred while deleting the account. Please try again later.',
-                    icon: 'error'
+                    icon: 'error',
                 });
             }
         }
-    }
+    };
 
     // Kullanıcının bir başka profili sildiği servis
-    const deleteUserById = async (userId) => {
+    const handleDeleteUserById = async (userId) => {
         const confirmation = await Swal.fire({
             title: 'Are you sure?',
-            text: "This user account will be permanently deleted and cannot be recovered.",
+            text: 'This user account will be permanently deleted and cannot be recovered.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, delete it!',
         });
 
         if (confirmation.isConfirmed) {
             try {
-                const response = await axios.delete('/private/user/delete-user-by-id', {
-                    data: {
-                        userId: userId,
-                    },
-                });
+                const response = await deleteUserById(userId);
 
                 if (response.code === 1) {
                     Swal.fire({
                         title: 'Account Deleted',
                         text: 'The user account has been deleted successfully.',
-                        icon: 'success'
+                        icon: 'success',
                     });
                     setTimeout(() => {
-                        router.push('/user-management/view-users')
+                        router.push('/user-management/view-users');
                     }, 1000);
                 } else {
                     Swal.fire({
                         title: 'Error',
                         text: response.message || 'User account could not be deleted. Please try again.',
-                        icon: 'error'
+                        icon: 'error',
                     });
                 }
             } catch (error) {
@@ -224,7 +221,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 Swal.fire({
                     title: 'Error',
                     text: 'An error occurred while deleting the user. Please try again later.',
-                    icon: 'error'
+                    icon: 'error',
                 });
             }
         }
@@ -240,9 +237,9 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
     const handleDeleteAccount = async () => {
         if (isSelf((loggedInUser ? loggedInUser.id : null), userData.id)) {
-            deleteUser()
+            handleDeleteUser()
         } else {
-            deleteUserById(userData.id)
+            handleDeleteUserById(userData.id)
         }
     };
 
