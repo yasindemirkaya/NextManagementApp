@@ -37,7 +37,6 @@ const handler = async (req, res) => {
                     type_name: groupType.type_name,
                     created_by: groupType.created_by,
                     updated_by: groupType.updated_by,
-                    // Eğer başka alanlar varsa, onları da buraya ekleyebilirsiniz
                 },
             });
         } catch (error) {

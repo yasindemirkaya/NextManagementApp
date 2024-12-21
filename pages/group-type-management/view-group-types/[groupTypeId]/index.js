@@ -2,52 +2,52 @@ import { useRouter } from "next/router";
 import styles from './index.module.scss';
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import ProfileCard from "@/components/GroupTypeManagement/ViewGroupTypes/UserProfile/ProfileCard";
-import { getUserById } from "@/services/userApi";
+import ProfileCard from "@/components/GroupTypeManagement/ViewGroupTypes/GroupTypeProfile/ProfileCard";
+import { getGroupTypeById } from "@/services/groupTypeApi";
 
 const UserDetailPage = () => {
-    const [user, setUser] = useState(null);
+    const [groupType, setGroupType] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const router = useRouter();
-    const { userId } = router.query;
+    const { groupTypeId } = router.query;
 
 
     useEffect(() => {
-        const userDataFromQuery = queryFormatter(userId)
-        if (userDataFromQuery.id) {
-            getUserDetails(userDataFromQuery.id)
+        const groupTypeDataFromQuery = queryFormatter(groupTypeId)
+        if (groupTypeDataFromQuery.id) {
+            fetchGroupTypeById(groupTypeDataFromQuery.id)
         }
-    }, [userId])
+    }, [groupTypeId])
 
     // Formatter fonksiyonu
-    const queryFormatter = (userId) => {
-        if (userId) {
-            // userId örneği: "kevin-owens-41642312-bc53-45ee-ad38-8e45930da129"
-            const parts = userId.split('-');
+    const queryFormatter = (groupTypeId) => {
+        if (groupTypeId) {
+            // groupTypeId örneği: "finance-6766de1f962f3e072e36bb1a"
+            const parts = groupTypeId.split('-');
 
-            const name = parts[0];
-            const surname = parts[1];
-            const id = parts.slice(2).join('-');
+            const typeName = parts[0];
+            const id = parts[1];
 
-            return { name, surname, id };
+            return { typeName, id };
         }
         return {};
     };
 
     // Get User By ID
-    const getUserDetails = async (userId) => {
+    const fetchGroupTypeById = async (groupTypeId) => {
         setLoading(true);
 
-        const result = await getUserById(userId);
+        // getGroupTypeById fonksiyonunu kullanarak group type'ı alıyoruz
+        const result = await getGroupTypeById(groupTypeId);
 
         if (result.success) {
-            setUser(result.data);
+            setGroupType(result.data);
             setError(null);
         } else {
             setError(result.error);
-            setUser(null);
+            setGroupType(null);
         }
 
         setLoading(false);
@@ -58,11 +58,11 @@ const UserDetailPage = () => {
             <Row className="d-flex justify-content-center h-100">
                 <Col md={4}>
                     <ProfileCard
-                        user={user}
+                        groupType={groupType}
                         loading={loading}
                         error={error}
-                        from={'view-users'}
-                        getUserDetails={getUserDetails}
+                        from={'view-group-types'}
+                        fetchGroupTypeById={fetchGroupTypeById}
                     />
                 </Col>
             </Row>

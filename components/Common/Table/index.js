@@ -184,7 +184,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                 case "view-group-types":
                     // Boşlukları "-" ile değiştirerek URL dostu hale getiriyoruz
                     const formattedTypeName = TypeName.toLowerCase().replace(/\s+/g, "-");
-                    dynamicPath = `/group-type-management/user-groups/${from}/${formattedTypeName}-${id}`;
+                    dynamicPath = `/group-type-management/${from}/${formattedTypeName}-${id}`;
                     break;
                 default:
                     return;

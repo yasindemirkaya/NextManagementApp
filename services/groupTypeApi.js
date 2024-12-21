@@ -27,6 +27,32 @@ export const getGroupTypes = async (params = {}) => {
 
 // ***************************
 // |
+// | GET GROUP TYPE BY ID
+// |
+// ***************************
+
+export const getGroupTypeById = async (id) => {
+    try {
+        const response = await axios.get('/private/user-group-types/get-user-group-type-by-id', {
+            params: { id }
+        });
+
+        return {
+            success: true,
+            data: response.groupType,
+            message: response.message,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message,
+        };
+    }
+};
+
+
+// ***************************
+// |
 // | CREATE USER GROUP TYPE
 // |
 // ***************************
@@ -71,7 +97,7 @@ export const updateGroupType = async (groupTypeId, newTypeName) => {
 export const deleteGroupType = async (groupTypeId) => {
     try {
         const response = await axios.delete('/private/user-group-types/delete-user-group-type', {
-            data: { groupTypeId }, // DELETE isteklerinde body kısmını data ile göndermelisiniz
+            data: { groupTypeId },
         });
         return response.data;
     } catch (error) {
