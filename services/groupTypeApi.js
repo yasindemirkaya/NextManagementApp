@@ -2,11 +2,11 @@ import axios from '@/utils/axios';
 
 // ***************************
 // |
-// | GET ALL USER GROUP TYPES
+// | GET ALL GROUP TYPES
 // |
 // ***************************
 
-export const getUserGroupTypes = async (params = {}) => {
+export const getGroupTypes = async (params = {}) => {
     try {
         const response = await axios.get('/private/user-group-types/get-user-group-types', { params });
 
@@ -31,12 +31,12 @@ export const getUserGroupTypes = async (params = {}) => {
 // |
 // ***************************
 
-export const createUserGroupType = async (typeName) => {
+export const createGroupType = async (typeName) => {
     try {
         const response = await axios.post('/private/user-group-types/create-user-group-type', {
             typeName,
         });
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }
@@ -49,7 +49,7 @@ export const createUserGroupType = async (typeName) => {
 // |
 // ***************************
 
-export const updateUserGroupType = async (groupTypeId, newTypeName) => {
+export const updateGroupType = async (groupTypeId, newTypeName) => {
     try {
         const response = await axios.put('/private/user-group-types/update-user-group', {
             groupTypeId,
@@ -68,7 +68,7 @@ export const updateUserGroupType = async (groupTypeId, newTypeName) => {
 // |
 // ***************************
 
-export const deleteUserGroupType = async (groupTypeId) => {
+export const deleteGroupType = async (groupTypeId) => {
     try {
         const response = await axios.delete('/private/user-group-types/delete-user-group-type', {
             data: { groupTypeId }, // DELETE isteklerinde body kısmını data ile göndermelisiniz
