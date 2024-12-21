@@ -6,12 +6,14 @@ import axios from '@/utils/axios';
 // |
 // ***************************
 
-export const getUserGroupTypes = async () => {
+export const getUserGroupTypes = async (params = {}) => {
     try {
-        const response = await axios.get('/private/user-group-types/get-user-group-types');
+        const response = await axios.get('/private/user-group-types/get-user-group-types', { params });
+
         return {
             success: true,
             data: response.user_group_types,
+            pagination: response.pagination,
             message: response.message,
         };
     } catch (error) {

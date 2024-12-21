@@ -20,15 +20,8 @@ const UserGroups = () => {
     const getAllGroupTypes = async (page, limit, search) => {
         setLoading(true);
 
-        // İstek atmak için gerekli parametreleri oluştur
-        const params = {
-            page: page,
-            limit: limit,
-            search: search,
-        };
-
-        // API metodunu çağır ve sonucu al
-        const result = await getUserGroupTypes(params);
+        // API'ye gerekli parametrelerle istek gönder
+        const result = await getUserGroupTypes({ page, limit, search });
 
         if (result.success) {
             setGroupTypeData(result.data);
@@ -79,7 +72,7 @@ const UserGroups = () => {
                 headers={headers}
                 data={formatGroupTypeData(groupTypeData)}
                 itemsPerPage={5}
-                from="view-user-groups"
+                from="view-group-types"
                 getAllGroupTypes={getAllGroupTypes}
                 totalData={totalData}
                 totalPages={totalPages}

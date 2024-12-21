@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import * as XLSX from 'xlsx'
 
-const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, fetchUsers, getUserGroups }) => {
+const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, fetchUsers, getUserGroups, getAllGroupTypes }) => {
     const [currentPageState, setCurrentPageState] = useState(currentPage);
 
     // Sorting
@@ -39,6 +39,11 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                     text: 'Add New User Group',
                     link: '/group-management/user-groups/create-user-group'
                 };
+            case 'view-group-types':
+                return {
+                    text: 'Add New Group Type',
+                    link: '/group-type-management/create-group-type'
+                };
             default:
                 return {
                     text: 'Add New Item',
@@ -57,6 +62,9 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                 break;
             case "view-user-groups":
                 getUserGroups(page, itemsPerPage)
+                break;
+            case 'view-group-types':
+                getAllGroupTypes(page, itemsPerPage)
                 break;
             default:
                 return;
@@ -99,6 +107,9 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                 case "view-user-groups":
                     getUserGroups(currentPage, itemsPerPage, searchQuery);
                     break;
+                case "view-group-types":
+                    getAllGroupTypes(currentPage, itemsPerPage, searchQuery);
+                    break;
                 default:
                     return;
             }
@@ -120,6 +131,9 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             case "view-user-groups":
                 getUserGroups(currentPage, itemsPerPage, '')
                 break;
+            case "view-group-types":
+                getAllGroupTypes(currentPage, itemsPerPage, '')
+                break;
             default:
                 return;
         }
@@ -128,7 +142,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
     // Satırın üzerine tıklandığında detay sayfasına yönlendirme
     const handleRowClick = (row) => {
         // Datayı Table hangi sayfada kullanılacaksa ona göre dizayn etmeliyiz.
-        let Name, Surname, id, userRole, GroupName;
+        let Name, Surname, id, userRole, GroupName, TypeName;
 
         switch (from) {
             case "view-users":
@@ -137,6 +151,11 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             case "view-user-groups":
                 // Boşluk içeren anahtar adı için köşeli parantez kullanımı
                 GroupName = row["Group Name"];
+                ({ id } = row);
+                break;
+            case "view-group-types":
+                // Boşluk içeren anahtar adı için köşeli parantez kullanımı
+                TypeName = row["Type Name"];
                 ({ id } = row);
                 break;
             default:
@@ -161,6 +180,11 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                     // Boşlukları "-" ile değiştirerek URL dostu hale getiriyoruz
                     const formattedGroupName = GroupName.toLowerCase().replace(/\s+/g, "-");
                     dynamicPath = `/group-management/user-groups/${from}/${formattedGroupName}-${id}`;
+                    break;
+                case "view-group-types":
+                    // Boşlukları "-" ile değiştirerek URL dostu hale getiriyoruz
+                    const formattedTypeName = TypeName.toLowerCase().replace(/\s+/g, "-");
+                    dynamicPath = `/group-type-management/user-groups/${from}/${formattedTypeName}-${id}`;
                     break;
                 default:
                     return;
@@ -198,6 +222,13 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                     'Is Active': item['Is Active']?.props?.children || '',
                 }));
 
+            case 'view-group-types':
+                return data.map((item) => ({
+                    // id: item.id,
+                    'Type Name': item['Type Name'],
+                    'Created By': item['Created By'],
+                    'Updated By': item['Updated By'],
+                }));
             default:
                 return {
                     text: 'Add New Item',
