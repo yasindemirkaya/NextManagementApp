@@ -19,8 +19,6 @@ const CreateGroupType = () => {
         try {
             const response = await createGroupType(data.typeName);
 
-            console.log(response)
-
             if (response.code === 1) {
                 reset({ typeName: '' });
                 Swal.fire({
@@ -52,7 +50,7 @@ const CreateGroupType = () => {
         <Container>
             <Card className={`${styles.createGroupContainer}`}>
                 <Card.Body>
-                    <h2>Create User</h2>
+                    <h2>Create Group Type</h2>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Row>
                             <Col md={12}>
@@ -65,9 +63,12 @@ const CreateGroupType = () => {
                                             required: "Name is required",
                                             minLength: { value: 2, message: "Name must be at least 2 characters" },
                                         })}
+                                        isInvalid={!!errors.typeName}
                                         onBlur={(e) => handleNameChange(e, "typeName")}
                                     />
-                                    <Form.Control.Feedback type="invalid">{errors.typeName?.message}</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.typeName?.message}
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                         </Row>
