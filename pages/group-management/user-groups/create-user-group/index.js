@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { getUsers } from '@/services/userApi';
 import { createUserGroup } from '@/services/userGroupApi';
-import { getUserGroupTypes } from '@/services/userGroupTypeApi';
+import { getGroupTypes } from '@/services/groupTypeApi';
 
 const CreateUserGroup = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
@@ -51,7 +51,7 @@ const CreateUserGroup = () => {
     const fetchUserGroupTypes = async () => {
         setLoading(true);
 
-        const result = await getUserGroupTypes();
+        const result = await getGroupTypes();
 
         if (result.success) {
             setUserGroupTypes(result.data);

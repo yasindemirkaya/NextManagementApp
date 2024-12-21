@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import Select from 'react-select';
 
 import { getUsers } from '@/services/userApi';
-import { getUserGroupTypes } from '@/services/userGroupTypeApi';
+import { getGroupTypes } from '@/services/groupTypeApi';
 import { deleteUserGroup, updateUserGroup } from '@/services/userGroupApi';
 
 const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
@@ -36,7 +36,7 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
 
     useEffect(() => {
         fetchUsers()
-        handleGetUserGroupTypes()
+        handlegetGroupTypes()
 
         // Set default values after fetching users and types
         if (userGroupData) {
@@ -64,12 +64,12 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
     }
 
     // Get user group types
-    const handleGetUserGroupTypes = async () => {
+    const handlegetGroupTypes = async () => {
         setLoading(true);
         setError(null);
 
         try {
-            const response = await getUserGroupTypes();
+            const response = await getGroupTypes();
 
             if (response.code === 1) {
                 setUserGroupTypes(response.user_group_types);

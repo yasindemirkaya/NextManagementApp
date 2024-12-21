@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Spinner, Alert, Badge } from 'react-bootstrap';
 import Table from "@/components/Common/Table";
-import { getUserGroupTypes } from "@/services/userGroupTypeApi";
+import { getGroupTypes } from "@/services/groupTypeApi";
 
 const UserGroups = () => {
     const headers = ["Type Name", 'Created By', 'Updated By']
@@ -21,7 +21,7 @@ const UserGroups = () => {
         setLoading(true);
 
         // API'ye gerekli parametrelerle istek gönder
-        const result = await getUserGroupTypes({ page, limit, search });
+        const result = await getGroupTypes({ page, limit, search });
 
         if (result.success) {
             setGroupTypeData(result.data);
