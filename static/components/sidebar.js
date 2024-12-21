@@ -105,6 +105,37 @@ const sidebarMenu = [
             },
         ],
     },
+    // GROUP TYPE MANAGEMENT
+    {
+        id: 3,
+        name: "Group Type Management",
+        link: "/group-type-management",
+        iconPrimary: "faChevronUp",
+        iconSecondary: "faChevronCircleUp",
+        permission: 2,
+        subMenus: [
+            // VIEW GROUP TYPES
+            {
+                id: 31,
+                name: "View Group Types",
+                link: "/group-type-management/view-group-types",
+                description: "From here you can review, update and delete existing group types.",
+                iconPrimary: "faUser",
+                iconSecondary: "",
+                permission: 1,
+            },
+            // CREATE NEW GROUP TYPE
+            {
+                id: 32,
+                name: "Create New Group Type",
+                link: "/group-type-management/create-group-type",
+                description: "Here you can create groups for your common operations.",
+                iconPrimary: "faUserPlus",
+                iconSecondary: "",
+                permission: 1
+            },
+        ],
+    },
 ];
 
 export default sidebarMenu;
