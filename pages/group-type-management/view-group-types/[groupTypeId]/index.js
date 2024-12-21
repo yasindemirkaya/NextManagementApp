@@ -24,11 +24,14 @@ const UserDetailPage = () => {
     // Formatter fonksiyonu
     const queryFormatter = (groupTypeId) => {
         if (groupTypeId) {
-            // groupTypeId örneği: "finance-6766de1f962f3e072e36bb1a"
-            const parts = groupTypeId.split('-');
+            // Son "-" karakterinin indeksini bulun
+            const lastDashIndex = groupTypeId.lastIndexOf('-');
 
-            const typeName = parts[0];
-            const id = parts[1];
+            // Son "-" karakterine kadar olan kısmı typeName olarak alın
+            const typeName = groupTypeId.slice(0, lastDashIndex);
+
+            // Son "-" karakterinin sağında kalan kısmı id olarak alın
+            const id = groupTypeId.slice(lastDashIndex + 1);
 
             return { typeName, id };
         }

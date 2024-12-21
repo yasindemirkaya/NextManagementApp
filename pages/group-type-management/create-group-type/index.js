@@ -1,10 +1,6 @@
 import React from 'react';
-import { Container, Card, Form, Button, Row, Col, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import axios from '@/utils/axios';
-import InputMask from 'react-input-mask';
+import { Container, Card, Form, Button, Row, Col } from 'react-bootstrap';
 import styles from './index.module.scss';
-import { icons } from '@/static/icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import { createGroupType } from '@/services/groupTypeApi';
@@ -62,6 +58,8 @@ const CreateGroupType = () => {
                                         {...register("typeName", {
                                             required: "Name is required",
                                             minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                            validate: (value) =>
+                                                /^[a-zA-Z0-9\s]*$/.test(value) || "Only letters, numbers, and spaces are allowed",
                                         })}
                                         isInvalid={!!errors.typeName}
                                         onBlur={(e) => handleNameChange(e, "typeName")}

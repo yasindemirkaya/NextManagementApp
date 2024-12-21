@@ -4,7 +4,6 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import styles from './index.module.scss';
-import axios from '@/utils/axios';
 import { useSelector } from 'react-redux';
 import Select from 'react-select';
 
@@ -20,8 +19,11 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
     const [userGroupTypes, setUserGroupTypes] = useState([]);
     const [userData, setUserData] = useState([]);
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [usersLoading, setUsersLoading] = useState(false);
+    const [usersError, setUsersError] = useState(null);
+
+    const [groupTypesLoading, setGroupTypesLoading] = useState(false);
+    const [groupTypesError, setGroupTypesError] = useState(null);
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         defaultValues: {
@@ -36,7 +38,7 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
 
     useEffect(() => {
         fetchUsers()
-        handlegetGroupTypes()
+        handleGetGroupTypes()
 
         // Set default values after fetching users and types
         if (userGroupData) {
@@ -48,40 +50,39 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
 
     // Get users
     const fetchUsers = async () => {
-        setLoading(true)
+        setUsersLoading(true);
+        setUsersError(null);
 
-        const result = await getUsers();
-
-        if (result.success) {
-            setUserData(result.data)
-            setError(null)
-        } else {
-            setUserData([])
-            setError(result.error)
+        try {
+            const result = await getUsers();
+            if (result.success) {
+                setUserData(result.data);
+            } else {
+                setUsersError(result.error);
+            }
+        } catch (error) {
+            setUsersError(error.message || 'An unexpected error occurred.');
+        } finally {
+            setUsersLoading(false);
         }
-
-        setLoading(false)
-    }
+    };
 
     // Get user group types
-    const handlegetGroupTypes = async () => {
-        setLoading(true);
-        setError(null);
+    const handleGetGroupTypes = async () => {
+        setGroupTypesLoading(true);
+        setGroupTypesError(null);
 
         try {
             const response = await getGroupTypes();
-
-            if (response.code === 1) {
-                setUserGroupTypes(response.user_group_types);
+            if (response.success) {
+                setUserGroupTypes(response.data);
             } else {
-                setError('Failed to fetch user group types');
+                setGroupTypesError('Failed to fetch user group types');
             }
         } catch (error) {
-            console.error('Error fetching user group types:', error);
-            setUserGroupTypes([]);
-            setError(error.message || 'An unexpected error occurred.');
+            setGroupTypesError(error.message || 'An unexpected error occurred.');
         } finally {
-            setLoading(false);
+            setGroupTypesLoading(false);
         }
     };
 
@@ -203,12 +204,12 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                     {/* Group Leader */}
                     <Form.Group className="mb-3" controlId="groupLeader">
                         <Form.Label>Group Leader</Form.Label>
-                        {loading ? (
+                        {usersLoading ? (
                             <div className="text-center">
                                 <Spinner animation="border" variant="primary" />
                             </div>
-                        ) : error ? (
-                            <p className="text-danger">Error: {error}</p>
+                        ) : usersError ? (
+                            <p className="text-danger">Error: {usersError}</p>
                         ) : (
                             <Select
                                 options={userData.map(user => ({
@@ -228,12 +229,12 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                     {/* Group Type */}
                     <Form.Group controlId="groupType">
                         <Form.Label>Group Type</Form.Label>
-                        {loading ? (
+                        {groupTypesLoading ? (
                             <div className="text-center">
                                 <Spinner animation="border" variant="primary" />
                             </div>
-                        ) : error ? (
-                            <p className="text-danger">Error: {error}</p>
+                        ) : groupTypesError ? (
+                            <p className="text-danger">Error: {groupTypesError}</p>
                         ) : (
                             <Select
                                 options={userGroupTypes.map(groupType => ({
@@ -253,12 +254,12 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                     {/* Group Members */}
                     <Form.Group className="mb-3" controlId="members">
                         <Form.Label>Group Members</Form.Label>
-                        {loading ? (
+                        {usersLoading ? (
                             <div className="text-center">
                                 <Spinner animation="border" variant="primary" />
                             </div>
-                        ) : error ? (
-                            <p className="text-danger">Error: {error}</p>
+                        ) : usersError ? (
+                            <p className="text-danger">Error: {usersError}</p>
                         ) : (
                             <Select
                                 options={userData.map(user => ({

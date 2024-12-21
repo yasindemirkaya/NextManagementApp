@@ -77,11 +77,11 @@ export const createGroupType = async (typeName) => {
 
 export const updateGroupType = async (groupTypeId, newTypeName) => {
     try {
-        const response = await axios.put('/private/user-group-types/update-user-group', {
+        const response = await axios.put('/private/user-group-types/update-user-group-type', {
             groupTypeId,
             newTypeName,
         });
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }
@@ -99,7 +99,7 @@ export const deleteGroupType = async (groupTypeId) => {
         const response = await axios.delete('/private/user-group-types/delete-user-group-type', {
             data: { groupTypeId },
         });
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }

@@ -5,7 +5,6 @@ import EditProfileCard from '../EditProfile';
 import { useSelector } from 'react-redux';
 
 const ProfileCard = ({ groupType, loading, error, fetchGroupTypeById }) => {
-    console.log(groupType)
     const [isEditing, setIsEditing] = useState(false);
     const loggedInUser = useSelector(state => state.user.user);
 
