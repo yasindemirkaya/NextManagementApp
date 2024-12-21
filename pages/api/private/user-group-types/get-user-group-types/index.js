@@ -19,21 +19,45 @@ const handler = async (req, res) => {
             const decoded = verify(token, process.env.JWT_SECRET);
             const { role } = decoded;
 
-            // Super admin (2) ya da Admin (1) değilse işlem reddedilir
-            if (role == 0) {
+            // Sadece Super admin (2) erişebilir.
+            if (role != 2) {
                 return res.status(403).json({
                     message: "You do not have permission to access the user group types.",
                     code: 0,
                 });
             }
 
-            // UserGroupTypes koleksiyonundaki tüm grup tiplerini al
-            const userGroupTypes = await UserGroupType.find().sort({ createdAt: -1 });
+            // Parametreleri al
+            const { page = 1, limit = 10, search = '' } = req.query;
+            const skip = (page - 1) * limit;
+
+            // Arama kriterlerini oluştur
+            const searchQuery = search ? {
+                $or: [
+                    { type_name: { $regex: search, $options: 'i' } }, // type_name alanında arama
+                    { created_by: { $regex: search, $options: 'i' } }  // created_by alanında arama
+                ]
+            } : {};
+
+            // UserGroupTypes koleksiyonunda arama ve sayfalama işlemi
+            const userGroupTypes = await UserGroupType.find(searchQuery)
+                .skip(skip)
+                .limit(parseInt(limit))
+                .sort({ createdAt: -1 });
+
+            const totalUsers = await UserGroupType.countDocuments(searchQuery); // Toplam kullanıcı sayısı
+            const totalPages = Math.ceil(totalUsers / limit); // Toplam sayfa sayısı
 
             return res.status(200).json({
                 message: "User group types successfully retrieved.",
                 code: 1,
                 user_group_types: userGroupTypes,
+                pagination: {
+                    totalData: totalUsers,
+                    totalPages: totalPages,
+                    currentPage: parseInt(page),
+                    limit: parseInt(limit),
+                }
             });
         } catch (error) {
             console.error('Error retrieving user group types:', error);
