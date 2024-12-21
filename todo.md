@@ -1,1 +1,3 @@
 Notification yapısının kurulması
+
+Form validationlarının merkezileştirilmesi

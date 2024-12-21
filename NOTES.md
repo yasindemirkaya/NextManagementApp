@@ -53,6 +53,7 @@
 
 <!-- * USER GROUP TYPE RULES * -->
 * Kullanıcı grubu tiplerini Super Adminler tanımlar. Yani create servisini sadece role (2) olanlar kullanabilir.
-* Kullanıcı grubu tiplerini Super Adminler ve Admin'ler görebilir. Yani get servisini standart kullanıcılar kullanamaz.
+* Kullanıcı grubu tiplerini Super Adminler görebilir. Yani get servisini sadece role (2) olanlar kullanabilir.
 * Kullanıcı grubu tiplerini Super Adminler silebilir. 
 * Kullanıcı grubu tiplerini Super Adminler update edebilir.
+* User Group Types olarak tasarlanmış olsa da her türden group tipi bu alanda yaratılacaktır. (İzinliler Grubu, Frontend Grubu, Yöneticiler Grubu, Emlak Grubu vb..)
