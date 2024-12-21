@@ -173,3 +173,35 @@ export const deleteUserById = async (userId) => {
         throw error;
     }
 };
+
+
+// ***************************
+// |
+// | UPDATE USER (YOURSELF)
+// |
+// ***************************
+
+export const updateUser = async (data) => {
+    try {
+        const response = await axios.put('/private/user/update-user', data);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+// ***************************
+// |
+// | UPDATE USER BY ID
+// |
+// ***************************
+
+export const updateUserById = async (data) => {
+    try {
+        const response = await axios.put('/private/user/update-user-by-id', data);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};

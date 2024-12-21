@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import Select from 'react-select';
 
 import { getUsers } from '@/services/userApi';
+import { getUserGroupTypes } from '@/services/userGroupTypeApi';
+import { deleteUserGroup, updateUserGroup } from '@/services/userGroupApi';
 
 const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
     const loggedInUser = useSelector(state => state.user.user);
@@ -34,7 +36,7 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
 
     useEffect(() => {
         fetchUsers()
-        getUserGroupTypes()
+        handleGetUserGroupTypes()
 
         // Set default values after fetching users and types
         if (userGroupData) {
@@ -62,27 +64,29 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
     }
 
     // Get user group types
-    const getUserGroupTypes = async () => {
-        await axios.get('/private/user-group-types/get-user-group-types')
-            .then(response => {
-                if (response.code === 1) {
-                    setUserGroupTypes(response.user_group_types);
-                    setLoading(false);
-                    setError(null);
-                } else {
-                    setError('Failed to fetch user group types');
-                    setLoading(false);
-                }
-            })
-            .catch(error => {
-                setUserGroupTypes([]);
-                setError(error.message);
-                setLoading(false);
-            });
-    }
+    const handleGetUserGroupTypes = async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await getUserGroupTypes();
+
+            if (response.code === 1) {
+                setUserGroupTypes(response.user_group_types);
+            } else {
+                setError('Failed to fetch user group types');
+            }
+        } catch (error) {
+            console.error('Error fetching user group types:', error);
+            setUserGroupTypes([]);
+            setError(error.message || 'An unexpected error occurred.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Update User Group
-    const updateUserGroup = async (data) => {
+    const handleUpdateUserGroup = async (data) => {
         const updatedData = {
             id: userGroupData._id,
             group_name: data.groupName,
@@ -91,37 +95,26 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
             is_active: isActive ? 1 : 0,
             type: data.type,
             members: data.members,
-        }
+            updatedBy: loggedInUser.id // Güncelleyen kullanıcıyı ekle
+        };
 
-        // Güncelleyen kullanıcıyı payloada ekle
-        updatedData.updatedBy = loggedInUser.id
+        const result = await updateUserGroup(updatedData); // API isteği
 
-        try {
-            const response = await axios.put('/private/group/update-user-group', updatedData);
-
-            if (response.code === 1) {
-                Swal.fire({
-                    title: response.message,
-                    icon: 'success'
-                });
-            } else {
-                Swal.fire({
-                    title: response.message,
-                    icon: 'error',
-                });
-            }
-        } catch (error) {
-            console.error('Error updating user data:', error);
+        if (result.success) {
             Swal.fire({
-                title: 'User could not be updated.',
+                title: result.message,
+                icon: 'success'
+            });
+        } else {
+            Swal.fire({
+                title: result.error,
                 icon: 'error',
-                text: 'An error occurred. Please try again.'
             });
         }
-    }
+    };
 
     // Delete User Group
-    const deleteUserGroup = async (userGroupId) => {
+    const handleDeleteUserGroup = async (userGroupId) => {
         const confirmation = await Swal.fire({
             title: 'Are you sure?',
             text: "This user group will be permanently deleted and cannot be recovered.",
@@ -133,34 +126,21 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
         });
 
         if (confirmation.isConfirmed) {
-            try {
-                const response = await axios.delete('/private/group/delete-user-group', {
-                    data: {
-                        groupId: userGroupId,
-                    },
-                });
+            const result = await deleteUserGroup(userGroupId); // API isteği
 
-                if (response.code === 1) {
-                    Swal.fire({
-                        title: 'User Group Deleted',
-                        text: 'The user group has been deleted successfully.',
-                        icon: 'success'
-                    });
-                    setTimeout(() => {
-                        router.push('/group-management/user-groups/view-user-groups')
-                    }, 1000);
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: response.message || 'user group could not be deleted. Please try again.',
-                        icon: 'error'
-                    });
-                }
-            } catch (error) {
-                console.error('Error deleting user by ID:', error);
+            if (result.success) {
+                Swal.fire({
+                    title: 'User Group Deleted',
+                    text: result.message,
+                    icon: 'success'
+                });
+                setTimeout(() => {
+                    router.push('/group-management/user-groups/view-user-groups');
+                }, 1000);
+            } else {
                 Swal.fire({
                     title: 'Error',
-                    text: 'An error occurred while deleting the user. Please try again later.',
+                    text: result.error,
                     icon: 'error'
                 });
             }
@@ -169,12 +149,12 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
 
     // Handle save
     const handleSave = async (data) => {
-        updateUserGroup(data)
+        handleUpdateUserGroup(data)
     };
 
     // Handle delete
     const handleDelete = async () => {
-        deleteUserGroup(userGroupData._id)
+        handleDeleteUserGroup(userGroupData._id)
     };
 
     // Hangi durumda silme özelliği kullanıcılara gösterilecek

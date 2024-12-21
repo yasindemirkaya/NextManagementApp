@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Spinner, Alert, Badge } from 'react-bootstrap';
 import Table from "@/components/Common/Table";
-import axios from "@/utils/axios";
+import { getAllUserGroups } from '@/services/userGroupApi';
 
 const UserGroups = () => {
     const headers = ["Group Name", "Description", "Type", 'Group Leader', 'Created By', 'Updated By', 'Is Active']
@@ -17,31 +17,35 @@ const UserGroups = () => {
         getUserGroups(1, 5);
     }, [])
 
-    const getUserGroups = (page, limit, search) => {
-        setLoading(true)
+    const getUserGroups = async (page, limit, search) => {
+        setLoading(true);
 
-        axios.get('/private/groups/get-user-groups', {
-            params: {
-                page: page,
-                limit: limit,
-                search: search
+        // İstek atmak için gerekli parametreleri oluştur
+        const params = {
+            page: page,
+            limit: limit,
+            search: search,
+        };
+
+        // API metodunu çağır ve sonucu al
+        const result = await getAllUserGroups(params);
+
+        if (result.success) {
+            setGroupData(result.data);
+
+            if (result.pagination) {
+                setTotalData(result.pagination.totalData);
+                setTotalPages(result.pagination.totalPages);
+                setCurrentPage(result.pagination.currentPage);
             }
-        })
-            .then(response => {
-                if (response.code === 1) {
-                    setGroupData(response.groups);
-                    setTotalData(response.pagination.totalData)
-                    setTotalPages(response.pagination.totalPages)
-                    setCurrentPage(response.pagination.currentPage)
-                    setLoading(false)
-                    setError(null)
-                }
-            })
-            .catch(error => {
-                setGroupData([])
-                setError(error.message);
-                setLoading(false);
-            });
+
+            setError(null);
+        } else {
+            setError(result.error);
+            setGroupData([]);
+        }
+
+        setLoading(false);
     };
 
     // Group verisini tabloya gönderilecek şekilde formatlıyoruz

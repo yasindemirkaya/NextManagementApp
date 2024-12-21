@@ -8,6 +8,8 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import Select from 'react-select';
 import { getUsers } from '@/services/userApi';
+import { createUserGroup } from '@/services/userGroupApi';
+import { getUserGroupTypes } from '@/services/userGroupTypeApi';
 
 const CreateUserGroup = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
@@ -25,7 +27,7 @@ const CreateUserGroup = () => {
 
     useEffect(() => {
         fetchUsers()
-        getUserGroupTypes()
+        fetchUserGroupTypes()
     }, []);
 
     // Get users
@@ -46,38 +48,28 @@ const CreateUserGroup = () => {
     }
 
     // Get user group types
-    const getUserGroupTypes = async () => {
-        await axios.get('/private/user-group-types/get-user-group-types')
-            .then(response => {
-                if (response.code === 1) {
-                    setUserGroupTypes(response.user_group_types);
-                    setLoading(false);
-                    setError(null);
-                } else {
-                    setError('Failed to fetch user group types');
-                    setLoading(false);
-                }
-            })
-            .catch(error => {
-                setUserData([]);
-                setError(error.message);
-                setLoading(false);
-            });
-    }
+    const fetchUserGroupTypes = async () => {
+        setLoading(true);
+
+        const result = await getUserGroupTypes();
+
+        if (result.success) {
+            setUserGroupTypes(result.data);
+            setLoading(false);
+            setError(null);
+        } else {
+            setUserGroupTypes([]);  // Eğer hata varsa, userGroupTypes'ı boş yap
+            setError(result.error);
+            setLoading(false);
+        }
+    };
 
     // Submit form
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post('/private/group/create-user-group', {
-                groupName: data.groupName,
-                description: data.description,
-                type: data.type,
-                isActive: data.isActive,
-                groupLeader: data.groupLeader,
-                members: data.members || []
-            })
+            const result = await createUserGroup(data);
 
-            if (response.code === 1) {
+            if (result.success) {
                 reset({
                     groupName: '',
                     description: '',
@@ -89,19 +81,19 @@ const CreateUserGroup = () => {
                     role: '0',
                 });
                 Swal.fire({
-                    title: response.message,
+                    title: result.message,
                     icon: 'success'
                 });
             } else {
                 Swal.fire({
-                    title: response.message,
+                    title: result.error,
                     icon: 'error'
                 });
             }
         } catch (error) {
             Swal.fire({
                 title: 'Error',
-                text: 'An error occurred when creating a new user. Please try again later.',
+                text: 'An error occurred when creating a new user group. Please try again later.',
                 icon: 'error'
             });
         }

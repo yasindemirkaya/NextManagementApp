@@ -1,5 +1,3 @@
-MERKEZİLEŞTİRİLECEK API ÇAĞIRIMLARI
+Super Adminler için create, delete, update user type sayfaları.
 
-getUserGroups
-getUserGroupTypes
-GetUserById
+Notification yapısının kurulması

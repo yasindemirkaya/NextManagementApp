@@ -4,7 +4,7 @@ import styles from './index.module.scss';
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import ProfileCard from "@/components/GroupManagement/UserGroups/ViewUserGroups/UserGroupProfile/GroupProfileCard";
-
+import { getUserGroupById } from "@/services/userGroupApi";
 
 const GroupDetail = () => {
     const [userGroup, setUserGroup] = useState(null);
@@ -40,27 +40,20 @@ const GroupDetail = () => {
 
 
     // Get User Group By ID
-    const getUserGroupDetails = (id) => {
+    const getUserGroupDetails = async (id) => {
         setLoading(true);
 
-        axios.get('/private/group/get-user-group-by-id', {
-            params: {
-                id
-            },
-        })
-            .then((response) => {
-                if (response.code === 1) {
-                    setUserGroup(response.group);
-                    setLoading(false);
-                } else {
-                    setLoading(false);
-                    setError(response.message);
-                }
-            })
-            .catch((error) => {
-                setLoading(false);
-                setError('An error occurred when receiving user group data. Please try again later.');
-            });
+        const result = await getUserGroupById(id); // API isteği
+
+        if (result.success) {
+            setUserGroup(result.data);
+            setError(null);
+        } else {
+            setError(result.error);
+            setUserGroup(null);
+        }
+
+        setLoading(false);
     };
 
 

@@ -11,7 +11,7 @@ import { isSelf } from '@/helpers/isSelf';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
 import Cookies from 'js-cookie';
-import { deleteUser, deleteUserById } from '@/services/userApi';
+import { deleteUser, deleteUserById, updateUser, updateUserById } from '@/services/userApi';
 
 const EditProfileCard = ({ userData, onCancel }) => {
     const loggedInUser = useSelector(state => state.user.user);
@@ -49,7 +49,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
     }, [userData.mobile, setValue]);
 
     // Kullanıcının kendi profilini güncellediği servis
-    const updateUser = async (data) => {
+    const handleUpdateUser = async (data) => {
         const formattedMobile = data.mobile.replace(/\D/g, '');
 
         const updatedData = {
@@ -59,18 +59,16 @@ const EditProfileCard = ({ userData, onCancel }) => {
             mobile: formattedMobile,
             isActive: isActive ? 1 : 0,
             isVerified: isVerified ? 1 : 0,
+            updatedBy: loggedInUser.id, // Kullanıcı kendini güncellediği için kendi ID'si
         };
 
-        // Kullanıcı kendini güncellediği için updatedBy kısmına kendi ID'sini geçiyoruz.
-        updatedData.updatedBy = loggedInUser.id;
-
         try {
-            const response = await axios.put('/private/user/update-user', updatedData);
+            const response = await updateUser(updatedData);
 
             if (response.code === 1) {
                 Swal.fire({
                     title: response.message,
-                    icon: 'success'
+                    icon: 'success',
                 });
             } else {
                 Swal.fire({
@@ -83,23 +81,24 @@ const EditProfileCard = ({ userData, onCancel }) => {
             Swal.fire({
                 title: 'User could not be updated.',
                 icon: 'error',
-                text: 'An error occurred. Please try again.'
+                text: 'An error occurred. Please try again.',
             });
         }
-    }
+    };
 
     // Kullanıcının bir başka profili güncellediği servis
-    const updateUserById = async (data) => {
+    const handleUpdateUserById = async (data) => {
         const formattedMobile = data.mobile.replace(/\D/g, '');
 
-        const updatedData = {};
-
-        // Kullanıcı verilerini güncellenmesi
-        updatedData.first_name = data.firstName;
-        updatedData.last_name = data.lastName;
-        updatedData.email = data.email;
-        updatedData.mobile = formattedMobile;
-        updatedData.is_active = isActive ? 1 : 0;
+        const updatedData = {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            email: data.email,
+            mobile: formattedMobile,
+            is_active: isActive ? 1 : 0,
+            updated_by: loggedInUser.id, // Güncelleyen kişinin ID'si
+            id: userData.id, // Güncellenen kullanıcının ID'si
+        };
 
         // Sadece super admin yetkisine sahip kullanıcılar buradan hesap verify edebilir
         if (loggedInUser.role === 2) {
@@ -108,27 +107,21 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
         // Super Admin ve Adminler bir başkasının rolünü güncelleyebilir
         if (loggedInUser.role !== 0) {
-            updatedData.role = role
+            updatedData.role = role;
         }
 
-        // Güncellemeyi yapan kişinin ID'sini updated_by olarak gönderiyoruz
-        updatedData.updated_by = loggedInUser.id;
-
-        // Güncellenen kişinin ID'sini de requeste ekliyoruz
-        updatedData.id = userData.id
-
         try {
-            const response = await axios.put(`/private/user/update-user-by-id`, updatedData);
+            const response = await updateUserById(updatedData);
 
             if (response.code === 1) {
                 Swal.fire({
                     title: response.message,
-                    icon: 'success'
+                    icon: 'success',
                 });
             } else {
                 Swal.fire({
                     title: response.message,
-                    icon: 'error'
+                    icon: 'error',
                 });
             }
         } catch (error) {
@@ -136,10 +129,10 @@ const EditProfileCard = ({ userData, onCancel }) => {
             Swal.fire({
                 title: 'User could not be updated.',
                 icon: 'error',
-                text: 'An error occurred. Please try again.'
+                text: 'An error occurred. Please try again.',
             });
         }
-    }
+    };
 
     // Kullanıcının kendi profilini sildiği servis
     const handleDeleteUser = async () => {
@@ -229,9 +222,9 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
     const handleSave = async (data) => {
         if (isSelf((loggedInUser ? loggedInUser.id : null), userData.id)) {
-            updateUser(data)
+            handleUpdateUser(data)
         } else {
-            updateUserById(data)
+            handleUpdateUserById(data)
         }
     };
 
