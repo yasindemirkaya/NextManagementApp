@@ -7,22 +7,22 @@
 // |
 // ------------------------------
 
-import { verify } from 'jsonwebtoken'; // Token doğrulama
+import { verify } from 'jsonwebtoken';
 import GroupNotification from '@/models/GroupNotification';
-import UserGroup from '@/models/UserGroup';  // UserGroup modelini import et
+import UserGroup from '@/models/UserGroup';
 
 const handler = async (req, res) => {
     if (req.method === 'POST') {
-        const { title, description, type, group, date } = req.body;
+        const { title, description, type, groups, date } = req.body;
 
         // Token'dan kullanıcı bilgilerini al
-        let userRole;
-        let userId;
+        let loggedInUserRole;
+        let loggedInUserId;
         try {
             const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
-            userRole = decoded?.role;
-            userId = decoded?.id;
+            loggedInUserRole = decoded?.role;
+            loggedInUserId = decoded?.id;
         } catch (error) {
             return res.status(200).json({
                 message: 'Invalid token, please log in again.',
@@ -31,48 +31,51 @@ const handler = async (req, res) => {
         }
 
         // Role kontrolü: Admin veya Super Admin olmalı
-        if (userRole !== 1 && userRole !== 2) {
-            return res.status(403).json({
+        if (![1, 2].includes(loggedInUserRole)) {
+            return res.status(200).json({
                 message: 'You do not have permission to access this resource.',
                 code: 0
             });
         }
 
         // Data check
-        if (!title || !description || !type || !group || group.length === 0) {
-            return res.status(400).json({ message: 'All fields are required' });
+        if (!title || !description || !type || !groups || groups.length === 0) {
+            return res.status(200).json({
+                code: 0,
+                message: 'All fields are required'
+            });
         }
 
         try {
-            // Group içindeki her bir group ID'sinin UserGroup koleksiyonunda olup olmadığını kontrol et
-            const validGroups = await UserGroup.find({ '_id': { $in: group } });
+            // Groups içindeki her bir user group ID'sinin userGroups koleksiyonunda olup olmadığını kontrol et
+            const validGroups = await UserGroup.find({ '_id': { $in: groups } });
 
-            // Eğer geçersiz bir group ID'si varsa, hata döndür
-            if (validGroups.length !== group.length) {
-                return res.status(400).json({
-                    message: 'One or more group IDs are invalid',
+            // Eğer geçersiz bir user group ID'si varsa, hata döndür
+            if (validGroups.length !== groups.length) {
+                return res.status(200).json({
+                    message: 'One or more user group IDs are invalid',
                     code: 0,
                 });
             }
 
-            // Yeni GroupNotification oluştur
-            const newGroupNotification = new GroupNotification({
+            // Bildirimlerin tamamını array'e ekle
+            const notifications = groups.map(groupId => ({
                 title,
                 description,
                 type,
-                created_by: userId, // Token'dan alınan kullanıcı ID'si
-                group, // Grup ID'leri
-                date: date || new Date(), // Eğer date verilmemişse, şu anki zamanı kullan
-            });
+                created_by: loggedInUserId,
+                group: groupId,
+                date: date || new Date(),
+            }));
 
-            // Yeni bildirimi kaydet
-            await newGroupNotification.save();
+            // Tüm bildirimleri topluca kaydet
+            const savedNotifications = await GroupNotification.insertMany(notifications);
 
             // Başarılı yanıt döndür
             res.status(200).json({
                 code: 1,
-                message: 'Group notification created successfully',
-                notification: newGroupNotification,
+                message: 'Group notifications created successfully',
+                notifications: savedNotifications,
             });
         } catch (error) {
             console.error('Error while creating notification:', error);

@@ -9,19 +9,20 @@
 
 import { verify } from 'jsonwebtoken';
 import PersonalNotification from '@/models/PersonalNotification';
+import User from '@/models/User';
 
 const handler = async (req, res) => {
     if (req.method === 'POST') {
-        const { title, description, type, user, date } = req.body;
+        const { title, description, type, users, date } = req.body;
 
         // Token'dan kullanıcı bilgilerini al
-        let userRole;
-        let userId;
+        let loggedInUserRole;
+        let loggedInUserId;
         try {
             const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
-            userRole = decoded?.role;
-            userId = decoded?.id;
+            loggedInUserRole = decoded?.role;
+            loggedInUserId = decoded?.id;  // Bu, isteği yapan kullanıcının ID'si
         } catch (error) {
             return res.status(200).json({
                 message: 'Invalid token, please log in again.',
@@ -30,37 +31,51 @@ const handler = async (req, res) => {
         }
 
         // Role kontrolü: Admin veya Super Admin olmalı
-        if (userRole !== 1 && userRole !== 2) {
-            return res.status(403).json({
+        if (![1, 2].includes(loggedInUserRole)) {
+            return res.status(200).json({
                 message: 'You do not have permission to access this resource.',
                 code: 0
             });
         }
 
         // Data check
-        if (!title || !description || !type || !user || user.length === 0) {
-            return res.status(400).json({ message: 'All fields are required' });
+        if (!title || !description || !type || !users || users.length === 0) {
+            return res.status(200).json({
+                code: 0,
+                message: 'All fields are required'
+            });
         }
 
         try {
-            // Yeni PersonalNotification oluştur
-            const newNotification = new PersonalNotification({
+            // Users içindeki her bir user ID'sinin User koleksiyonunda olup olmadığını kontrol et
+            const validUsers = await User.find({ '_id': { $in: users } });
+
+            // Eğer geçersiz bir user ID'si varsa, hata döndür
+            if (validUsers.length !== users.length) {
+                return res.status(200).json({
+                    message: 'One or more user IDs are invalid',
+                    code: 0,
+                });
+            }
+
+            // Bildirimlerin tamamını array'e ekle
+            const notifications = users.map(userId => ({
                 title,
                 description,
                 type,
-                created_by: userId, // Token'dan alınan kullanıcı ID'si
-                user, // Kullanıcılar array
-                date: date || new Date(), // Eğer date verilmemişse, şu anki zamanı kullan
-            });
+                created_by: loggedInUserId,  // Burada her bir bildirimde kullanıcıyı işaret ediyoruz
+                user: userId,
+                date: date || new Date(),
+            }));
 
-            // Yeni bildirimi kaydet
-            await newNotification.save();
+            // Tüm bildirimleri topluca kaydet
+            const savedNotifications = await PersonalNotification.insertMany(notifications);
 
             // Başarılı yanıt döndür
             res.status(200).json({
                 code: 1,
-                message: 'Personal notification created successfully',
-                notification: newNotification,
+                message: 'Personal notifications created successfully',
+                notifications: savedNotifications,
             });
         } catch (error) {
             console.error('Error while creating notification:', error);

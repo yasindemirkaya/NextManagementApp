@@ -18,11 +18,10 @@ const personalNotificationSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    user: [{
+    user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
         required: true,
-    }],
+    },
     date: {
         type: Date,
         required: false,
