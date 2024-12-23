@@ -57,3 +57,13 @@
 * Kullanıcı grubu tiplerini Super Adminler silebilir. 
 * Kullanıcı grubu tiplerini Super Adminler update edebilir.
 * User Group Types olarak tasarlanmış olsa da her türden group tipi bu alanda yaratılacaktır. (İzinliler Grubu, Frontend Grubu, Yöneticiler Grubu, Emlak Grubu vb..)
+
+<!-- * NOTIFICATION RULES * -->
+* Super Adminler herkese ve her gruba bildirim atabilir.
+* Adminler sadece standart kullanıcılara bildirim atabilir.
+* Adminler kendi oluşturmadıkları gruplara bildirim atamazlar.
+* Grup liderleri admin ya da super admin olmasalar bile bildirim atabilirler. Ancak sadece kendi gruplarına grup bildirimi atabilirler. Bireysel bildirim atamazlar. O kişi grup üyeleri olsa bile!
+* Kullanıcı bireysel olarak kendisine atılmış olan notificationı update etme (Okundu yapma) hakkına sahiptir.
+* Eğer bir bildirim bir gruba atılmışsa o bildirim sadece grup lideri update edebilir (Okundu yapabilir).
+* Bildirimleri sadece bildirim sahipleri silebilir. Ancak Super Adminler tüm bildirimleri silebilir.
+* Super Adminler tüm bildirimleri görebilir, Adminler sadece kendi oluşturdukları ve kendilerine atılan bildirimleri görebilir.
