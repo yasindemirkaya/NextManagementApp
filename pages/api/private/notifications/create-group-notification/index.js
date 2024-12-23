@@ -70,7 +70,7 @@ const handler = async (req, res) => {
 
             // Başarılı yanıt döndür
             res.status(200).json({
-                result: true,
+                code: 1,
                 message: 'Group notification created successfully',
                 notification: newGroupNotification,
             });
