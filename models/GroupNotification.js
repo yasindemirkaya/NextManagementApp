@@ -18,11 +18,11 @@ const groupNotificationSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    group: {
+    group: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UserGroup',
         required: true,
-    },
+    }],
     date: {
         type: Date,
         required: false,
