@@ -1,7 +1,9 @@
 const protectedPages = [
     '/profile',
     '/dashboard',
-    '/user-management'
+    '/user-management',
+    '/group-management',
+    '/group-type-management'
 ];
 
 export default protectedPages;

@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Container, Nav, Navbar, Button } from 'react-bootstrap';
+import { Container, Nav, Navbar, Button, Badge } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import headerMenu from "@/static/components/header";
 import { icons } from '@/static/icons';
@@ -8,6 +9,7 @@ import styles from './index.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
 import Cookies from 'js-cookie';
+import { getNotificationCount } from '@/services/notificationApi';
 
 const Header = ({ toggleSidebar }) => {
     const router = useRouter();
@@ -15,8 +17,24 @@ const Header = ({ toggleSidebar }) => {
     const loggedInUser = useSelector(state => state.user.user);
     const token = Cookies.get('token')
 
+    const [notificationCount, setNotificationCount] = useState(0);
+
+    useEffect(() => {
+        if (token) {
+            // Get Notification Count
+            const fetchNotificationCount = async () => {
+                const result = await getNotificationCount(token);
+                if (result.success) {
+                    setNotificationCount(result.data);
+                }
+            };
+            fetchNotificationCount();
+        }
+    }, [token]);
+
     let profileText = loggedInUser ? loggedInUser.email : "Profile";
 
+    // Handle logout
     const handleLogout = () => {
         Cookies.remove('token')
         dispatch(clearUser());
@@ -57,6 +75,11 @@ const Header = ({ toggleSidebar }) => {
                                     <Nav key={menu.id} className={styles.menuItem}>
                                         <Nav.Link as={Link} href={menu.link}>
                                             <FontAwesomeIcon icon={icons[menu.icon]} />
+                                            {menu.name === "Notifications" && notificationCount > 0 && (
+                                                <Badge bg="danger" pill className={styles.notificationBadge}>
+                                                    {notificationCount}
+                                                </Badge>
+                                            )}
                                         </Nav.Link>
                                     </Nav>
                                 ))
