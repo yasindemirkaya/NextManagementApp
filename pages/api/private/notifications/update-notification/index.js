@@ -1,8 +1,7 @@
 // --------------------------------
 // |
 // | Service Name: Update Notification
-// | Description: Service to update the "is_seen" field of a notification.
-// | Parameters: notificationId
+// | Description: Updates the "is_seen" status of a notification.
 // | Endpoint: /api/private/notifications/update-notification
 // |
 // ------------------------------
@@ -14,16 +13,14 @@ import UserGroup from '@/models/UserGroup';
 
 const handler = async (req, res) => {
     if (req.method === 'PUT') {
-        const { notificationId } = req.body;
+        const { notificationId, type } = req.body;
 
-        // Token'dan kullanıcı bilgilerini al
-        let loggedInUserRole;
-        let loggedInUserId;
+        // Kullanıcı kimliğini doğrula
+        let userId;
         try {
             const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
-            loggedInUserRole = decoded?.role;
-            loggedInUserId = decoded?.id;
+            userId = decoded?.id;
         } catch (error) {
             return res.status(200).json({
                 message: 'Invalid token, please log in again.',
@@ -31,67 +28,92 @@ const handler = async (req, res) => {
             });
         }
 
-        // Data kontrolü: notificationId gerekli
-        if (!notificationId) {
+        // Gerekli alanları kontrol et
+        if (!notificationId || type === undefined) {
             return res.status(200).json({
                 code: 0,
-                message: 'Notification ID is required'
+                message: 'notificationId and type are required.'
             });
         }
 
         try {
-            // 1. Adım: notificationId'yi personalNotifications veya groupNotifications içinde bul
-            const personalNotification = await PersonalNotification.findById(notificationId);
-            const groupNotification = await GroupNotification.findById(notificationId);
+            // Type 0 ise bildirim personalNotification içinde aranır
+            if (type === 0) {
+                // PersonalNotification kontrolü
+                const notification = await PersonalNotification.findById(notificationId);
 
-            if (personalNotification) {
-                // 2. Adım: personalNotifications içinde ise, "user" ile karşılaştırma yap
-                if (personalNotification.user.toString() === loggedInUserId.toString()) {
-                    // 3. Adım: eşleşirse "is_seen" değerini true yap
-                    personalNotification.is_seen = true;
-                    await personalNotification.save();
+                if (!notification) {
                     return res.status(200).json({
-                        code: 1,
-                        message: 'Notification updated successfully',
-                        notification: personalNotification
-                    });
-                } else {
-                    return res.status(200).json({
-                        message: 'This notification is not yours to update. You can only update your own notifications.',
-                        code: 0
+                        code: 0,
+                        message: 'Notification not found.'
                     });
                 }
-            }
 
-            if (groupNotification) {
-                // 2. Adım: groupNotifications içinde ise, "group" ile karşılaştırma yap
-                const userGroup = await UserGroup.findById(groupNotification.group);
-
-                if (userGroup && userGroup.group_leader.toString() === loggedInUserId.toString()) {
-                    // 3. Adım: eşleşirse "is_seen" değerini true yap
-                    groupNotification.is_seen = true;
-                    await groupNotification.save();
+                // Kullanıcı doğrulaması
+                if (notification.user.toString() !== userId) {
                     return res.status(200).json({
-                        code: 1,
-                        message: 'Notification updated successfully',
-                        notification: groupNotification
-                    });
-                } else {
-                    return res.status(200).json({
-                        message: 'You do not have permission to update this notification. Only the group leader can update this notification.',
-                        code: 0
+                        code: 0,
+                        message: 'You do not have permission to update this notification.'
                     });
                 }
-            }
 
-            // Eğer notification her iki koleksiyonda da bulunmazsa:
-            return res.status(200).json({
-                message: 'Notification not found',
-                code: 0
-            });
+                // Bildirimi güncelle
+                notification.is_seen = true;
+                await notification.save();
+
+                return res.status(200).json({
+                    code: 1,
+                    message: 'Notification updated successfully.',
+                    notification
+                });
+            }
+            // Type 1 ise bildirim groupNotifications içerisinde aranır
+            else if (type === 1) {
+                // GroupNotification kontrolü
+                const notification = await GroupNotification.findById(notificationId);
+
+                if (!notification) {
+                    return res.status(200).json({
+                        code: 0,
+                        message: 'Notification not found.'
+                    });
+                }
+
+                // Grup liderliği doğrulaması
+                const userGroup = await UserGroup.findById(notification.group);
+                if (!userGroup) {
+                    return res.status(200).json({
+                        code: 0,
+                        message: 'Group not found.'
+                    });
+                }
+
+                if (userGroup.group_leader.toString() !== userId) {
+                    return res.status(200).json({
+                        code: 0,
+                        message: 'You do not have permission to update this notification. Only your group member can update this notification.'
+                    });
+                }
+
+                // Bildirimi güncelle
+                notification.is_seen = true;
+                await notification.save();
+
+                return res.status(200).json({
+                    code: 1,
+                    message: 'Notification updated successfully.',
+                    notification
+                });
+            } else {
+                // Geçersiz type
+                return res.status(400).json({
+                    code: 0,
+                    message: 'Invalid type value.'
+                });
+            }
         } catch (error) {
             console.error('Error while updating notification:', error);
-            res.status(500).json({ message: 'An error occurred while updating the notification', error: error.message });
+            res.status(500).json({ message: 'An error occurred while updating the notification.', error: error.message });
         }
     } else {
         res.status(405).json({ message: 'Method not allowed' });
