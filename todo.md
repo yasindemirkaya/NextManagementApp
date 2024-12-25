@@ -6,7 +6,7 @@
 * get-my-notifications servisi yazılacak. Bu servis yöneticilerin diğer kullanıcılara ya da gruplara attığı bildirimleri getirecek.
     > Type: 0 = Yöneticilerin gönderdikleri personal notificationları getirir
     > Type: 1 = Yöneticilerin gönderdikleri group notificationları getirir
-    > Type: 0 = Yöneticilerin gönderdikleri tüm notificationları getirir
+    > Type: 2 = Yöneticilerin gönderdikleri tüm notificationları getirir
         > Bu sayede yöneticiler attıkları bildirimlerin okunup okunmadığını, hangi tarihte atıldığını vb öğrenebilir.
 
 * get-notification-count servisi yazılacak. 
@@ -17,9 +17,8 @@
 
 
 
+Anasayfa dashboard için kullanılabilecek kartların eklenmesi
 
 Servis responselarına GUID eklenmesi.
 
 GUID ile servis request responselarının sorgulanabileceği bir endpoint yapısının kurulması.
-
-Form validationlarının merkezileştirilmesi
