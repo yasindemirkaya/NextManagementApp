@@ -1,14 +1,15 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Spinner, Alert } from "react-bootstrap";
+import { Spinner, Alert, Container, Row, Col } from "react-bootstrap";
 import styles from './index.module.scss';
 import { useSelector } from 'react-redux';
 import { getNotifications, getMyNotifications } from "@/services/notificationApi";
 
 const Notifications = () => {
     const router = useRouter();
-    const [notifications, setNotifications] = useState([]);
     const [myNotifications, setMyNotifications] = useState([]);
+    const [groupNotifications, setGroupNotifications] = useState([]);
+    const [personalNotifications, setPersonalNotifications] = useState([]);
 
     const [loadingNotifications, setLoadingNotifications] = useState(true);
     const [errorNotifications, setErrorNotifications] = useState(null);
@@ -17,6 +18,10 @@ const Notifications = () => {
     const [errorMyNotifications, setErrorMyNotifications] = useState(null);
 
     const loggedInUser = useSelector(state => state.user.user);
+
+    console.log('My:', myNotifications)
+    console.log('Personal: ', personalNotifications)
+    console.log('Group: ', groupNotifications)
 
     useEffect(() => {
         fetchNotifications();
@@ -34,7 +39,20 @@ const Notifications = () => {
         try {
             const result = await getNotifications({ type: 2 });
             if (result.success) {
-                setNotifications(result.data);
+                const groupNotif = [];
+                const personalNotif = [];
+
+                // Notificationları kategorize et (personal, group)
+                result.data.forEach(notification => {
+                    if (notification.group) {
+                        groupNotif.push(notification);
+                    } else {
+                        personalNotif.push(notification);
+                    }
+                });
+
+                setGroupNotifications(groupNotif);
+                setPersonalNotifications(personalNotif);
             } else {
                 setErrorNotifications(result.error);
             }
@@ -62,10 +80,59 @@ const Notifications = () => {
         setLoadingMyNotifications(false);
     };
 
+    // Render notifications or loading spinner
+    const renderNotifications = (notifications) => {
+        return notifications.map((notification, index) => (
+            <Alert variant="info" key={index} className={styles.notification}>
+                <p>{notification.title}</p>
+                <p>{notification.date}</p>
+                <p>{notification.description}</p>
+            </Alert>
+        ));
+    };
+
     return (
-        <>
-            Notifications
-        </>
+        <Container>
+            <Row>
+                {/* My Notifications Column - Only visible if role is not 0 */}
+                {loggedInUser.role !== 0 && (
+                    <Col md={4}>
+                        <h3>My Notifications</h3>
+                        {loadingMyNotifications ? (
+                            <Spinner animation="border" />
+                        ) : errorMyNotifications ? (
+                            <Alert variant="danger">{errorMyNotifications}</Alert>
+                        ) : (
+                            renderNotifications(myNotifications)
+                        )}
+                    </Col>
+                )}
+
+                {/* Personal Notifications Column */}
+                <Col md={loggedInUser.role !== 0 ? 4 : 6}>
+                    <h3>Personal Notifications</h3>
+                    {loadingNotifications ? (
+                        <Spinner animation="border" />
+                    ) : errorNotifications ? (
+                        <Alert variant="danger">{errorNotifications}</Alert>
+                    ) : (
+                        renderNotifications(personalNotifications)
+                    )}
+                </Col>
+
+                {/* Group Notifications Column */}
+                <Col md={loggedInUser.role !== 0 ? 4 : 6}>
+                    <h3>Group Notifications</h3>
+                    {loadingNotifications ? (
+                        <Spinner animation="border" />
+                    ) : errorNotifications ? (
+                        <Alert variant="danger">{errorNotifications}</Alert>
+                    ) : (
+                        renderNotifications(groupNotifications)
+                    )}
+                </Col>
+            </Row>
+        </Container>
     )
 }
 

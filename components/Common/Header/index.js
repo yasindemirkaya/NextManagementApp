@@ -99,40 +99,46 @@ const Header = ({ toggleSidebar }) => {
                                     <Nav key={menu.id} className={styles.menuItem}>
                                         {/* Notifications */}
                                         {menu.name === "Notifications" ? (
-                                            <Dropdown>
-                                                <Dropdown.Toggle as={Nav.Link} className={styles.menuItem}>
-                                                    <FontAwesomeIcon icon={icons[menu.icon]} />
+                                            notificationCount > 0 ? (
+                                                <Dropdown>
+                                                    <Dropdown.Toggle as={Nav.Link} className={styles.menuItem}>
+                                                        <FontAwesomeIcon icon={icons[menu.icon]} />
 
-                                                    {/* Notification Count */}
-                                                    {notificationCount > 0 && (
-                                                        <Badge bg="danger" pill className={styles.notificationBadge}>
-                                                            {notificationCount}
-                                                        </Badge>
-                                                    )}
-                                                </Dropdown.Toggle>
+                                                        {/* Notification Count */}
+                                                        {notificationCount > 0 && (
+                                                            <Badge bg="danger" pill className={styles.notificationBadge}>
+                                                                {notificationCount}
+                                                            </Badge>
+                                                        )}
+                                                    </Dropdown.Toggle>
 
-                                                <Dropdown.Menu>
-                                                    {loading ? (
-                                                        <Dropdown.Item disabled>Loading...</Dropdown.Item>
-                                                    ) : notifications.length > 0 ? (
-                                                        <>
-                                                            {/* Show only first 3  */}
-                                                            {notifications.slice(0, 3).map((notification, index) => (
-                                                                <Dropdown.Item key={index} as={Link} href={`/notifications/${notification._id}`}>
-                                                                    {notification.title}
+                                                    <Dropdown.Menu>
+                                                        {loading ? (
+                                                            <Dropdown.Item disabled>Loading...</Dropdown.Item>
+                                                        ) : notifications.length > 0 ? (
+                                                            <>
+                                                                {/* Show only first 3 */}
+                                                                {notifications.slice(0, 3).map((notification, index) => (
+                                                                    <Dropdown.Item key={index} as={Link} href={`/notifications/${notification._id}`}>
+                                                                        {notification.title}
+                                                                    </Dropdown.Item>
+                                                                ))}
+
+                                                                {/* "View More..." butonu */}
+                                                                <Dropdown.Item as={Link} href="/notifications" className={styles.viewMore}>
+                                                                    View More...
                                                                 </Dropdown.Item>
-                                                            ))}
-
-                                                            {/* "View More..." butonu */}
-                                                            <Dropdown.Item as={Link} href="/notifications" className={styles.viewMore}>
-                                                                View More...
-                                                            </Dropdown.Item>
-                                                        </>
-                                                    ) : (
-                                                        <Dropdown.Item>No notifications</Dropdown.Item>
-                                                    )}
-                                                </Dropdown.Menu>
-                                            </Dropdown>
+                                                            </>
+                                                        ) : (
+                                                            <Dropdown.Item>No notifications</Dropdown.Item>
+                                                        )}
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            ) : (
+                                                <Nav.Link as={Link} href="/notifications">
+                                                    <FontAwesomeIcon icon={icons[menu.icon]} />
+                                                </Nav.Link>
+                                            )
                                         ) : (
                                             <Nav.Link as={Link} href={menu.link}>
                                                 <FontAwesomeIcon icon={icons[menu.icon]} />
