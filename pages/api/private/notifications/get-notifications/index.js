@@ -11,6 +11,8 @@ import { verify } from 'jsonwebtoken';
 import PersonalNotification from '@/models/PersonalNotification';
 import GroupNotification from '@/models/GroupNotification';
 import UserGroup from '@/models/UserGroup';
+import User from '@/models/User'; // Kullanıcı modelini ekliyoruz
+import { formatDate } from '@/helpers/dateFormatter'; // formatDate fonksiyonunu import et
 
 const handler = async (req, res) => {
     if (req.method === 'GET') {
@@ -33,19 +35,61 @@ const handler = async (req, res) => {
             let notifications = [];
 
             if (type === '0' || type === '2') {
-                // type=0 veya type=2 ise personalNotifications'dan bildirimleri al
+                // Personal notifications al
                 const personalNotifications = await PersonalNotification.find({ user: userId });
-                notifications = [...notifications, ...personalNotifications];
+
+                // Kullanıcı bilgilerini al
+                const userIds = [...new Set(personalNotifications.map((n) => n.created_by))];
+                const users = await User.find({ _id: { $in: userIds } });
+
+                // `created_by` alanını kullanıcı adları ile değiştir
+                const personalNotificationsWithUser = personalNotifications.map((notification) => {
+                    const user = users.find((u) => u._id.toString() === notification.created_by.toString());
+                    const fullName = user ? `${user.first_name} ${user.last_name}` : 'Unknown User';
+
+                    // date ve createdAt alanlarını formatla
+                    return {
+                        ...notification.toObject(),
+                        created_by: fullName,
+                        date: formatDate(notification.date), // Formatlı tarih
+                        createdAt: formatDate(notification.createdAt) // Formatlı createdAt
+                    };
+                });
+
+                notifications = [...notifications, ...personalNotificationsWithUser];
             }
 
             if (type === '1' || type === '2') {
-                // type=1 veya type=2 ise groupNotifications'dan bildirimleri al
-                const userGroups = await UserGroup.find({ members: userId }); // Kullanıcının bulunduğu grupları bul
+                // Kullanıcının bulunduğu grupları bul
+                const userGroups = await UserGroup.find({ members: userId });
                 const groupIds = userGroups.map(group => group._id);
 
                 // Bu gruplara ait bildirimleri al
                 const groupNotifications = await GroupNotification.find({ group: { $in: groupIds } });
-                notifications = [...notifications, ...groupNotifications];
+
+                // Kullanıcı bilgilerini al
+                const groupUserIds = [...new Set(groupNotifications.map((n) => n.created_by))];
+                const groupUsers = await User.find({ _id: { $in: groupUserIds } });
+
+                // Grup adlarını ve `created_by` alanını değiştir
+                const groupNotificationsWithDetails = groupNotifications.map((notification) => {
+                    const group = userGroups.find((g) => g._id.toString() === notification.group.toString());
+                    const groupName = group ? group.group_name : 'Unknown Group';
+
+                    const creator = groupUsers.find((u) => u._id.toString() === notification.created_by.toString());
+                    const creatorName = creator ? `${creator.first_name} ${creator.last_name}` : 'Unknown User';
+
+                    // date ve createdAt alanlarını formatla
+                    return {
+                        ...notification.toObject(),
+                        group: groupName,
+                        created_by: creatorName,
+                        date: formatDate(notification.date), // Formatlı tarih
+                        createdAt: formatDate(notification.createdAt) // Formatlı createdAt
+                    };
+                });
+
+                notifications = [...notifications, ...groupNotificationsWithDetails];
             }
 
             if (notifications.length === 0) {

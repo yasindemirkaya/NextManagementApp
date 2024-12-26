@@ -1,50 +1,71 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { getNotifications } from "@/services/notificationApi";
 import { Spinner, Alert } from "react-bootstrap";
+import styles from './index.module.scss';
+import { useSelector } from 'react-redux';
+import { getNotifications, getMyNotifications } from "@/services/notificationApi";
 
 const Notifications = () => {
     const router = useRouter();
-    const [notifications, setNotifications] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [notifications, setNotifications] = useState([]);
+    const [myNotifications, setMyNotifications] = useState([]);
+
+    const [loadingNotifications, setLoadingNotifications] = useState(true);
+    const [errorNotifications, setErrorNotifications] = useState(null);
+
+    const [loadingMyNotifications, setLoadingMyNotifications] = useState(true);
+    const [errorMyNotifications, setErrorMyNotifications] = useState(null);
+
+    const loggedInUser = useSelector(state => state.user.user);
 
     useEffect(() => {
         fetchNotifications();
+
+        if (loggedInUser.role !== 0) {
+            fetchMyNotifications();
+        }
     }, []);
 
+    // Get notifications that user received
     const fetchNotifications = async () => {
-        setLoading(true);
-        setError(null);
+        setLoadingNotifications(true);
+        setErrorNotifications(null);
+
         try {
             const result = await getNotifications({ type: 2 });
             if (result.success) {
                 setNotifications(result.data);
             } else {
-                setError(result.error);
+                setErrorNotifications(result.error);
             }
         } catch (err) {
-            setError("Failed to fetch notifications. Please try again later.");
+            setErrorNotifications("Failed to fetch notifications. Please try again later.");
         }
-        setLoading(false);
+        setLoadingNotifications(false);
     };
 
-    if (loading) {
-        return (
-            <div>
-                <Spinner animation="border" variant="primary" />
-            </div>
-        );
-    }
+    // Get notifications that user created
+    const fetchMyNotifications = async () => {
+        setLoadingMyNotifications(true);
+        setErrorMyNotifications(null);
 
-    if (error || !notifications.length) {
-        return (
-            <Alert variant="warning">Notifications are not available. Please try again later.</Alert>
-        )
-    }
+        try {
+            const result = await getMyNotifications({ type: 2 });
+            if (result.success) {
+                setMyNotifications(result.data);
+            } else {
+                setErrorMyNotifications(result.error);
+            }
+        } catch (err) {
+            setErrorMyNotifications("Failed to fetch your notifications. Please try again later.");
+        }
+        setLoadingMyNotifications(false);
+    };
 
     return (
-        <>Notifications</>
+        <>
+            Notifications
+        </>
     )
 }
 

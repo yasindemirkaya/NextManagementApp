@@ -10,6 +10,7 @@
 import { verify } from 'jsonwebtoken';
 import PersonalNotification from '@/models/PersonalNotification';
 import GroupNotification from '@/models/GroupNotification';
+import { formatDate } from '@/helpers/dateFormatter'; // formatDate fonksiyonunu import et
 
 const handler = async (req, res) => {
     if (req.method === 'GET') {
@@ -34,13 +35,29 @@ const handler = async (req, res) => {
             if (type === '0' || type === '2') {
                 // type=0 veya type=2 ise personalNotifications'dan bildirimleri al
                 const personalNotifications = await PersonalNotification.find({ created_by: userId });
-                notifications = [...notifications, ...personalNotifications];
+
+                // date ve createdAt alanlarını formatla
+                const personalNotificationsWithFormattedDates = personalNotifications.map((notification) => ({
+                    ...notification.toObject(),
+                    date: formatDate(notification.date), // Formatlı tarih
+                    createdAt: formatDate(notification.createdAt) // Formatlı createdAt
+                }));
+
+                notifications = [...notifications, ...personalNotificationsWithFormattedDates];
             }
 
             if (type === '1' || type === '2') {
                 // type=1 veya type=2 ise groupNotifications'dan bildirimleri al
                 const groupNotifications = await GroupNotification.find({ created_by: userId });
-                notifications = [...notifications, ...groupNotifications];
+
+                // date ve createdAt alanlarını formatla
+                const groupNotificationsWithFormattedDates = groupNotifications.map((notification) => ({
+                    ...notification.toObject(),
+                    date: formatDate(notification.date), // Formatlı tarih
+                    createdAt: formatDate(notification.createdAt) // Formatlı createdAt
+                }));
+
+                notifications = [...notifications, ...groupNotificationsWithFormattedDates];
             }
 
             if (notifications.length === 0) {
@@ -67,3 +84,4 @@ const handler = async (req, res) => {
 };
 
 export default handler;
+

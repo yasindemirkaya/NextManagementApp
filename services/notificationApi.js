@@ -33,6 +33,37 @@ export const getNotifications = async (params = {}) => {
 
 // ***************************
 // |
+// | GET MY NOTIFICATIONS
+// |
+// ***************************
+
+export const getMyNotifications = async (params = {}) => {
+    try {
+        const response = await axios.get('/private/notifications/get-my-notifications', { params })
+
+        if (response.code === 1) {
+            return {
+                success: true,
+                data: response.notifications,
+                message: response.message
+            }
+        } else {
+            return {
+                success: false,
+                error: response.message
+            }
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message
+        }
+    }
+};
+
+
+// ***************************
+// |
 // | GET NOTIFICATION BY ID
 // |
 // ***************************
