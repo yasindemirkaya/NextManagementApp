@@ -25,6 +25,8 @@ const BreadcrumbComponent = () => {
                 return 'Group Detail';
             case segment.includes('[groupTypeId]'):
                 return 'Group Type Detail';
+            case segment.includes('[notificationId]'):
+                return 'Notification Detail';
             default:
                 return segment.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
