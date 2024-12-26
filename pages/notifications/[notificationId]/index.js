@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getNotificationById } from "@/services/notificationApi";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Alert } from "react-bootstrap";
 
 const NotificationItem = () => {
     const router = useRouter();
@@ -19,11 +19,15 @@ const NotificationItem = () => {
     const fetchNotification = async () => {
         setLoading(true);
         setError(null);
-        const result = await getNotificationById(notificationId);
-        if (result.success) {
-            setNotification(result.data);
-        } else {
-            setError(result.error);
+        try {
+            const result = await getNotificationById({ id: notificationId });
+            if (result.success) {
+                setNotification(result.data);
+            } else {
+                setError(result.error);
+            }
+        } catch (err) {
+            setError("Failed to fetch notification. Please try again later.");
         }
         setLoading(false);
     };
@@ -43,7 +47,7 @@ const NotificationItem = () => {
     }
 
     return (
-        <>Notification Item</>
+        <>Notification Item: {notification._id}</>
     )
 }
 

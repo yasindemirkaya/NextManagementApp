@@ -24,6 +24,7 @@ const Header = ({ toggleSidebar }) => {
     useEffect(() => {
         if (token) {
             fetchNotificationCount();
+            fetchNotifications();
         }
     }, [token]);
 
@@ -89,7 +90,7 @@ const Header = ({ toggleSidebar }) => {
                                     <Nav key={menu.id} className={styles.menuItem}>
                                         {/* Notifications */}
                                         {menu.name === "Notifications" ? (
-                                            <Dropdown onToggle={fetchNotifications}>
+                                            <Dropdown>
                                                 <Dropdown.Toggle as={Nav.Link} className={styles.menuItem}>
                                                     <FontAwesomeIcon icon={icons[menu.icon]} />
 

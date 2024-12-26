@@ -33,7 +33,7 @@ export const getNotifications = async (params = {}) => {
 
 // ***************************
 // |
-// | GET ALL NOTIFICATIONS
+// | GET NOTIFICATION BY ID
 // |
 // ***************************
 
