@@ -27,15 +27,21 @@ const handler = async (req, res) => {
         }
 
         try {
-            // Personal notifications sayısını al
-            const personalCount = await PersonalNotification.countDocuments({ user: userId });
+            // Personal notifications sayısını al (is_seen: false olanları)
+            const personalCount = await PersonalNotification.countDocuments({
+                user: userId,
+                is_seen: false
+            });
 
             // Kullanıcının grup üyeliklerini al
             const userGroups = await UserGroup.find({ members: userId }).select('_id');
             const groupIds = userGroups.map(group => group._id);
 
-            // Group notifications sayısını al
-            const groupCount = await GroupNotification.countDocuments({ group: { $in: groupIds } });
+            // Group notifications sayısını al (is_seen: false olanları)
+            const groupCount = await GroupNotification.countDocuments({
+                group: { $in: groupIds },
+                is_seen: false
+            });
 
             // Toplam bildirimi hesapla
             const totalNotificationCount = personalCount + groupCount;

@@ -21,14 +21,23 @@ const Header = ({ toggleSidebar }) => {
     const [notifications, setNotifications] = useState([])
     const [loading, setLoading] = useState(false)
 
+    let profileText = loggedInUser ? loggedInUser.email : "Profile";
+
     useEffect(() => {
         if (token) {
+            // İlk yüklemede veriyi alalım
             fetchNotificationCount();
             fetchNotifications();
+
+            // Call these endpoints for every 5 mins
+            const interval = setInterval(() => {
+                fetchNotificationCount();
+                fetchNotifications();
+            }, 5 * 60 * 1000);
+
+            return () => clearInterval(interval);
         }
     }, [token]);
-
-    let profileText = loggedInUser ? loggedInUser.email : "Profile";
 
     // Get all notifications
     const fetchNotifications = async () => {
