@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Spinner, Alert, Container, Row, Col } from "react-bootstrap";
+import { Spinner, Alert, Container, Row, Col, Button, Badge } from "react-bootstrap";
 import styles from './index.module.scss';
 import { useSelector } from 'react-redux';
 import { getNotifications, getMyNotifications } from "@/services/notificationApi";
@@ -19,10 +19,6 @@ const Notifications = () => {
 
     const loggedInUser = useSelector(state => state.user.user);
 
-    console.log('My:', myNotifications)
-    console.log('Personal: ', personalNotifications)
-    console.log('Group: ', groupNotifications)
-
     useEffect(() => {
         fetchNotifications();
 
@@ -30,6 +26,28 @@ const Notifications = () => {
             fetchMyNotifications();
         }
     }, []);
+
+    // Get badge type
+    const getStyleForType = (type) => {
+        const baseClass = 'fw-bold';
+
+        switch (type) {
+            case 'Reminder':
+                return `${baseClass} text-success`;
+            case 'Warning':
+                return `${baseClass} text-warning`;
+            case 'Info':
+                return `${baseClass} text-info`;
+            case 'Feedback':
+                return `${baseClass} text-success`;
+            case 'Task Assignment':
+                return `${baseClass} text-success`;
+            case 'Critical':
+                return `${baseClass} text-danger`;
+            default:
+                return baseClass;
+        }
+    };
 
     // Get notifications that user received
     const fetchNotifications = async () => {
@@ -81,59 +99,104 @@ const Notifications = () => {
     };
 
     // Render notifications or loading spinner
-    const renderNotifications = (notifications) => {
-        return notifications.map((notification, index) => (
-            <Alert variant="info" key={index} className={styles.notification}>
-                <p>{notification.title}</p>
-                <p>{notification.date}</p>
-                <p>{notification.description}</p>
-            </Alert>
-        ));
+    const renderNotifications = (notifications, route) => {
+        return (
+            <>
+                <div className="timeline">
+                    <div className={styles.timeline}>
+                        {notifications.map((notification, index) => (
+                            <div className={styles.timelineItem} key={index}>
+                                <div className="d-flex justify-content-between mb-2">
+                                    {/* Created At */}
+                                    <div className={styles.timelineDate}>{notification.createdAt}</div>
+                                </div>
+                                <div className={styles.timelineContent}>
+                                    {/* Title */}
+                                    <h5 className="mb-2">{notification.title}</h5>
+
+                                    {/* Description */}
+                                    <p className="mb-2">{notification.description}</p>
+
+                                    {/* Date */}
+                                    <p className="text-muted mb-2">{notification.date}</p>
+
+                                    <hr />
+
+                                    {/* Type & From */}
+                                    <Row className="mb-2">
+                                        <Col md={5}>
+                                            Type: <span className={getStyleForType(notification.type)}>{notification.type}</span>
+                                        </Col>
+                                        {route !== '/my-notifications' && (
+                                            <Col md={7}>
+                                                From: <span className="text-danger fw-bold">{notification.created_by}</span>
+                                            </Col>
+                                        )}
+                                    </Row>
+
+                                    {/* Is Seen */}
+                                    <div>
+                                        Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                {notifications.length >= 3 && (
+                    <div className="d-flex justify-content-center mb-3">
+                        <Button variant="link" onClick={() => router.push(`/notifications${route}`)}>
+                            View More
+                        </Button>
+                    </div>
+                )}
+            </>
+        );
     };
 
     return (
         <Container>
             <Row>
                 {/* My Notifications Column - Only visible if role is not 0 */}
-                {loggedInUser.role !== 0 && (
+                {loggedInUser?.role !== 0 && (
                     <Col md={4}>
-                        <h3>My Notifications</h3>
+                        <h4>My Notifications</h4>
                         {loadingMyNotifications ? (
                             <Spinner animation="border" />
                         ) : errorMyNotifications ? (
                             <Alert variant="danger">{errorMyNotifications}</Alert>
                         ) : (
-                            renderNotifications(myNotifications)
+                            renderNotifications(myNotifications, '/my-notifications')
                         )}
                     </Col>
                 )}
 
                 {/* Personal Notifications Column */}
-                <Col md={loggedInUser.role !== 0 ? 4 : 6}>
-                    <h3>Personal Notifications</h3>
+                <Col md={loggedInUser?.role !== 0 ? 4 : 6}>
+                    <h4>Personal Notifications</h4>
                     {loadingNotifications ? (
                         <Spinner animation="border" />
                     ) : errorNotifications ? (
                         <Alert variant="danger">{errorNotifications}</Alert>
                     ) : (
-                        renderNotifications(personalNotifications)
+                        renderNotifications(personalNotifications, '/personal-notifications')
                     )}
                 </Col>
 
                 {/* Group Notifications Column */}
-                <Col md={loggedInUser.role !== 0 ? 4 : 6}>
-                    <h3>Group Notifications</h3>
+                <Col md={loggedInUser?.role !== 0 ? 4 : 6}>
+                    <h4>Group Notifications</h4>
                     {loadingNotifications ? (
                         <Spinner animation="border" />
                     ) : errorNotifications ? (
                         <Alert variant="danger">{errorNotifications}</Alert>
                     ) : (
-                        renderNotifications(groupNotifications)
+                        renderNotifications(groupNotifications, '/group-notifications')
                     )}
                 </Col>
             </Row>
         </Container>
-    )
-}
+    );
+};
 
 export default Notifications;

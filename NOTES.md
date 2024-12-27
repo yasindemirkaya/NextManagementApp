@@ -67,3 +67,4 @@
 * Eğer bir bildirim bir gruba atılmışsa o bildirim sadece grup lideri update edebilir (Okundu yapabilir).
 * Bildirimleri sadece bildirim sahipleri silebilir. Ancak Super Adminler tüm bildirimleri silebilir.
 * Super Adminler tüm bildirimleri görebilir, Adminler sadece kendi oluşturdukları ve kendilerine atılan bildirimleri görebilir.
+* Notification Types: REMINDER, WARNING, INFO, FEEDBACK, TASK ASSIGNMENT, CRITICAL
