@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { getNotifications, getMyNotifications, updateNotification } from "@/services/notificationApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icons } from "@/static/icons";
+import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { getStyleForNotificationType } from "@/helpers/getStyleForNotificationType";
 
@@ -180,7 +181,7 @@ const Notifications = () => {
         );
     };
 
-    const handleMarkAsSeen = async (notification, fetchNotifications) => {
+    const handleMarkAsSeen = async (notification) => {
         const type = notification.group ? 1 : 0;
 
         const result = await updateNotification({

@@ -58,7 +58,7 @@ const PersonalNotifications = () => {
         router.push('/notifications')
     };
 
-    const handleMarkAsSeen = async (notification, fetchNotifications) => {
+    const handleMarkAsSeen = async (notification) => {
         const type = notification.group ? 1 : 0;
 
         const result = await updateNotification({
@@ -164,16 +164,16 @@ const PersonalNotifications = () => {
                                     </div>
                                 </div>
 
-                                {hasMore && (
-                                    <div className="d-flex justify-content-center mb-3">
-                                        <Button variant="link" className="text-secondary" onClick={handleBack}>
-                                            Back
-                                        </Button>
+                                <div className="d-flex justify-content-center mb-3">
+                                    <Button variant="link" className="text-secondary" onClick={handleBack}>
+                                        Back
+                                    </Button>
+                                    {hasMore && (
                                         <Button variant="link" onClick={handleViewMore}>
                                             View More
                                         </Button>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </>
                         )}
                     </Col>
