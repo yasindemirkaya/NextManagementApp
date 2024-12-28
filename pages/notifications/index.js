@@ -201,52 +201,58 @@ const Notifications = () => {
         <>
             <Container>
                 <Row>
-                    {/* My Notifications Column - Only visible if role is not 0 and there are notifications */}
-                    {loggedInUser?.role !== 0 && myNotifications.length > 0 && (
-                        <Col md={4}>
-                            <h4>My Notifications</h4>
-                            {loadingMyNotifications ? (
-                                <Spinner animation="border" />
-                            ) : errorMyNotifications ? (
-                                <Alert variant="danger">{errorMyNotifications}</Alert>
-                            ) : (
-                                renderNotifications(myNotifications, '/my-notifications')
-                            )}
-                        </Col>
-                    )}
+                    {(() => {
+                        const columns = [
+                            loggedInUser?.role !== 0 && myNotifications.length > 0 && {
+                                key: "my-notifications",
+                                title: "My Notifications",
+                                loading: loadingMyNotifications,
+                                error: errorMyNotifications,
+                                notifications: myNotifications,
+                                route: "/my-notifications",
+                            },
+                            personalNotifications.length > 0 && {
+                                key: "personal-notifications",
+                                title: "Personal Notifications",
+                                loading: loadingPersonalNotifications,
+                                error: errorPersonalNotifications,
+                                notifications: personalNotifications,
+                                route: "/personal-notifications",
+                            },
+                            groupNotifications.length > 0 && {
+                                key: "group-notifications",
+                                title: "Group Notifications",
+                                loading: loadingGroupNotifications,
+                                error: errorGroupNotifications,
+                                notifications: groupNotifications,
+                                route: "/group-notifications",
+                            },
+                        ].filter(Boolean);
 
-                    {/* Personal Notifications Column - Only visible if there are notifications */}
-                    {personalNotifications.length > 0 && (
-                        <Col md={loggedInUser?.role !== 0 ? 4 : 6}>
-                            <h4>Personal Notifications</h4>
-                            {loadingPersonalNotifications ? (
-                                <Spinner animation="border" />
-                            ) : errorPersonalNotifications ? (
-                                <Alert variant="danger">{errorNotifications}</Alert>
-                            ) : (
-                                renderNotifications(personalNotifications, '/personal-notifications')
-                            )}
-                        </Col>
-                    )}
+                        // Üç bildirim tipi de ekranda varsa hepsi md: 4 olur
+                        // İki bildirim tipi varsa md: 6 olur
+                        // Tek tip bildirim varsa md: 12 olur
+                        const colSize = columns.length === 3 ? 4 : columns.length === 2 ? 6 : 6;
 
-                    {/* Group Notifications Column - Only visible if there are notifications */}
-                    {groupNotifications.length > 0 && (
-                        <Col md={loggedInUser?.role !== 0 ? 4 : 6}>
-                            <h4>Group Notifications</h4>
-                            {loadingGroupNotifications ? (
-                                <Spinner animation="border" />
-                            ) : errorGroupNotifications ? (
-                                <Alert variant="danger">{errorNotifications}</Alert>
-                            ) : (
-                                renderNotifications(groupNotifications, '/group-notifications')
-                            )}
-                        </Col>
-                    )}
+                        return columns.map((col) => (
+                            <Col key={col.key} md={colSize}>
+                                <h4>{col.title}</h4>
+                                {col.loading ? (
+                                    <Spinner animation="border" />
+                                ) : col.error ? (
+                                    <Alert variant="danger">{col.error}</Alert>
+                                ) : (
+                                    renderNotifications(col.notifications, col.route)
+                                )}
+                            </Col>
+                        ));
+                    })()}
                 </Row>
             </Container>
             <ToastContainer />
         </>
     );
+
 };
 
 export default Notifications;

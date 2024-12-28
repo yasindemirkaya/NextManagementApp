@@ -42,7 +42,7 @@ const Header = ({ toggleSidebar }) => {
     // Get all notifications
     const fetchNotifications = async () => {
         setLoading(true);
-        const result = await getNotifications({ type: 2 });
+        const result = await getNotifications({ type: 2, page: 1, limit: 3 });
         setLoading(false);
         if (result.success) {
             setNotifications(result.data);
@@ -118,7 +118,7 @@ const Header = ({ toggleSidebar }) => {
                                                         ) : notifications.length > 0 ? (
                                                             <>
                                                                 {/* Show only first 3 */}
-                                                                {notifications.slice(0, 3).map((notification, index) => (
+                                                                {notifications.map((notification, index) => (
                                                                     <Dropdown.Item
                                                                         key={index}
                                                                         as={Link}
