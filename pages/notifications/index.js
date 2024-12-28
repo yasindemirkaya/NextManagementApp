@@ -59,24 +59,20 @@ const Notifications = () => {
         setErrorNotifications(null);
 
         try {
-            const result = await getNotifications({ type: 2 });
-            if (result.success) {
-                const groupNotif = [];
-                const personalNotif = [];
-
-                // Notificationları kategorize et (personal, group)
-                result.data.forEach(notification => {
-                    if (notification.group) {
-                        groupNotif.push(notification);
-                    } else {
-                        personalNotif.push(notification);
-                    }
-                });
-
-                setGroupNotifications(groupNotif);
-                setPersonalNotifications(personalNotif);
+            // İlk 3 personal notification'ı alıyoruz
+            const personalResult = await getNotifications({ type: 0, page: 1, limit: 3 }); // type: 0 - Personal
+            if (personalResult.success) {
+                setPersonalNotifications(personalResult.data);
             } else {
-                setErrorNotifications(result.error);
+                setErrorNotifications(personalResult.error);
+            }
+
+            // İlk 3 group notification'ı alıyoruz
+            const groupResult = await getNotifications({ type: 1, page: 1, limit: 3 }); // type: 1 - Group
+            if (groupResult.success) {
+                setGroupNotifications(groupResult.data);
+            } else {
+                setErrorNotifications(groupResult.error);
             }
         } catch (err) {
             setErrorNotifications("Failed to fetch notifications. Please try again later.");
@@ -84,13 +80,14 @@ const Notifications = () => {
         setLoadingNotifications(false);
     };
 
+
     // Get notifications that user created
     const fetchMyNotifications = async () => {
         setLoadingMyNotifications(true);
         setErrorMyNotifications(null);
 
         try {
-            const result = await getMyNotifications({ type: 2 });
+            const result = await getMyNotifications({ type: 2, page: 1, limit: 3 });
             if (result.success) {
                 setMyNotifications(result.data);
             } else {
@@ -121,14 +118,11 @@ const Notifications = () => {
 
     // Render notifications or loading spinner
     const renderNotifications = (notifications, route) => {
-        // İlk 3 bildirimi almak için slice ekliyoruz
-        const limitedNotifications = notifications.slice(0, 3);
-
         return (
             <>
                 <div className="timeline">
                     <div className={styles.timeline}>
-                        {limitedNotifications.map((notification, index) => (
+                        {notifications.map((notification, index) => (
                             <div
                                 className={`${styles.timelineItem} ${notification.is_seen ? styles.seen : styles.notSeen}`}
                                 key={index}
@@ -203,7 +197,7 @@ const Notifications = () => {
                         ))}
                     </div>
                 </div>
-                {notifications.length > 3 && (
+                {notifications.length >= 3 && (
                     <div className="d-flex justify-content-center mb-3">
                         <Button variant="link" onClick={() => router.push(`/notifications${route}`)}>
                             View More
@@ -213,6 +207,7 @@ const Notifications = () => {
             </>
         );
     };
+
 
 
     return (

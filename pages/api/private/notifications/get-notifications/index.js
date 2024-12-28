@@ -11,12 +11,12 @@ import { verify } from 'jsonwebtoken';
 import PersonalNotification from '@/models/PersonalNotification';
 import GroupNotification from '@/models/GroupNotification';
 import UserGroup from '@/models/UserGroup';
-import User from '@/models/User'; // Kullanıcı modelini ekliyoruz
-import { formatDate } from '@/helpers/dateFormatter'; // formatDate fonksiyonunu import et
+import User from '@/models/User';
+import { formatDate } from '@/helpers/dateFormatter';
 
 const handler = async (req, res) => {
     if (req.method === 'GET') {
-        const { type } = req.query;
+        const { type, limit, page } = req.query;
 
         // Token'dan kullanıcı bilgilerini al
         let userId;
@@ -34,9 +34,26 @@ const handler = async (req, res) => {
         try {
             let notifications = [];
 
+            // Sayfalama için limit ve page parametrelerini ayarla
+            const limitValue = limit ? parseInt(limit) : null; // limit varsa kullan, yoksa null
+            const pageValue = page ? parseInt(page) : 1; // page varsa kullan, yoksa 1
+            const skipValue = (limitValue && pageValue) ? (pageValue - 1) * limitValue : 0;
+
+            // Bildirimlerin toplam sayısını almak için iki sorgu yapalım:
+            const totalPersonalNotifications = await PersonalNotification.countDocuments({ user: userId });
+            const totalGroupNotifications = await GroupNotification.countDocuments({
+                group: { $in: (await UserGroup.find({ members: userId })).map(group => group._id) }
+            });
+
+            // Toplam bildirim sayısını hesapla
+            const totalNotifications = totalPersonalNotifications + totalGroupNotifications;
+            const totalPages = limitValue ? Math.ceil(totalNotifications / limitValue) : 1; // Eğer limit varsa sayfa hesaplanır
+
             if (type === '0' || type === '2') {
                 // Personal notifications al
-                const personalNotifications = await PersonalNotification.find({ user: userId });
+                const personalNotifications = await PersonalNotification.find({ user: userId })
+                    .limit(limitValue || totalNotifications) // limit yoksa toplam veri kadar al
+                    .skip(skipValue);
 
                 // Kullanıcı bilgilerini al
                 const userIds = [...new Set(personalNotifications.map((n) => n.created_by))];
@@ -47,12 +64,12 @@ const handler = async (req, res) => {
                     const user = users.find((u) => u._id.toString() === notification.created_by.toString());
                     const fullName = user ? `${user.first_name} ${user.last_name}` : 'Unknown User';
 
-                    // date ve createdAt alanlarını formatla
                     return {
                         ...notification.toObject(),
                         created_by: fullName,
-                        date: formatDate(notification.date), // Formatlı tarih
-                        createdAt: formatDate(notification.createdAt) // Formatlı createdAt
+                        date: formatDate(notification.date),
+                        createdAt: formatDate(notification.createdAt),
+                        updatedAt: formatDate(notification.updatedAt)
                     };
                 });
 
@@ -65,7 +82,9 @@ const handler = async (req, res) => {
                 const groupIds = userGroups.map(group => group._id);
 
                 // Bu gruplara ait bildirimleri al
-                const groupNotifications = await GroupNotification.find({ group: { $in: groupIds } });
+                const groupNotifications = await GroupNotification.find({ group: { $in: groupIds } })
+                    .limit(limitValue || totalNotifications) // limit yoksa toplam veri kadar al
+                    .skip(skipValue);
 
                 // Kullanıcı bilgilerini al
                 const groupUserIds = [...new Set(groupNotifications.map((n) => n.created_by))];
@@ -79,13 +98,12 @@ const handler = async (req, res) => {
                     const creator = groupUsers.find((u) => u._id.toString() === notification.created_by.toString());
                     const creatorName = creator ? `${creator.first_name} ${creator.last_name}` : 'Unknown User';
 
-                    // date ve createdAt alanlarını formatla
                     return {
                         ...notification.toObject(),
                         group: groupName,
                         created_by: creatorName,
-                        date: formatDate(notification.date), // Formatlı tarih
-                        createdAt: formatDate(notification.createdAt) // Formatlı createdAt
+                        date: formatDate(notification.date),
+                        createdAt: formatDate(notification.createdAt),
                     };
                 });
 
@@ -93,10 +111,24 @@ const handler = async (req, res) => {
             }
 
             if (notifications.length === 0) {
-                // Eğer hiçbir bildirim bulunmazsa hata döndür
                 return res.status(200).json({
                     code: 0,
                     message: 'Notifications not found'
+                });
+            }
+
+            // Pagination bilgisi varsayılan olarak eklenecek
+            if (!limitValue) {
+                return res.status(200).json({
+                    code: 1,
+                    message: 'Notifications retrieved successfully',
+                    notifications,
+                    pagination: {
+                        totalData: totalNotifications,
+                        totalPages: totalPages,
+                        currentPage: pageValue,
+                        limit: totalNotifications // Burada limit'i totalNotifications olarak belirliyoruz
+                    }
                 });
             }
 
@@ -104,7 +136,13 @@ const handler = async (req, res) => {
             res.status(200).json({
                 code: 1,
                 message: 'Notifications retrieved successfully',
-                notifications
+                notifications: notifications.slice(skipValue, skipValue + limitValue),
+                pagination: {
+                    totalData: totalNotifications, // Burada toplam bildirim sayısını kullanıyoruz
+                    totalPages: totalPages,
+                    currentPage: pageValue,
+                    limit: limitValue
+                }
             });
         } catch (error) {
             console.error('Error while fetching notifications:', error);

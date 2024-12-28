@@ -10,11 +10,11 @@
 import { verify } from 'jsonwebtoken';
 import PersonalNotification from '@/models/PersonalNotification';
 import GroupNotification from '@/models/GroupNotification';
-import { formatDate } from '@/helpers/dateFormatter'; // formatDate fonksiyonunu import et
+import { formatDate } from '@/helpers/dateFormatter';
 
 const handler = async (req, res) => {
     if (req.method === 'GET') {
-        const { type } = req.query;
+        const { type, limit, page } = req.query;
 
         // Token'dan kullanıcı bilgilerini al
         let userId;
@@ -32,47 +32,69 @@ const handler = async (req, res) => {
         try {
             let notifications = [];
 
+            // Sayfalama için limit ve page parametrelerini ayarla
+            const limitValue = limit ? parseInt(limit) : null;
+            const pageValue = page ? parseInt(page) : 1;
+            const skipValue = limitValue && pageValue ? (pageValue - 1) * limitValue : 0;
+
+            // Personal Notifications
             if (type === '0' || type === '2') {
-                // type=0 veya type=2 ise personalNotifications'dan bildirimleri al
-                const personalNotifications = await PersonalNotification.find({ created_by: userId });
+                // Kullanıcının yarattığı kişisel bildirimleri al
+                const personalNotifications = await PersonalNotification.find({ created_by: userId })
+                    .limit(limitValue)
+                    .skip(skipValue);
 
-                // date ve createdAt alanlarını formatla
-                const personalNotificationsWithFormattedDates = personalNotifications.map((notification) => ({
-                    ...notification.toObject(),
-                    date: formatDate(notification.date), // Formatlı tarih
-                    createdAt: formatDate(notification.createdAt) // Formatlı createdAt
-                }));
+                if (personalNotifications.length > 0) {
+                    const personalNotificationsWithFormattedDates = personalNotifications.map((notification) => ({
+                        ...notification.toObject(),
+                        date: formatDate(notification.date), // Formatlı tarih
+                        createdAt: formatDate(notification.createdAt) // Formatlı createdAt
+                    }));
 
-                notifications = [...notifications, ...personalNotificationsWithFormattedDates];
+                    notifications = [...notifications, ...personalNotificationsWithFormattedDates];
+                }
             }
 
+            // Group Notifications
             if (type === '1' || type === '2') {
-                // type=1 veya type=2 ise groupNotifications'dan bildirimleri al
-                const groupNotifications = await GroupNotification.find({ created_by: userId });
+                // Kullanıcının yarattığı grup bildirimlerini al
+                const groupNotifications = await GroupNotification.find({ created_by: userId })
+                    .limit(limitValue)
+                    .skip(skipValue);
 
-                // date ve createdAt alanlarını formatla
-                const groupNotificationsWithFormattedDates = groupNotifications.map((notification) => ({
-                    ...notification.toObject(),
-                    date: formatDate(notification.date), // Formatlı tarih
-                    createdAt: formatDate(notification.createdAt) // Formatlı createdAt
-                }));
+                if (groupNotifications.length > 0) {
+                    const groupNotificationsWithFormattedDates = groupNotifications.map((notification) => ({
+                        ...notification.toObject(),
+                        date: formatDate(notification.date), // Formatlı tarih
+                        createdAt: formatDate(notification.createdAt) // Formatlı createdAt
+                    }));
 
-                notifications = [...notifications, ...groupNotificationsWithFormattedDates];
+                    notifications = [...notifications, ...groupNotificationsWithFormattedDates];
+                }
             }
 
+            // Eğer bildirim yoksa
             if (notifications.length === 0) {
-                // Eğer hiçbir bildirim bulunmazsa hata döndür
                 return res.status(200).json({
                     code: 0,
-                    message: 'Notifications not found'
+                    message: 'No notifications found'
                 });
             }
 
-            // Başarılı yanıt döndür
+            // limit değeri null ise, totalData'ya eşit yap
+            const finalLimit = limitValue || notifications.length;
+
+            // Pagination bilgisi ekleyerek yanıt dön
             res.status(200).json({
                 code: 1,
                 message: 'Notifications retrieved successfully',
-                notifications
+                notifications,
+                pagination: {
+                    totalData: notifications.length,
+                    totalPages: Math.ceil(notifications.length / finalLimit),
+                    currentPage: pageValue,
+                    limit: finalLimit
+                }
             });
         } catch (error) {
             console.error('Error while fetching my notifications:', error);
