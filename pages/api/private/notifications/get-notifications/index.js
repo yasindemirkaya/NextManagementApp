@@ -35,9 +35,9 @@ const handler = async (req, res) => {
             let notifications = [];
 
             // Sayfalama için limit ve page parametrelerini ayarla
-            const limitValue = limit ? parseInt(limit) : null; // limit varsa kullan, yoksa null
-            const pageValue = page ? parseInt(page) : 1; // page varsa kullan, yoksa 1
-            const skipValue = (limitValue && pageValue) ? (pageValue - 1) * limitValue : 0;
+            const limitValue = limit ? parseInt(limit) : 4; // Varsayılan limit 4
+            const pageValue = page ? parseInt(page) : 1; // Varsayılan sayfa 1
+            const skipValue = (pageValue - 1) * limitValue; // Sayfalama için skip değeri
 
             // Bildirimlerin toplam sayısını almak için iki sorgu yapalım:
             const totalPersonalNotifications = await PersonalNotification.countDocuments({ user: userId });
@@ -45,14 +45,23 @@ const handler = async (req, res) => {
                 group: { $in: (await UserGroup.find({ members: userId })).map(group => group._id) }
             });
 
-            // Toplam bildirim sayısını hesapla
-            const totalNotifications = totalPersonalNotifications + totalGroupNotifications;
-            const totalPages = limitValue ? Math.ceil(totalNotifications / limitValue) : 1; // Eğer limit varsa sayfa hesaplanır
+            // `type` parametresine göre totalNotifications'ı ayarla
+            let totalNotifications = 0;
+            if (type === '0') {
+                totalNotifications = totalPersonalNotifications;
+            } else if (type === '1') {
+                totalNotifications = totalGroupNotifications;
+            } else if (type === '2') {
+                totalNotifications = totalPersonalNotifications + totalGroupNotifications;
+            }
+
+            // Toplam sayfa sayısını hesapla
+            const totalPages = limitValue ? Math.ceil(totalNotifications / limitValue) : 1;
 
             if (type === '0' || type === '2') {
                 // Personal notifications al
                 const personalNotifications = await PersonalNotification.find({ user: userId })
-                    .limit(limitValue || totalNotifications) // limit yoksa toplam veri kadar al
+                    .limit(limitValue)
                     .skip(skipValue);
 
                 // Kullanıcı bilgilerini al
@@ -83,7 +92,7 @@ const handler = async (req, res) => {
 
                 // Bu gruplara ait bildirimleri al
                 const groupNotifications = await GroupNotification.find({ group: { $in: groupIds } })
-                    .limit(limitValue || totalNotifications) // limit yoksa toplam veri kadar al
+                    .limit(limitValue)
                     .skip(skipValue);
 
                 // Kullanıcı bilgilerini al
@@ -118,32 +127,18 @@ const handler = async (req, res) => {
             }
 
             // Pagination bilgisi varsayılan olarak eklenecek
-            if (!limitValue) {
-                return res.status(200).json({
-                    code: 1,
-                    message: 'Notifications retrieved successfully',
-                    notifications,
-                    pagination: {
-                        totalData: totalNotifications,
-                        totalPages: totalPages,
-                        currentPage: pageValue,
-                        limit: totalNotifications // Burada limit'i totalNotifications olarak belirliyoruz
-                    }
-                });
-            }
-
-            // Başarılı yanıt döndür
-            res.status(200).json({
+            return res.status(200).json({
                 code: 1,
                 message: 'Notifications retrieved successfully',
-                notifications: notifications.slice(skipValue, skipValue + limitValue),
+                notifications: notifications, // Doğrudan alınan bildirimleri döndürüyoruz
                 pagination: {
-                    totalData: totalNotifications, // Burada toplam bildirim sayısını kullanıyoruz
+                    totalData: totalNotifications,
                     totalPages: totalPages,
                     currentPage: pageValue,
                     limit: limitValue
                 }
             });
+
         } catch (error) {
             console.error('Error while fetching notifications:', error);
             res.status(500).json({ message: 'An error occurred while fetching notifications', error: error.message });
@@ -152,5 +147,7 @@ const handler = async (req, res) => {
         res.status(405).json({ message: 'Method not allowed' });
     }
 };
+
+
 
 export default handler;

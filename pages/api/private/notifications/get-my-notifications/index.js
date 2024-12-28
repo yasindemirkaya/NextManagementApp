@@ -37,12 +37,17 @@ const handler = async (req, res) => {
             const pageValue = page ? parseInt(page) : 1;
             const skipValue = limitValue && pageValue ? (pageValue - 1) * limitValue : 0;
 
+            let totalPersonalNotifications = 0;
+            let totalGroupNotifications = 0;
+
             // Personal Notifications
             if (type === '0' || type === '2') {
                 // Kullanıcının yarattığı kişisel bildirimleri al
                 const personalNotifications = await PersonalNotification.find({ created_by: userId })
                     .limit(limitValue)
                     .skip(skipValue);
+
+                totalPersonalNotifications = personalNotifications.length;
 
                 if (personalNotifications.length > 0) {
                     const personalNotificationsWithFormattedDates = personalNotifications.map((notification) => ({
@@ -62,6 +67,8 @@ const handler = async (req, res) => {
                     .limit(limitValue)
                     .skip(skipValue);
 
+                totalGroupNotifications = groupNotifications.length;
+
                 if (groupNotifications.length > 0) {
                     const groupNotificationsWithFormattedDates = groupNotifications.map((notification) => ({
                         ...notification.toObject(),
@@ -71,6 +78,16 @@ const handler = async (req, res) => {
 
                     notifications = [...notifications, ...groupNotificationsWithFormattedDates];
                 }
+            }
+
+            // `type` parametresine göre totalNotifications'ı ayarlıyoruz
+            let totalNotifications = 0;
+            if (type === '0') {
+                totalNotifications = totalPersonalNotifications;
+            } else if (type === '1') {
+                totalNotifications = totalGroupNotifications;
+            } else if (type === '2') {
+                totalNotifications = totalPersonalNotifications + totalGroupNotifications;
             }
 
             // Eğer bildirim yoksa
@@ -90,8 +107,8 @@ const handler = async (req, res) => {
                 message: 'Notifications retrieved successfully',
                 notifications,
                 pagination: {
-                    totalData: notifications.length,
-                    totalPages: Math.ceil(notifications.length / finalLimit),
+                    totalData: totalNotifications, // Total bildirim sayısı
+                    totalPages: Math.ceil(totalNotifications / finalLimit),
                     currentPage: pageValue,
                     limit: finalLimit
                 }
@@ -106,4 +123,3 @@ const handler = async (req, res) => {
 };
 
 export default handler;
-

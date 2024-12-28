@@ -1,3 +1,6 @@
+Notification türleri için sayfaları hazırla
+
+
 Anasayfa dashboard için kullanılabilecek kartların eklenmesi
 
 Servis responselarına GUID eklenmesi.

@@ -6,8 +6,8 @@ import { useSelector } from 'react-redux';
 import { getNotifications, getMyNotifications, updateNotification } from "@/services/notificationApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icons } from "@/static/icons";
-import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
+import { getStyleForNotificationType } from "@/helpers/getStyleForNotificationType";
 
 const Notifications = () => {
     const router = useRouter();
@@ -15,8 +15,11 @@ const Notifications = () => {
     const [groupNotifications, setGroupNotifications] = useState([]);
     const [personalNotifications, setPersonalNotifications] = useState([]);
 
-    const [loadingNotifications, setLoadingNotifications] = useState(true);
-    const [errorNotifications, setErrorNotifications] = useState(null);
+    const [loadingPersonalNotifications, setLoadingPersonalNotifications] = useState(true);
+    const [errorPersonalNotifications, setErrorPersonalNotifications] = useState(null);
+
+    const [loadingGroupNotifications, setLoadingGroupNotifications] = useState(true);
+    const [errorGroupNotifications, setErrorGroupNotifications] = useState(null);
 
     const [loadingMyNotifications, setLoadingMyNotifications] = useState(true);
     const [errorMyNotifications, setErrorMyNotifications] = useState(null);
@@ -31,55 +34,41 @@ const Notifications = () => {
         }
     }, []);
 
-    // Get badge type
-    const getStyleForType = (type) => {
-        const baseClass = 'fw-bold';
-
-        switch (type) {
-            case 'Reminder':
-                return `${baseClass} text-success`;
-            case 'Warning':
-                return `${baseClass} text-warning`;
-            case 'Info':
-                return `${baseClass} text-info`;
-            case 'Feedback':
-                return `${baseClass} text-success`;
-            case 'Task Assignment':
-                return `${baseClass} text-success`;
-            case 'Critical':
-                return `${baseClass} text-danger`;
-            default:
-                return baseClass;
-        }
-    };
-
     // Get notifications that user received
     const fetchNotifications = async () => {
-        setLoadingNotifications(true);
-        setErrorNotifications(null);
+        setLoadingPersonalNotifications(true);
+        setErrorPersonalNotifications(null);
 
+        setLoadingGroupNotifications(true);
+        setErrorGroupNotifications(null);
+
+        // İlk 3 personal notification'ı alıyoruz
         try {
-            // İlk 3 personal notification'ı alıyoruz
             const personalResult = await getNotifications({ type: 0, page: 1, limit: 3 }); // type: 0 - Personal
             if (personalResult.success) {
                 setPersonalNotifications(personalResult.data);
             } else {
-                setErrorNotifications(personalResult.error);
+                setErrorPersonalNotifications(personalResult.error);
             }
+        } catch (err) {
+            setErrorPersonalNotifications("Failed to fetch personal notifications. Please try again later.");
+        }
 
-            // İlk 3 group notification'ı alıyoruz
+        // İlk 3 group notification'ı alıyoruz
+        try {
             const groupResult = await getNotifications({ type: 1, page: 1, limit: 3 }); // type: 1 - Group
             if (groupResult.success) {
                 setGroupNotifications(groupResult.data);
             } else {
-                setErrorNotifications(groupResult.error);
+                setErrorGroupNotifications(groupResult.error);
             }
         } catch (err) {
-            setErrorNotifications("Failed to fetch notifications. Please try again later.");
+            setErrorGroupNotifications("Failed to fetch group notifications. Please try again later.");
         }
-        setLoadingNotifications(false);
-    };
 
+        setLoadingPersonalNotifications(false);
+        setLoadingGroupNotifications(false);
+    };
 
     // Get notifications that user created
     const fetchMyNotifications = async () => {
@@ -98,23 +87,6 @@ const Notifications = () => {
         }
         setLoadingMyNotifications(false);
     };
-
-    // Update notification (mark as seen)
-    const handleMarkAsSeen = async (notification) => {
-        const type = notification.group ? 1 : 0;
-
-        const result = await updateNotification({
-            notificationId: notification._id,
-            type,
-        });
-
-        if (result.success) {
-            toast('SUCCESS', result.message);
-            fetchNotifications();
-        } else {
-            toast('ERROR', result.error);
-        }
-    }
 
     // Render notifications or loading spinner
     const renderNotifications = (notifications, route) => {
@@ -146,7 +118,7 @@ const Notifications = () => {
                                     {/* Type & From */}
                                     <Row className="mb-2">
                                         <Col md={5}>
-                                            Type: <span className={getStyleForType(notification.type)}>{notification.type}</span>
+                                            Type: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
                                         </Col>
                                         {route !== '/my-notifications' && (
                                             <Col md={7}>
@@ -208,7 +180,21 @@ const Notifications = () => {
         );
     };
 
+    const handleMarkAsSeen = async (notification, fetchNotifications) => {
+        const type = notification.group ? 1 : 0;
 
+        const result = await updateNotification({
+            notificationId: notification._id,
+            type,
+        });
+
+        if (result.success) {
+            toast('SUCCESS', result.message);
+            fetchNotifications();
+        } else {
+            toast('ERROR', result.error);
+        }
+    };
 
     return (
         <>
@@ -232,9 +218,9 @@ const Notifications = () => {
                     {personalNotifications.length > 0 && (
                         <Col md={loggedInUser?.role !== 0 ? 4 : 6}>
                             <h4>Personal Notifications</h4>
-                            {loadingNotifications ? (
+                            {loadingPersonalNotifications ? (
                                 <Spinner animation="border" />
-                            ) : errorNotifications ? (
+                            ) : errorPersonalNotifications ? (
                                 <Alert variant="danger">{errorNotifications}</Alert>
                             ) : (
                                 renderNotifications(personalNotifications, '/personal-notifications')
@@ -246,9 +232,9 @@ const Notifications = () => {
                     {groupNotifications.length > 0 && (
                         <Col md={loggedInUser?.role !== 0 ? 4 : 6}>
                             <h4>Group Notifications</h4>
-                            {loadingNotifications ? (
+                            {loadingGroupNotifications ? (
                                 <Spinner animation="border" />
-                            ) : errorNotifications ? (
+                            ) : errorGroupNotifications ? (
                                 <Alert variant="danger">{errorNotifications}</Alert>
                             ) : (
                                 renderNotifications(groupNotifications, '/group-notifications')
