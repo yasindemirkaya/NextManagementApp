@@ -90,7 +90,7 @@ const GroupNotifications = () => {
         <>
             <Container>
                 <Row>
-                    <Col md={12}>
+                    <Col md={8}>
                         <h4>Group Notifications</h4>
                         {loading ? (
                             <Spinner animation="border" />

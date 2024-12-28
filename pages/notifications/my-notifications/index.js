@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Spinner, Alert, Container, Row, Col, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getMyNotifications, updateNotification } from '@/services/notificationApi';
+import { getMyNotifications, deleteNotification } from '@/services/notificationApi';
 import styles from '../index.module.scss';
 import { icons } from '@/static/icons';
 import toast from '@/utils/toastify';
@@ -65,19 +65,20 @@ const MyNotifications = () => {
         router.push('/notifications');
     };
 
+    // Handle delete notification
     const handleDeleteNotification = async (notification) => {
-        const type = notification.group ? 1 : 0;
+        try {
+            // Bildirimin silinmesi için gerekli işlem
+            const result = await deleteNotification(notification._id);
 
-        const result = await updateNotification({
-            notificationId: notification._id,
-            type,
-        });
-
-        if (result.success) {
-            toast('SUCCESS', result.message);
-            fetchNotifications();
-        } else {
-            toast('ERROR', result.error);
+            if (result.success) {
+                toast('SUCCESS', result.message);
+                fetchNotifications();
+            } else {
+                toast('ERROR', result.error);
+            }
+        } catch (err) {
+            toast('ERROR', 'An error occurred while deleting the notification. Please try again later.');
         }
     };
 
@@ -90,7 +91,7 @@ const MyNotifications = () => {
         <>
             <Container>
                 <Row>
-                    <Col md={12}>
+                    <Col md={8}>
                         <h4>My Notifications</h4>
                         {loading ? (
                             <Spinner animation="border" />

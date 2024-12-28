@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Spinner, Alert, Container, Row, Col, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Spinner, Alert, Container, Row, Col, Button } from "react-bootstrap";
 import styles from './index.module.scss';
 import { useSelector } from 'react-redux';
-import { getNotifications, getMyNotifications, updateNotification } from "@/services/notificationApi";
+import { getNotifications, getMyNotifications, updateNotification, deleteNotification } from "@/services/notificationApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { icons } from "@/static/icons";
 import toast from '@/utils/toastify';
@@ -107,6 +107,34 @@ const Notifications = () => {
             toast('ERROR', result.error);
         }
     };
+
+    // Handle delete notification
+    const handleDeleteNotification = async (notification) => {
+        try {
+            // Bildirimin silinmesi için gerekli işlem
+            const result = await deleteNotification(notification._id);
+
+            if (result.success) {
+                toast('SUCCESS', result.message);
+
+                // Silinen bildirimi state'den de kaldır
+                setMyNotifications((prevNotifications) =>
+                    prevNotifications.filter((notif) => notif._id !== notification._id)
+                );
+                setGroupNotifications((prevNotifications) =>
+                    prevNotifications.filter((notif) => notif._id !== notification._id)
+                );
+                setPersonalNotifications((prevNotifications) =>
+                    prevNotifications.filter((notif) => notif._id !== notification._id)
+                );
+            } else {
+                toast('ERROR', result.error);
+            }
+        } catch (err) {
+            toast('ERROR', 'An error occurred while deleting the notification. Please try again later.');
+        }
+    };
+
 
     // Render notifications or loading spinner
     const renderNotifications = (notifications, route) => {

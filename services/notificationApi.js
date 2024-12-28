@@ -146,3 +146,35 @@ export const updateNotification = async (data = {}) => {
         };
     }
 };
+
+
+// ***************************
+// |
+// | DELETE NOTIFICATION
+// |
+// ***************************
+
+export const deleteNotification = async (notificationId) => {
+    try {
+        const response = await axios.delete('/private/notifications/delete-notification', {
+            data: { notificationId }
+        });
+
+        if (response.code === 1) {
+            return {
+                success: true,
+                message: response.message
+            };
+        } else {
+            return {
+                success: false,
+                error: response.message
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.message || error.message
+        };
+    }
+};

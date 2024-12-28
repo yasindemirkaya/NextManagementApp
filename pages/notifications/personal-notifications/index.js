@@ -90,7 +90,7 @@ const PersonalNotifications = () => {
         <>
             <Container>
                 <Row>
-                    <Col md={12}>
+                    <Col md={8}>
                         <h4>Personal Notifications</h4>
                         {loading ? (
                             <Spinner animation="border" />
