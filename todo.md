@@ -9,3 +9,4 @@ GUID ile servis request responselarının sorgulanabileceği bir endpoint yapıs
 * Anasayfa dashboard için kullanılabilecek kartların eklenmesi
 
 
+test
