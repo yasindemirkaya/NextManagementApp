@@ -1,6 +1,5 @@
 .timeline {
     position: relative;
-    // padding: 20px 0;
     list-style: none;
 
     &::before {
@@ -18,14 +17,29 @@
     width: 100%;
     padding: 20px 40px 20px 60px;
     box-sizing: border-box;
+
+    // Okunmamış bildirimler için daha belirgin
+    &.notSeen {
+        .timelineContent {
+            background: #e8f5e9;
+            border: 1px solid #28a745;
+        }
+    }
+
+    // Okunan bildirimler için daha sönük
+    &.seen {
+        .timelineContent {
+            background: #f0f8ff;
+            border: 1px solid #b0c4de;
+            opacity: 0.6;
+        }
+    }
 }
 
 .timelineDate {
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 5px;
-    /* Tarih ve içerik arasındaki boşluk küçültüldü */
-    // color: #000000A6;
 }
 
 .timelineContent {
@@ -64,6 +78,15 @@
     }
 }
 
+.markAsSeenButton {
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.seenAtDate {
+    text-decoration: none;
+}
 
 @media (max-width: 768px) {
     .timeline {

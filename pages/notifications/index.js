@@ -1,9 +1,13 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Spinner, Alert, Container, Row, Col, Button, Badge } from "react-bootstrap";
+import { Spinner, Alert, Container, Row, Col, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import styles from './index.module.scss';
 import { useSelector } from 'react-redux';
-import { getNotifications, getMyNotifications } from "@/services/notificationApi";
+import { getNotifications, getMyNotifications, updateNotification } from "@/services/notificationApi";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { icons } from "@/static/icons";
+import toast from '@/utils/toastify';
+import { ToastContainer } from 'react-toastify';
 
 const Notifications = () => {
     const router = useRouter();
@@ -98,19 +102,42 @@ const Notifications = () => {
         setLoadingMyNotifications(false);
     };
 
+    // Update notification (mark as seen)
+    const handleMarkAsSeen = async (notification) => {
+        const type = notification.group ? 1 : 0;
+
+        const result = await updateNotification({
+            notificationId: notification._id,
+            type,
+        });
+
+        if (result.success) {
+            toast('SUCCESS', result.message);
+            fetchNotifications();
+        } else {
+            toast('ERROR', result.error);
+        }
+    }
+
     // Render notifications or loading spinner
     const renderNotifications = (notifications, route) => {
+        // İlk 3 bildirimi almak için slice ekliyoruz
+        const limitedNotifications = notifications.slice(0, 3);
+
         return (
             <>
                 <div className="timeline">
                     <div className={styles.timeline}>
-                        {notifications.map((notification, index) => (
-                            <div className={styles.timelineItem} key={index}>
+                        {limitedNotifications.map((notification, index) => (
+                            <div
+                                className={`${styles.timelineItem} ${notification.is_seen ? styles.seen : styles.notSeen}`}
+                                key={index}
+                            >
                                 <div className="d-flex justify-content-between mb-2">
                                     {/* Created At */}
                                     <div className={styles.timelineDate}>{notification.createdAt}</div>
                                 </div>
-                                <div className={styles.timelineContent}>
+                                <div className={`${styles.timelineContent} ${notification.is_seen ? 'seen' : 'not-seen'}`}>
                                     {/* Title */}
                                     <h5 className="mb-2">{notification.title}</h5>
 
@@ -138,12 +165,45 @@ const Notifications = () => {
                                     <div>
                                         Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
                                     </div>
+
+                                    {/* Mark as Seen */}
+                                    {
+                                        route !== '/my-notifications' && (
+                                            <div className={`mt-3 ${styles.markAsSeen}`}>
+                                                {/* Eğer is_seen false ise "Mark as seen" butonu göster */}
+                                                {!notification.is_seen && (
+                                                    <em onClick={() => handleMarkAsSeen(notification)} className={styles.markAsSeenButton}>
+                                                        Mark as seen
+                                                    </em>
+                                                )}
+
+                                                {/* Eğer is_seen true ise sadece updatedAt tarihi göster */}
+                                                {notification.is_seen && (
+                                                    <em className={`${styles.seenAtDate} ms-2 text-muted`}>
+                                                        (Seen at {notification.updatedAt})
+                                                    </em>
+                                                )}
+
+                                                {/* Info Icon */}
+                                                <OverlayTrigger
+                                                    placement="right"
+                                                    overlay={
+                                                        <Tooltip>
+                                                            Notifications marked as seen will be removed from your page.
+                                                        </Tooltip>
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon icon={icons.faInfoCircle} className="ms-2 text-danger" />
+                                                </OverlayTrigger>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
-                {notifications.length >= 3 && (
+                {notifications.length > 3 && (
                     <div className="d-flex justify-content-center mb-3">
                         <Button variant="link" onClick={() => router.push(`/notifications${route}`)}>
                             View More
@@ -154,48 +214,56 @@ const Notifications = () => {
         );
     };
 
+
     return (
-        <Container>
-            <Row>
-                {/* My Notifications Column - Only visible if role is not 0 */}
-                {loggedInUser?.role !== 0 && (
-                    <Col md={4}>
-                        <h4>My Notifications</h4>
-                        {loadingMyNotifications ? (
-                            <Spinner animation="border" />
-                        ) : errorMyNotifications ? (
-                            <Alert variant="danger">{errorMyNotifications}</Alert>
-                        ) : (
-                            renderNotifications(myNotifications, '/my-notifications')
-                        )}
-                    </Col>
-                )}
-
-                {/* Personal Notifications Column */}
-                <Col md={loggedInUser?.role !== 0 ? 4 : 6}>
-                    <h4>Personal Notifications</h4>
-                    {loadingNotifications ? (
-                        <Spinner animation="border" />
-                    ) : errorNotifications ? (
-                        <Alert variant="danger">{errorNotifications}</Alert>
-                    ) : (
-                        renderNotifications(personalNotifications, '/personal-notifications')
+        <>
+            <Container>
+                <Row>
+                    {/* My Notifications Column - Only visible if role is not 0 and there are notifications */}
+                    {loggedInUser?.role !== 0 && myNotifications.length > 0 && (
+                        <Col md={4}>
+                            <h4>My Notifications</h4>
+                            {loadingMyNotifications ? (
+                                <Spinner animation="border" />
+                            ) : errorMyNotifications ? (
+                                <Alert variant="danger">{errorMyNotifications}</Alert>
+                            ) : (
+                                renderNotifications(myNotifications, '/my-notifications')
+                            )}
+                        </Col>
                     )}
-                </Col>
 
-                {/* Group Notifications Column */}
-                <Col md={loggedInUser?.role !== 0 ? 4 : 6}>
-                    <h4>Group Notifications</h4>
-                    {loadingNotifications ? (
-                        <Spinner animation="border" />
-                    ) : errorNotifications ? (
-                        <Alert variant="danger">{errorNotifications}</Alert>
-                    ) : (
-                        renderNotifications(groupNotifications, '/group-notifications')
+                    {/* Personal Notifications Column - Only visible if there are notifications */}
+                    {personalNotifications.length > 0 && (
+                        <Col md={loggedInUser?.role !== 0 ? 4 : 6}>
+                            <h4>Personal Notifications</h4>
+                            {loadingNotifications ? (
+                                <Spinner animation="border" />
+                            ) : errorNotifications ? (
+                                <Alert variant="danger">{errorNotifications}</Alert>
+                            ) : (
+                                renderNotifications(personalNotifications, '/personal-notifications')
+                            )}
+                        </Col>
                     )}
-                </Col>
-            </Row>
-        </Container>
+
+                    {/* Group Notifications Column - Only visible if there are notifications */}
+                    {groupNotifications.length > 0 && (
+                        <Col md={loggedInUser?.role !== 0 ? 4 : 6}>
+                            <h4>Group Notifications</h4>
+                            {loadingNotifications ? (
+                                <Spinner animation="border" />
+                            ) : errorNotifications ? (
+                                <Alert variant="danger">{errorNotifications}</Alert>
+                            ) : (
+                                renderNotifications(groupNotifications, '/group-notifications')
+                            )}
+                        </Col>
+                    )}
+                </Row>
+            </Container>
+            <ToastContainer />
+        </>
     );
 };
 

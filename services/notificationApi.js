@@ -115,3 +115,34 @@ export const getNotificationCount = async () => {
         }
     }
 };
+
+
+// ***************************
+// |
+// | UPDATE NOTIFICATION
+// |
+// ***************************
+
+export const updateNotification = async (data = {}) => {
+    try {
+        const response = await axios.put('/private/notifications/update-notification', data);
+
+        if (response.code === 1) {
+            return {
+                success: true,
+                data: response.notification,
+                message: response.message
+            };
+        } else {
+            return {
+                success: false,
+                error: response.message
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.message || error.message
+        };
+    }
+};

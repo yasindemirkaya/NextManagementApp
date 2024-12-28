@@ -119,7 +119,11 @@ const Header = ({ toggleSidebar }) => {
                                                             <>
                                                                 {/* Show only first 3 */}
                                                                 {notifications.slice(0, 3).map((notification, index) => (
-                                                                    <Dropdown.Item key={index} as={Link} href={`/notifications/${notification._id}`}>
+                                                                    <Dropdown.Item
+                                                                        key={index}
+                                                                        as={Link}
+                                                                        href={notification.group ? '/notifications/group-notifications' : '/notifications/personal-notifications'}
+                                                                    >
                                                                         {notification.title}
                                                                     </Dropdown.Item>
                                                                 ))}

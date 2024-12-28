@@ -63,7 +63,7 @@ const handler = async (req, res) => {
 
                 return res.status(200).json({
                     code: 1,
-                    message: 'Notification updated successfully.',
+                    message: 'Notification marked as seen successfully.',
                     notification
                 });
             }
@@ -101,7 +101,7 @@ const handler = async (req, res) => {
 
                 return res.status(200).json({
                     code: 1,
-                    message: 'Notification updated successfully.',
+                    message: 'Notification marked as seen successfully.',
                     notification
                 });
             } else {
