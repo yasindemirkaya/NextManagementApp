@@ -10,6 +10,8 @@
 import { verify } from 'jsonwebtoken';
 import PersonalNotification from '@/models/PersonalNotification';
 import GroupNotification from '@/models/GroupNotification';
+import User from '@/models/User'; // Kullanıcı modeli
+import UserGroup from '@/models/UserGroup'; // Kullanıcı grubu modeli
 import { formatDate } from '@/helpers/dateFormatter';
 
 const handler = async (req, res) => {
@@ -30,87 +32,82 @@ const handler = async (req, res) => {
         }
 
         try {
-            let notifications = [];
-
             // Sayfalama için limit ve page parametrelerini ayarla
-            const limitValue = limit ? parseInt(limit) : null;
-            const pageValue = page ? parseInt(page) : 1;
-            const skipValue = limitValue && pageValue ? (pageValue - 1) * limitValue : 0;
+            const limitValue = limit ? parseInt(limit) : 10; // Varsayılan limit
+            const pageValue = page ? parseInt(page) : 1; // Varsayılan sayfa
+            const skipValue = (pageValue - 1) * limitValue;
 
-            let totalPersonalNotifications = 0;
-            let totalGroupNotifications = 0;
+            let allNotifications = [];
 
             // Personal Notifications
             if (type === '0' || type === '2') {
-                // Kullanıcının yarattığı kişisel bildirimleri al
-                const personalNotifications = await PersonalNotification.find({ created_by: userId })
-                    .limit(limitValue)
-                    .skip(skipValue);
+                const personalNotifications = await PersonalNotification.find({ created_by: userId });
 
-                totalPersonalNotifications = personalNotifications.length;
+                // User bilgilerini ekle
+                const personalNotificationsWithDetails = await Promise.all(
+                    personalNotifications.map(async (notification) => {
+                        const user = await User.findById(notification.user); // user ID'si ile kullanıcı sorgusu
+                        return {
+                            ...notification.toObject(),
+                            date: formatDate(notification.date),
+                            createdAt: formatDate(new Date(notification.createdAt)),
+                            updatedAt: formatDate(new Date(notification.updatedAt)),
+                            user: user ? `${user.first_name} ${user.last_name}` : null // Kullanıcı adı ve soyadı
+                        };
+                    })
+                );
 
-                if (personalNotifications.length > 0) {
-                    const personalNotificationsWithFormattedDates = personalNotifications.map((notification) => ({
-                        ...notification.toObject(),
-                        date: formatDate(notification.date), // Formatlı tarih
-                        createdAt: formatDate(notification.createdAt) // Formatlı createdAt
-                    }));
-
-                    notifications = [...notifications, ...personalNotificationsWithFormattedDates];
-                }
+                allNotifications = [...allNotifications, ...personalNotificationsWithDetails];
             }
 
             // Group Notifications
             if (type === '1' || type === '2') {
-                // Kullanıcının yarattığı grup bildirimlerini al
-                const groupNotifications = await GroupNotification.find({ created_by: userId })
-                    .limit(limitValue)
-                    .skip(skipValue);
+                const groupNotifications = await GroupNotification.find({ created_by: userId });
 
-                totalGroupNotifications = groupNotifications.length;
+                // Group bilgilerini ekle
+                const groupNotificationsWithDetails = await Promise.all(
+                    groupNotifications.map(async (notification) => {
+                        const group = await UserGroup.findById(notification.group); // group ID'si ile grup sorgusu
+                        return {
+                            ...notification.toObject(),
+                            date: formatDate(notification.date),
+                            createdAt: formatDate(new Date(notification.createdAt)),
+                            updatedAt: formatDate(new Date(notification.updatedAt)),
+                            group: group ? group.group_name : null // Grup adı
+                        };
+                    })
+                );
 
-                if (groupNotifications.length > 0) {
-                    const groupNotificationsWithFormattedDates = groupNotifications.map((notification) => ({
-                        ...notification.toObject(),
-                        date: formatDate(notification.date), // Formatlı tarih
-                        createdAt: formatDate(notification.createdAt) // Formatlı createdAt
-                    }));
-
-                    notifications = [...notifications, ...groupNotificationsWithFormattedDates];
-                }
+                allNotifications = [...allNotifications, ...groupNotificationsWithDetails];
             }
 
-            // `type` parametresine göre totalNotifications'ı ayarlıyoruz
-            let totalNotifications = 0;
-            if (type === '0') {
-                totalNotifications = totalPersonalNotifications;
-            } else if (type === '1') {
-                totalNotifications = totalGroupNotifications;
-            } else if (type === '2') {
-                totalNotifications = totalPersonalNotifications + totalGroupNotifications;
-            }
+            // Tüm bildirimleri sıralayın (en güncel ilk sırada)
+            const sortedNotifications = allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            // Limiti ve sayfalamayı uygulayın
+            const paginatedNotifications = sortedNotifications.slice(skipValue, skipValue + limitValue);
+
+            // Toplam bildirim sayısı
+            const totalNotifications = sortedNotifications.length;
 
             // Eğer bildirim yoksa
-            if (notifications.length === 0) {
+            if (paginatedNotifications.length === 0) {
                 return res.status(200).json({
                     code: 0,
                     message: 'No notifications found'
                 });
             }
 
-            // limit değeri null ise, totalData'ya eşit yap
-            const finalLimit = limitValue || notifications.length;
-
             // Pagination bilgisi ekleyerek yanıt dön
             res.status(200).json({
                 code: 1,
                 message: 'Notifications retrieved successfully',
-                notifications,
+                notifications: paginatedNotifications,
                 pagination: {
-                    totalData: totalNotifications, // Total bildirim sayısı
-                    totalPages: Math.ceil(totalNotifications / finalLimit),
+                    totalData: totalNotifications,
+                    totalPages: Math.ceil(totalNotifications / limitValue),
                     currentPage: pageValue,
-                    limit: finalLimit
+                    limit: limitValue
                 }
             });
         } catch (error) {

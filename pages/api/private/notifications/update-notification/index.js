@@ -91,7 +91,7 @@ const handler = async (req, res) => {
                 if (userGroup.group_leader.toString() !== userId) {
                     return res.status(200).json({
                         code: 0,
-                        message: 'You do not have permission to update this notification. Only your group member can update this notification.'
+                        message: 'You do not have permission to update this notification. Only your group leader can update this notification.'
                     });
                 }
 

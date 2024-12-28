@@ -43,11 +43,11 @@ const Notifications = () => {
         setLoadingGroupNotifications(true);
         setErrorGroupNotifications(null);
 
-        // İlk 3 personal notification'ı alıyoruz
         try {
             const personalResult = await getNotifications({ type: 0, page: 1, limit: 3 }); // type: 0 - Personal
             if (personalResult.success) {
-                setPersonalNotifications(personalResult.data);
+                const sortedPersonal = personalResult.data.sort((a, b) => Number(a.is_seen) - Number(b.is_seen));
+                setPersonalNotifications(sortedPersonal);
             } else {
                 setErrorPersonalNotifications(personalResult.error);
             }
@@ -55,11 +55,11 @@ const Notifications = () => {
             setErrorPersonalNotifications("Failed to fetch personal notifications. Please try again later.");
         }
 
-        // İlk 3 group notification'ı alıyoruz
         try {
             const groupResult = await getNotifications({ type: 1, page: 1, limit: 3 }); // type: 1 - Group
             if (groupResult.success) {
-                setGroupNotifications(groupResult.data);
+                const sortedGroup = groupResult.data.sort((a, b) => Number(a.is_seen) - Number(b.is_seen));
+                setGroupNotifications(sortedGroup);
             } else {
                 setErrorGroupNotifications(groupResult.error);
             }
@@ -79,14 +79,33 @@ const Notifications = () => {
         try {
             const result = await getMyNotifications({ type: 2, page: 1, limit: 3 });
             if (result.success) {
-                setMyNotifications(result.data);
+                const sortedMyNotifications = result.data.sort((a, b) => Number(a.is_seen) - Number(b.is_seen));
+                setMyNotifications(sortedMyNotifications);
             } else {
                 setErrorMyNotifications(result.error);
             }
         } catch (err) {
             setErrorMyNotifications("Failed to fetch your notifications. Please try again later.");
         }
+
         setLoadingMyNotifications(false);
+    };
+
+    // Handle mark as seen
+    const handleMarkAsSeen = async (notification) => {
+        const type = notification.group ? 1 : 0;
+
+        const result = await updateNotification({
+            notificationId: notification._id,
+            type,
+        });
+
+        if (result.success) {
+            toast('SUCCESS', result.message);
+            fetchNotifications();
+        } else {
+            toast('ERROR', result.error);
+        }
     };
 
     // Render notifications or loading spinner
@@ -100,19 +119,17 @@ const Notifications = () => {
                                 className={`${styles.timelineItem} ${notification.is_seen ? styles.seen : styles.notSeen}`}
                                 key={index}
                             >
-                                <div className="d-flex justify-content-between mb-2">
-                                    {/* Created At */}
-                                    <div className={styles.timelineDate}>{notification.createdAt}</div>
-                                </div>
                                 <div className={`${styles.timelineContent} ${notification.is_seen ? 'seen' : 'not-seen'}`}>
-                                    {/* Title */}
-                                    <h5 className="mb-2">{notification.title}</h5>
-
-                                    {/* Description */}
-                                    <p className="mb-2">{notification.description}</p>
-
-                                    {/* Date */}
-                                    <p className="text-muted mb-2">{notification.date}</p>
+                                    <Row>
+                                        {/* Created At */}
+                                        <div className={styles.timelineDate}>{notification.createdAt}</div>
+                                        {/* Title */}
+                                        <h5 className="mb-2">{notification.title}</h5>
+                                        {/* Description */}
+                                        <p className="mb-2">{notification.description}</p>
+                                        {/* Date */}
+                                        <p className="text-muted mb-2">{notification.date}</p>
+                                    </Row>
 
                                     <hr />
 
@@ -128,48 +145,74 @@ const Notifications = () => {
                                         )}
                                     </Row>
 
-                                    {/* Is Seen */}
-                                    <div>
-                                        Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
-                                    </div>
+                                    {/* Seen & Group Name or User */}
+                                    <Row className="mb-2">
+                                        <Col md={5}>
+                                            Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                        </Col>
+                                        {route === '/my-notifications' && notification.group ? (
+                                            <Col md={7}>
+                                                Group Name: <span className="text-danger fw-bold">{notification.group}</span>
+                                            </Col>
+                                        ) : route === '/my-notifications' && !notification.group ? (
+                                            <Col md={7}>
+                                                User: <span className="text-danger fw-bold">{notification.user}</span>
+                                            </Col>
+                                        ) : null}
+                                    </Row>
 
-                                    {/* Mark as Seen */}
-                                    {
-                                        route !== '/my-notifications' && (
-                                            <div className={`mt-3 ${styles.markAsSeen}`}>
-                                                {/* Eğer is_seen false ise "Mark as seen" butonu göster */}
-                                                {!notification.is_seen && (
-                                                    <em onClick={() => handleMarkAsSeen(notification)} className={styles.markAsSeenButton}>
-                                                        Mark as seen
-                                                    </em>
-                                                )}
-
-                                                {/* Eğer is_seen true ise sadece updatedAt tarihi göster */}
-                                                {notification.is_seen && (
-                                                    <em className={`${styles.seenAtDate} ms-2 text-muted`}>
+                                    {/* Seen at*/}
+                                    {notification.is_seen && (
+                                        <Row>
+                                            <Col md={12}>
+                                                <div className="mb-2">
+                                                    <em className={`${styles.seenAtDate} text-muted`}>
                                                         (Seen at {notification.updatedAt})
                                                     </em>
-                                                )}
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    )}
 
-                                                {/* Info Icon */}
-                                                <OverlayTrigger
-                                                    placement="right"
-                                                    overlay={
-                                                        <Tooltip>
-                                                            Notifications marked as seen will be removed from your page.
-                                                        </Tooltip>
-                                                    }
-                                                >
-                                                    <FontAwesomeIcon icon={icons.faInfoCircle} className="ms-2 text-danger" />
-                                                </OverlayTrigger>
-                                            </div>
-                                        )
-                                    }
+                                    {/* Mark As Seen & Delete Notification */}
+                                    <Row>
+                                        {route !== '/my-notifications' && (
+                                            <Col md={12}>
+                                                <div className={`mt-3 mb-2 ${styles.markAsSeen}`}>
+                                                    {!notification.is_seen && (
+                                                        <div className="d-inline-flex align-items-center">
+                                                            <div onClick={() => handleMarkAsSeen(notification)} className={styles.markAsSeenButton}>
+                                                                <FontAwesomeIcon icon={icons.faEye} className="me-2 text-info" />
+                                                                <em className={`text-info ${styles.markAsSeenButton}`}>
+                                                                    Mark as seen
+                                                                </em>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </Col>
+                                        )}
+                                        {loggedInUser.role !== 0 && (
+                                            <Col md={12}>
+                                                <div className={styles.markAsSeen}>
+                                                    <div className="d-inline-flex align-items-center">
+                                                        <div onClick={() => handleDeleteNotification(notification)}>
+                                                            <FontAwesomeIcon icon={icons.faTrash} className="me-2 text-danger" />
+                                                            <em className={`text-danger ${styles.markAsSeenButton}`}>
+                                                                Delete Notification
+                                                            </em>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Col>
+                                        )}
+                                    </Row>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
+                {/* View More */}
                 {notifications.length >= 3 && (
                     <div className="d-flex justify-content-center mb-3">
                         <Button variant="link" onClick={() => router.push(`/notifications${route}`)}>
@@ -179,22 +222,6 @@ const Notifications = () => {
                 )}
             </>
         );
-    };
-
-    const handleMarkAsSeen = async (notification) => {
-        const type = notification.group ? 1 : 0;
-
-        const result = await updateNotification({
-            notificationId: notification._id,
-            type,
-        });
-
-        if (result.success) {
-            toast('SUCCESS', result.message);
-            fetchNotifications();
-        } else {
-            toast('ERROR', result.error);
-        }
     };
 
     return (

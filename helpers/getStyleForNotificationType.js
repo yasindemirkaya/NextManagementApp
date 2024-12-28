@@ -14,6 +14,8 @@ export const getStyleForNotificationType = (type) => {
             return `${baseClass} text-success`;
         case 'Critical':
             return `${baseClass} text-danger`;
+        case 'Deadline':
+            return `${baseClass} text-danger`;
         default:
             return baseClass;
     }

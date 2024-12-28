@@ -27,14 +27,20 @@ const MyNotifications = () => {
         try {
             const result = await getMyNotifications({ type: 2, page, limit }); // fetchMyNotifications API çağrısı
             if (result.success) {
+                // Bildirimleri is_seen değerine göre sıralıyoruz
+                const sortedNotifications = result.data.sort((a, b) => {
+                    // is_seen false olanlar üstte, true olanlar altta sıralansın
+                    return a.is_seen === b.is_seen ? 0 : a.is_seen ? 1 : -1;
+                });
+
                 if (page === 1) {
                     // İlk sayfa ise, eski verileri temizle
-                    setNotifications(result.data);
+                    setNotifications(sortedNotifications);
                 } else {
                     // Diğer sayfalar için eski verilerin üstüne ekle
                     setNotifications(prevNotifications => [
                         ...prevNotifications,
-                        ...result.data
+                        ...sortedNotifications
                     ]);
                 }
                 setHasMore(result.data.length === limit); // Eğer 4'ten az bildirim geldiyse daha fazla yok demektir
@@ -47,6 +53,7 @@ const MyNotifications = () => {
 
         setLoading(false);
     };
+
 
     // View More butonuna tıklama işlemi
     const handleViewMore = () => {
@@ -98,19 +105,17 @@ const MyNotifications = () => {
                                                 key={index}
                                                 className={`${styles.timelineItem} ${notification.is_seen ? styles.seen : styles.notSeen}`}
                                             >
-                                                <div className="d-flex justify-content-between mb-2">
-                                                    {/* Created At */}
-                                                    <div className={styles.timelineDate}>{notification.createdAt}</div>
-                                                </div>
                                                 <div className={`${styles.timelineContent} ${notification.is_seen ? 'seen' : 'not-seen'}`}>
-                                                    {/* Title */}
-                                                    <h5 className="mb-2">{notification.title}</h5>
-
-                                                    {/* Description */}
-                                                    <p className="mb-2">{notification.description}</p>
-
-                                                    {/* Date */}
-                                                    <p className="text-muted mb-2">{notification.date}</p>
+                                                    <Row>
+                                                        {/* Created At */}
+                                                        <div className={styles.timelineDate}>{notification.createdAt}</div>
+                                                        {/* Title */}
+                                                        <h5 className="mb-2">{notification.title}</h5>
+                                                        {/* Description */}
+                                                        <p className="mb-2">{notification.description}</p>
+                                                        {/* Date */}
+                                                        <p className="text-muted mb-2">{notification.date}</p>
+                                                    </Row>
 
                                                     <hr />
 
@@ -124,44 +129,58 @@ const MyNotifications = () => {
                                                         </Col>
                                                     </Row>
 
-                                                    {/* Is Seen */}
-                                                    <div>
-                                                        Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
-                                                    </div>
+                                                    {/* Seen & Seen At */}
+                                                    <Row className="mb-2">
+                                                        <Col md={5}>
+                                                            <div>
+                                                                Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md={5}>
+                                                            {notification.is_seen && (
+                                                                <div className="mb-2">
+                                                                    <em className={`${styles.seenAtDate} text-muted`}>
+                                                                        (Seen at {notification.updatedAt})
+                                                                    </em>
+                                                                </div>
+                                                            )}
+                                                        </Col>
+                                                    </Row>
 
                                                     {/* Delete Notification */}
-                                                    <div className={`mt-3 ${styles.markAsSeen}`}>
-                                                        {!notification.is_seen && (
-                                                            <em onClick={() => handleDeleteNotification(notification)} className={styles.markAsSeenButton}>
-                                                                Delete Notification
-                                                            </em>
-                                                        )}
+                                                    <Row>
+                                                        <Col md={12}>
+                                                            <div className={`${styles.markAsSeen}`}>
+                                                                <div className="d-inline-flex align-items-center">
+                                                                    <div onClick={() => handleDeleteNotification(notification)}>
+                                                                        <FontAwesomeIcon icon={icons.faTrash} className="me-2 text-danger" />
+                                                                        <em className={`text-danger ${styles.markAsSeenButton}`}>
+                                                                            Delete Notification
+                                                                        </em>
+                                                                    </div>
+                                                                </div>
 
-                                                        {/* Eğer is_seen true ise sadece updatedAt tarihi göster */}
-                                                        {notification.is_seen && (
-                                                            <em className={`${styles.seenAtDate} ms-2 text-muted`}>
-                                                                (Seen at {notification.updatedAt})
-                                                            </em>
-                                                        )}
-
-                                                        {/* Info Icon */}
-                                                        <OverlayTrigger
-                                                            placement="right"
-                                                            overlay={
-                                                                <Tooltip>
-                                                                    Deleted notifications cannot be brought back.
-                                                                </Tooltip>
-                                                            }
-                                                        >
-                                                            <FontAwesomeIcon icon={icons.faInfoCircle} className="ms-2 text-danger" />
-                                                        </OverlayTrigger>
-                                                    </div>
+                                                                {/* Info Icon */}
+                                                                <OverlayTrigger
+                                                                    placement="right"
+                                                                    overlay={
+                                                                        <Tooltip>
+                                                                            Deleted notifications cannot be brought back.
+                                                                        </Tooltip>
+                                                                    }
+                                                                >
+                                                                    <FontAwesomeIcon icon={icons.faInfoCircle} className="ms-2 text-danger" />
+                                                                </OverlayTrigger>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
+                                {/* Back & View More */}
                                 <div className="d-flex justify-content-center mb-3">
                                     <Button variant="link" className="text-secondary" onClick={handleBack}>
                                         Back

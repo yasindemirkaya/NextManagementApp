@@ -27,14 +27,20 @@ const GroupNotifications = () => {
         try {
             const result = await getNotifications({ type: 1, page, limit }); // type: 1 - Group, 4 bildirim getir
             if (result.success) {
+                // Bildirimleri is_seen değerine göre sıralıyoruz
+                const sortedNotifications = result.data.sort((a, b) => {
+                    // is_seen false olanlar üstte, true olanlar altta sıralansın
+                    return a.is_seen === b.is_seen ? 0 : a.is_seen ? 1 : -1;
+                });
+
                 if (page === 1) {
                     // İlk sayfa ise, eski verileri temizle
-                    setNotifications(result.data);
+                    setNotifications(sortedNotifications);
                 } else {
                     // Diğer sayfalar için eski verilerin üstüne ekle
                     setNotifications(prevNotifications => [
                         ...prevNotifications,
-                        ...result.data
+                        ...sortedNotifications
                     ]);
                 }
                 setHasMore(result.data.length === limit); // Eğer 4'ten az bildirim geldiyse daha fazla yok demektir
@@ -48,6 +54,7 @@ const GroupNotifications = () => {
         setLoading(false);
     };
 
+
     // View More butonuna tıklama işlemi
     const handleViewMore = () => {
         setPage(prevPage => prevPage + 1); // Bir sonraki sayfayı al
@@ -59,7 +66,7 @@ const GroupNotifications = () => {
     };
 
     const handleMarkAsSeen = async (notification, fetchNotifications) => {
-        const type = notification.group ? 1 : 0;
+        const type = 1;
 
         const result = await updateNotification({
             notificationId: notification._id,
@@ -98,19 +105,17 @@ const GroupNotifications = () => {
                                                 key={index}
                                                 className={`${styles.timelineItem} ${notification.is_seen ? styles.seen : styles.notSeen}`}
                                             >
-                                                <div className="d-flex justify-content-between mb-2">
-                                                    {/* Created At */}
-                                                    <div className={styles.timelineDate}>{notification.createdAt}</div>
-                                                </div>
                                                 <div className={`${styles.timelineContent} ${notification.is_seen ? 'seen' : 'not-seen'}`}>
-                                                    {/* Title */}
-                                                    <h5 className="mb-2">{notification.title}</h5>
-
-                                                    {/* Description */}
-                                                    <p className="mb-2">{notification.description}</p>
-
-                                                    {/* Date */}
-                                                    <p className="text-muted mb-2">{notification.date}</p>
+                                                    <Row>
+                                                        {/* Created At */}
+                                                        <div className={styles.timelineDate}>{notification.createdAt}</div>
+                                                        {/* Title */}
+                                                        <h5 className="mb-2">{notification.title}</h5>
+                                                        {/* Description */}
+                                                        <p className="mb-2">{notification.description}</p>
+                                                        {/* Date */}
+                                                        <p className="text-muted mb-2">{notification.date}</p>
+                                                    </Row>
 
                                                     <hr />
 
@@ -124,39 +129,51 @@ const GroupNotifications = () => {
                                                         </Col>
                                                     </Row>
 
-                                                    {/* Is Seen */}
-                                                    <div>
-                                                        Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
-                                                    </div>
+                                                    <Row className="mb-2">
+                                                        <Col md={5}>
+                                                            Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                                        </Col>
+                                                        <Col md={7}>
+                                                            Group Name: <span className="text-info fw-bold">{notification.group}</span>
+                                                        </Col>
+                                                    </Row>
 
                                                     {/* Mark as Seen */}
-                                                    <div className={`mt-3 ${styles.markAsSeen}`}>
-                                                        {/* Eğer is_seen false ise "Mark as seen" butonu göster */}
-                                                        {!notification.is_seen && (
-                                                            <em onClick={() => handleMarkAsSeen(notification)} className={styles.markAsSeenButton}>
-                                                                Mark as seen
-                                                            </em>
-                                                        )}
+                                                    <Row>
+                                                        <Col md={12}>
+                                                            <div className={`mt-3 ${styles.markAsSeen}`}>
+                                                                {!notification.is_seen && (
+                                                                    <div className="d-inline-flex align-items-center">
+                                                                        <div onClick={() => handleMarkAsSeen(notification)} className={styles.markAsSeenButton}>
+                                                                            <FontAwesomeIcon icon={icons.faEye} className="me-2 text-info" />
+                                                                            <em className={`text-info ${styles.markAsSeenButton}`}>
+                                                                                Mark as seen
+                                                                            </em>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
 
-                                                        {/* Eğer is_seen true ise sadece updatedAt tarihi göster */}
-                                                        {notification.is_seen && (
-                                                            <em className={`${styles.seenAtDate} ms-2 text-muted`}>
-                                                                (Seen at {notification.updatedAt})
-                                                            </em>
-                                                        )}
+                                                                {notification.is_seen && (
+                                                                    <em className={`${styles.seenAtDate} text-muted`}>
+                                                                        (Seen at {notification.updatedAt})
+                                                                    </em>
+                                                                )}
 
-                                                        {/* Info Icon */}
-                                                        <OverlayTrigger
-                                                            placement="right"
-                                                            overlay={
-                                                                <Tooltip>
-                                                                    Notifications marked as seen will be removed from your page.
-                                                                </Tooltip>
-                                                            }
-                                                        >
-                                                            <FontAwesomeIcon icon={icons.faInfoCircle} className="ms-2 text-danger" />
-                                                        </OverlayTrigger>
-                                                    </div>
+                                                                {/* Info Icon */}
+                                                                <OverlayTrigger
+                                                                    placement="right"
+                                                                    overlay={
+                                                                        <Tooltip>
+                                                                            Notifications marked as seen will be removed from your page.
+                                                                        </Tooltip>
+                                                                    }
+                                                                >
+                                                                    <FontAwesomeIcon icon={icons.faInfoCircle} className="ms-2 text-info" />
+                                                                </OverlayTrigger>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+
                                                 </div>
                                             </div>
                                         ))}
