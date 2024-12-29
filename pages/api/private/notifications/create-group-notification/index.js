@@ -74,7 +74,7 @@ const handler = async (req, res) => {
             // Başarılı yanıt döndür
             res.status(200).json({
                 code: 1,
-                message: 'Group notifications created successfully',
+                message: 'Group notification(s) created successfully',
                 notifications: savedNotifications,
             });
         } catch (error) {

@@ -119,6 +119,68 @@ export const getNotificationCount = async () => {
 
 // ***************************
 // |
+// | CREATE PERSONAL NOTIFICATION
+// |
+// ***************************
+
+export const createPersonalNotification = async (data = {}) => {
+    try {
+        const response = await axios.post('/private/notifications/create-personal-notification', data);
+
+        if (response.code === 1) {
+            return {
+                success: true,
+                data: response.notifications,
+                message: response.message
+            };
+        } else {
+            return {
+                success: false,
+                error: response.message
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.message || error.message
+        };
+    }
+};
+
+
+// ***************************
+// |
+// | CREATE GROUP NOTIFICATION
+// |
+// ***************************
+
+export const createGroupNotification = async (data = {}) => {
+    try {
+        const response = await axios.post('/private/notifications/create-group-notification', data);
+
+        if (response.code === 1) {
+            return {
+                success: true,
+                data: response.notifications,
+                message: response.message
+            };
+        } else {
+            return {
+                success: false,
+                error: response.message
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.message || error.message
+        };
+    }
+};
+
+
+// ***************************
+// |
 // | UPDATE NOTIFICATION
 // |
 // ***************************

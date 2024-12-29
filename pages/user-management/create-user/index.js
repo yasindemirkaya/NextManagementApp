@@ -1,6 +1,5 @@
 import React from 'react';
 import { Container, Card, Form, Button, Row, Col, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import axios from '@/utils/axios';
 import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
 import { icons } from '@/static/icons';
