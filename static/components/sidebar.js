@@ -136,6 +136,37 @@ const sidebarMenu = [
             },
         ],
     },
+    // NOTIFICATIONS
+    {
+        id: 4,
+        name: "Notifications",
+        link: "/notifications",
+        iconPrimary: "faChevronUp",
+        iconSecondary: "faChevronCircleUp",
+        permission: 0,
+        subMenus: [
+            // VIEW NOTIFICATIONS
+            {
+                id: 41,
+                name: "View Notifications",
+                link: "/notifications",
+                description: "Here you can view the personal and group notifications you have created and sent to you.",
+                iconPrimary: "faBell",
+                iconSecondary: "",
+                permission: 0,
+            },
+            // CREATE NOTIFICATION
+            {
+                id: 42,
+                name: "Create Notification",
+                link: "/notifications/create-notification",
+                description: "From here you can create personal and group notifications for your users.",
+                iconPrimary: "faPlus",
+                iconSecondary: "",
+                permission: 1,
+            }
+        ]
+    }
 ];
 
 export default sidebarMenu;
