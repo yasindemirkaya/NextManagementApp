@@ -1,6 +1,5 @@
 * Notificationları silerken emin misiniz geri alamazsınız falan diye soran bir swal çıksın.
 
-* handleNameChange methodunu helper yap, ismini genel bir şey yap.
 * Validationları çalışmayan select alanları için create-notificationdaki tarifeyi uygula.
 
 * Swal olan bazı alanların toast'a dönüştürülmesi için tüm swal kullanılan alanların kontrolü.

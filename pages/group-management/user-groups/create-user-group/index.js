@@ -9,6 +9,7 @@ import Select from 'react-select';
 import { getUsers } from '@/services/userApi';
 import { createUserGroup } from '@/services/userGroupApi';
 import { getGroupTypes } from '@/services/groupTypeApi';
+import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 
 const CreateUserGroup = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
@@ -98,12 +99,6 @@ const CreateUserGroup = () => {
         }
     };
 
-    // Group Name ve Description baş harfi otomatik büyük harf yapmak için
-    const handleNameChange = (e, name) => {
-        const formattedValue = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1);
-        setValue(name, formattedValue);
-    };
-
     return (
         <Container>
             <Card className={`${styles.createUserContainer}`}>
@@ -121,8 +116,11 @@ const CreateUserGroup = () => {
                                     {...register("groupName", {
                                         required: "Name is required",
                                         minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                        onBlur: (e) => {
+                                            const formattedValue = capitalizeFirstLetter(e.target.value);
+                                            setValue("groupName", formattedValue);
+                                        },
                                     })}
-                                    onBlur={(e) => handleNameChange(e, "groupName")}
                                 />
                                 <Form.Control.Feedback type="invalid">{errors.groupName?.message}</Form.Control.Feedback>
                             </Form.Group>
@@ -138,8 +136,11 @@ const CreateUserGroup = () => {
                                     isInvalid={!!errors.description}
                                     {...register("description", {
                                         minLength: { value: 2, message: "Description must be at least 2 characters" },
+                                        onBlur: (e) => {
+                                            const formattedValue = capitalizeFirstLetter(e.target.value);
+                                            setValue("description", formattedValue);
+                                        },
                                     })}
-                                    onBlur={(e) => handleNameChange(e, "description")}
                                 />
                                 <Form.Control.Feedback type="invalid">{errors.description?.message}</Form.Control.Feedback>
                             </Form.Group>

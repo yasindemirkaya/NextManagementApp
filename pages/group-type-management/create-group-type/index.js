@@ -4,6 +4,7 @@ import styles from './index.module.scss';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import { createGroupType } from '@/services/groupTypeApi';
+import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 
 const CreateGroupType = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
@@ -36,12 +37,6 @@ const CreateGroupType = () => {
         }
     };
 
-    // Name ve Surname baş harfi otomatik büyük harf yapmak için
-    const handleNameChange = (e, name) => {
-        const formattedValue = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1);
-        setValue(name, formattedValue);
-    };
-
     return (
         <Container>
             <Card className={`${styles.createGroupContainer}`}>
@@ -58,11 +53,14 @@ const CreateGroupType = () => {
                                         {...register("typeName", {
                                             required: "Name is required",
                                             minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                            onBlur: (e) => {
+                                                const formattedValue = capitalizeFirstLetter(e.target.value);
+                                                setValue("typeName", formattedValue);
+                                            },
                                             validate: (value) =>
                                                 /^[a-zA-Z0-9\s]*$/.test(value) || "Only letters, numbers, and spaces are allowed",
                                         })}
                                         isInvalid={!!errors.typeName}
-                                        onBlur={(e) => handleNameChange(e, "typeName")}
                                     />
                                     <Form.Control.Feedback type="invalid">
                                         {errors.typeName?.message}

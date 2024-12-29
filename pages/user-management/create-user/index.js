@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import { createUser } from '@/services/userApi';
+import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 
 const CreateUser = () => {
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
@@ -53,12 +54,6 @@ const CreateUser = () => {
         }
     };
 
-    // Name ve Surname baş harfi otomatik büyük harf yapmak için
-    const handleNameChange = (e, name) => {
-        const formattedValue = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1);
-        setValue(name, formattedValue);
-    };
-
     return (
         <Container>
             <Card className={`${styles.createUserContainer}`}>
@@ -77,8 +72,11 @@ const CreateUser = () => {
                                         {...register("firstName", {
                                             required: "Name is required",
                                             minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                            onBlur: (e) => {
+                                                const formattedValue = capitalizeFirstLetter(e.target.value);
+                                                setValue("firstName", formattedValue);
+                                            },
                                         })}
-                                        onBlur={(e) => handleNameChange(e, "firstName")}
                                     />
                                     <Form.Control.Feedback type="invalid">{errors.firstName?.message}</Form.Control.Feedback>
                                 </Form.Group>
@@ -95,8 +93,11 @@ const CreateUser = () => {
                                         {...register("lastName", {
                                             required: "Surname is required",
                                             minLength: { value: 2, message: "Surname must be at least 2 characters" },
+                                            onBlur: (e) => {
+                                                const formattedValue = capitalizeFirstLetter(e.target.value);
+                                                setValue("lastName", formattedValue);
+                                            },
                                         })}
-                                        onBlur={(e) => handleNameChange(e, "lastName")}
                                     />
                                     <Form.Control.Feedback type="invalid">{errors.lastName?.message}</Form.Control.Feedback>
                                 </Form.Group>

@@ -8,6 +8,7 @@ import { getUsers } from '@/services/userApi';
 import { getAllUserGroups } from '@/services/userGroupApi';
 import Swal from 'sweetalert2';
 import styles from './index.module.scss'
+import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 
 const CreateNotification = () => {
     const { register, handleSubmit, setValue, reset, control, formState: { errors, isSubmitting } } = useForm({
@@ -86,12 +87,6 @@ const CreateNotification = () => {
             type: '',
             date: ''
         });
-    };
-
-    // Handle title and description changes with capitalized first letter
-    const handleNameChange = (e, name) => {
-        const formattedValue = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1);
-        setValue(name, formattedValue);
     };
 
     // Create notification on form submit
@@ -189,8 +184,11 @@ const CreateNotification = () => {
                                     {...register("title", {
                                         required: "Title is required",
                                         minLength: { value: 2, message: "Title must be at least 2 characters" },
+                                        onBlur: (e) => {
+                                            const formattedValue = capitalizeFirstLetter(e.target.value);
+                                            setValue("title", formattedValue);
+                                        },
                                     })}
-                                    onBlur={(e) => handleNameChange(e, "title")}
                                 />
                                 <Form.Control.Feedback type="invalid">{errors.title?.message}</Form.Control.Feedback>
                             </Form.Group>
@@ -209,8 +207,11 @@ const CreateNotification = () => {
                                         required: "Description is required",
                                         minLength: { value: 2, message: "Description must be at least 2 characters" },
                                         maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
+                                        onBlur: (e) => {
+                                            const formattedValue = capitalizeFirstLetter(e.target.value);
+                                            setValue("description", formattedValue);
+                                        },
                                     })}
-                                    onBlur={(e) => handleNameChange(e, "description")}
                                     className={styles.description}
                                 />
                                 <Form.Control.Feedback type="invalid">{errors.description?.message}</Form.Control.Feedback>

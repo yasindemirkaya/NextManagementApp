@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { signUp } from '@/services/registerApi';
+import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 
 const SignUp = () => {
     const router = useRouter();
@@ -51,12 +52,6 @@ const SignUp = () => {
         }
     };
 
-    // İsim ve soyisim alanları için ilk harfi büyük yapma
-    const handleNameChange = (e, name) => {
-        const formattedValue = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1);
-        setValue(name, formattedValue);
-    };
-
     return (
         <>
             <Container className={`mt-5 ${styles.signupContainer}`}>
@@ -73,8 +68,11 @@ const SignUp = () => {
                             {...register("firstName", {
                                 required: "Name is required",
                                 minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                onBlur: (e) => {
+                                    const formattedValue = capitalizeFirstLetter(e.target.value);
+                                    setValue("firstName", formattedValue);
+                                },
                             })}
-                            onBlur={(e) => handleNameChange(e, "firstName")}
                         />
                         <Form.Control.Feedback type="invalid">{errors.firstName?.message}</Form.Control.Feedback>
                     </Form.Group>
@@ -89,8 +87,11 @@ const SignUp = () => {
                             {...register("lastName", {
                                 required: "Surname is required",
                                 minLength: { value: 2, message: "Surname must be at least 2 characters" },
+                                onBlur: (e) => {
+                                    const formattedValue = capitalizeFirstLetter(e.target.value);
+                                    setValue("lastName", formattedValue);
+                                },
                             })}
-                            onBlur={(e) => handleNameChange(e, "lastName")}
                         />
                         <Form.Control.Feedback type="invalid">{errors.lastName?.message}</Form.Control.Feedback>
                     </Form.Group>
