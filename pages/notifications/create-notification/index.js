@@ -6,7 +6,8 @@ import { createPersonalNotification, createGroupNotification } from '@/services/
 import notificationTypes from '@/static/data/notificationTypes';
 import { getUsers } from '@/services/userApi';
 import { getAllUserGroups } from '@/services/userGroupApi';
-import Swal from 'sweetalert2';
+import toast from '@/utils/toastify';
+import { ToastContainer } from 'react-toastify';
 import styles from './index.module.scss'
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 
@@ -114,10 +115,7 @@ const CreateNotification = () => {
             }
 
             if (result.success) {
-                Swal.fire({
-                    title: result.message,
-                    icon: 'success'
-                });
+                toast('SUCCESS', result.message);
                 reset({
                     notificationType: 'personal',
                     users: [],
@@ -128,17 +126,10 @@ const CreateNotification = () => {
                     date: ''
                 });
             } else {
-                Swal.fire({
-                    title: result.error,
-                    icon: 'error'
-                });
+                toast('ERROR', result.error);
             }
         } catch (error) {
-            Swal.fire({
-                title: 'Error',
-                text: 'An error occurred when creating a new notification. Please try again later.',
-                icon: 'error'
-            });
+            toast('ERROR', 'An error occurred when creating a new notification. Please try again later.');
         }
     };
 
@@ -150,192 +141,195 @@ const CreateNotification = () => {
     }));
 
     return (
-        <Container className={styles.notificationContainer}>
-            <h2>Create Notification</h2>
-            <Card>
-                <Card.Body>
-                    <div className="d-flex justify-content-center mb-4">
-                        {/* Toggle */}
-                        <ToggleButtonGroup
-                            type="radio"
-                            name="notificationType"
-                            value={notificationType}
-                            onChange={handleSwitch}
-                            className="mb-4"
-                        >
-                            <ToggleButton id="personal" value="personal" variant="outline-primary">
-                                Personal Notification
-                            </ToggleButton>
-                            <ToggleButton id="group" value="group" variant="outline-primary">
-                                Group Notification
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                    </div>
+        <>
+            <Container className={styles.notificationContainer}>
+                <h2>Create Notification</h2>
+                <Card>
+                    <Card.Body>
+                        <div className="d-flex justify-content-center mb-4">
+                            {/* Toggle */}
+                            <ToggleButtonGroup
+                                type="radio"
+                                name="notificationType"
+                                value={notificationType}
+                                onChange={handleSwitch}
+                                className="mb-4"
+                            >
+                                <ToggleButton id="personal" value="personal" variant="outline-primary">
+                                    Personal Notification
+                                </ToggleButton>
+                                <ToggleButton id="group" value="group" variant="outline-primary">
+                                    Group Notification
+                                </ToggleButton>
+                            </ToggleButtonGroup>
+                        </div>
 
-                    <Form onSubmit={handleSubmit(onSubmit)}>
-                        {/* Title */}
-                        <Col md={12}>
-                            <Form.Group controlId="title">
-                                <Form.Label>Title</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter a title"
-                                    isInvalid={!!errors.title}
-                                    {...register("title", {
-                                        required: "Title is required",
-                                        minLength: { value: 2, message: "Title must be at least 2 characters" },
-                                        onBlur: (e) => {
-                                            const formattedValue = capitalizeFirstLetter(e.target.value);
-                                            setValue("title", formattedValue);
-                                        },
-                                    })}
-                                />
-                                <Form.Control.Feedback type="invalid">{errors.title?.message}</Form.Control.Feedback>
+                        <Form onSubmit={handleSubmit(onSubmit)}>
+                            {/* Title */}
+                            <Col md={12}>
+                                <Form.Group controlId="title">
+                                    <Form.Label>Title</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter a title"
+                                        isInvalid={!!errors.title}
+                                        {...register("title", {
+                                            required: "Title is required",
+                                            minLength: { value: 2, message: "Title must be at least 2 characters" },
+                                            onBlur: (e) => {
+                                                const formattedValue = capitalizeFirstLetter(e.target.value);
+                                                setValue("title", formattedValue);
+                                            },
+                                        })}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{errors.title?.message}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+
+                            {/* Description */}
+                            <Col md={12}>
+                                <Form.Group controlId="description">
+                                    <Form.Label>Description</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        placeholder="Enter a description"
+                                        isInvalid={!!errors.description}
+                                        {...register("description", {
+                                            required: "Description is required",
+                                            minLength: { value: 2, message: "Description must be at least 2 characters" },
+                                            maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
+                                            onBlur: (e) => {
+                                                const formattedValue = capitalizeFirstLetter(e.target.value);
+                                                setValue("description", formattedValue);
+                                            },
+                                        })}
+                                        className={styles.description}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{errors.description?.message}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Col>
+
+
+                            {/* Notification Type*/}
+                            <Col md={12}>
+                                <Form.Group controlId="type">
+                                    <Form.Label>Notification Type</Form.Label>
+                                    <Controller
+                                        control={control}
+                                        name="type"
+                                        rules={{ required: "Notification Type is required" }}
+                                        render={({ field, fieldState }) => (
+                                            <>
+                                                <Select
+                                                    {...field}
+                                                    options={typeOptions}
+                                                    placeholder="Select notification type"
+                                                />
+                                                {fieldState.error && (
+                                                    <Form.Text className="text-danger">
+                                                        {fieldState.error.message}
+                                                    </Form.Text>
+                                                )}
+                                            </>
+                                        )}
+                                    />
+                                </Form.Group>
+                            </Col>
+
+                            {/* Date */}
+                            <Form.Group controlId="date" className="mb-3">
+                                <Form.Label>Date</Form.Label>
+                                <Form.Control type="date" {...register('date')} />
                             </Form.Group>
-                        </Col>
 
-                        {/* Description */}
-                        <Col md={12}>
-                            <Form.Group controlId="description">
-                                <Form.Label>Description</Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    placeholder="Enter a description"
-                                    isInvalid={!!errors.description}
-                                    {...register("description", {
-                                        required: "Description is required",
-                                        minLength: { value: 2, message: "Description must be at least 2 characters" },
-                                        maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
-                                        onBlur: (e) => {
-                                            const formattedValue = capitalizeFirstLetter(e.target.value);
-                                            setValue("description", formattedValue);
-                                        },
-                                    })}
-                                    className={styles.description}
-                                />
-                                <Form.Control.Feedback type="invalid">{errors.description?.message}</Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-
-
-                        {/* Notification Type*/}
-                        <Col md={12}>
-                            <Form.Group controlId="type">
-                                <Form.Label>Notification Type</Form.Label>
-                                <Controller
-                                    control={control}
-                                    name="type"
-                                    rules={{ required: "Notification Type is required" }}
-                                    render={({ field, fieldState }) => (
-                                        <>
-                                            <Select
-                                                {...field}
-                                                options={typeOptions}
-                                                placeholder="Select notification type"
+                            {/* Users or Groups */}
+                            {notificationType === 'personal' ? (
+                                <Col md={12}>
+                                    <Form.Group controlId="users">
+                                        <Form.Label>Users</Form.Label>
+                                        {userDataLoading ? (
+                                            <div className="text-center">
+                                                <Spinner animation="border" variant="primary" />
+                                            </div>
+                                        ) : userDataError ? (
+                                            <p style={{ color: 'red' }}>Error: {userDataError}</p>
+                                        ) : (
+                                            <Controller
+                                                control={control}
+                                                name="users"
+                                                rules={{ required: "Please select at least one user" }}
+                                                render={({ field, fieldState }) => (
+                                                    <>
+                                                        <Select
+                                                            {...field}
+                                                            options={userData.map(user => ({
+                                                                value: user._id,
+                                                                label: user.first_name + ' ' + user.last_name
+                                                            }))}
+                                                            isMulti
+                                                            placeholder="Select user(s)"
+                                                        />
+                                                        {fieldState.error && (
+                                                            <Form.Text className="text-danger">
+                                                                {fieldState.error.message}
+                                                            </Form.Text>
+                                                        )}
+                                                    </>
+                                                )}
                                             />
-                                            {fieldState.error && (
-                                                <Form.Text className="text-danger">
-                                                    {fieldState.error.message}
-                                                </Form.Text>
-                                            )}
-                                        </>
-                                    )}
-                                />
-                            </Form.Group>
-                        </Col>
+                                        )}
+                                    </Form.Group>
+                                </Col>
+                            ) : (
+                                <Col md={12}>
+                                    <Form.Group controlId="groups">
+                                        <Form.Label>User Groups</Form.Label>
+                                        {groupDataLoading ? (
+                                            <div className="text-center">
+                                                <Spinner animation="border" variant="primary" />
+                                            </div>
+                                        ) : groupDataError ? (
+                                            <p style={{ color: 'red' }}>Error: {groupDataError}</p>
+                                        ) : (
+                                            <Controller
+                                                control={control}
+                                                name="groups"
+                                                rules={{ required: "Please select at least one group" }}
+                                                render={({ field, fieldState }) => (
+                                                    <>
+                                                        <Select
+                                                            {...field}
+                                                            options={groupData.map(group => ({
+                                                                value: group._id,
+                                                                label: group.group_name
+                                                            }))}
+                                                            isMulti
+                                                            placeholder="Select group(s)"
+                                                        />
+                                                        {fieldState.error && (
+                                                            <Form.Text className="text-danger">
+                                                                {fieldState.error.message}
+                                                            </Form.Text>
+                                                        )}
+                                                    </>
+                                                )}
+                                            />
+                                        )}
+                                    </Form.Group>
+                                </Col>
+                            )}
 
-                        {/* Date */}
-                        <Form.Group controlId="date" className="mb-3">
-                            <Form.Label>Date</Form.Label>
-                            <Form.Control type="date" {...register('date')} />
-                        </Form.Group>
-
-                        {/* Users or Groups */}
-                        {notificationType === 'personal' ? (
-                            <Col md={12}>
-                                <Form.Group controlId="users">
-                                    <Form.Label>Users</Form.Label>
-                                    {userDataLoading ? (
-                                        <div className="text-center">
-                                            <Spinner animation="border" variant="primary" />
-                                        </div>
-                                    ) : userDataError ? (
-                                        <p style={{ color: 'red' }}>Error: {userDataError}</p>
-                                    ) : (
-                                        <Controller
-                                            control={control}
-                                            name="users"
-                                            rules={{ required: "Please select at least one user" }}
-                                            render={({ field, fieldState }) => (
-                                                <>
-                                                    <Select
-                                                        {...field}
-                                                        options={userData.map(user => ({
-                                                            value: user._id,
-                                                            label: user.first_name + ' ' + user.last_name
-                                                        }))}
-                                                        isMulti
-                                                        placeholder="Select user(s)"
-                                                    />
-                                                    {fieldState.error && (
-                                                        <Form.Text className="text-danger">
-                                                            {fieldState.error.message}
-                                                        </Form.Text>
-                                                    )}
-                                                </>
-                                            )}
-                                        />
-                                    )}
-                                </Form.Group>
-                            </Col>
-                        ) : (
-                            <Col md={12}>
-                                <Form.Group controlId="groups">
-                                    <Form.Label>User Groups</Form.Label>
-                                    {groupDataLoading ? (
-                                        <div className="text-center">
-                                            <Spinner animation="border" variant="primary" />
-                                        </div>
-                                    ) : groupDataError ? (
-                                        <p style={{ color: 'red' }}>Error: {groupDataError}</p>
-                                    ) : (
-                                        <Controller
-                                            control={control}
-                                            name="groups"
-                                            rules={{ required: "Please select at least one group" }}
-                                            render={({ field, fieldState }) => (
-                                                <>
-                                                    <Select
-                                                        {...field}
-                                                        options={groupData.map(group => ({
-                                                            value: group._id,
-                                                            label: group.group_name
-                                                        }))}
-                                                        isMulti
-                                                        placeholder="Select group(s)"
-                                                    />
-                                                    {fieldState.error && (
-                                                        <Form.Text className="text-danger">
-                                                            {fieldState.error.message}
-                                                        </Form.Text>
-                                                    )}
-                                                </>
-                                            )}
-                                        />
-                                    )}
-                                </Form.Group>
-                            </Col>
-                        )}
-
-                        {/* Submit */}
-                        <Button variant="primary" type="submit" disabled={isSubmitting} className="mt-3">
-                            {isSubmitting ? 'Creating Notification...' : 'Create Notification'}
-                        </Button>
-                    </Form>
-                </Card.Body>
-            </Card>
-        </Container>
+                            {/* Submit */}
+                            <Button variant="primary" type="submit" disabled={isSubmitting} className="mt-3">
+                                {isSubmitting ? 'Creating Notification...' : 'Create Notification'}
+                            </Button>
+                        </Form>
+                    </Card.Body>
+                </Card>
+            </Container>
+            <ToastContainer />
+        </>
     );
 };
 

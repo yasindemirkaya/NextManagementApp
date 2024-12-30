@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import styles from "./index.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
-import { Row, Col, Badge, Button, Pagination, Form, InputGroup } from 'react-bootstrap';
+import { Badge, Button, Pagination, Form, InputGroup } from 'react-bootstrap';
 import { useRouter } from "next/router";
-import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
 import * as XLSX from 'xlsx'
+import toast from '@/utils/toastify';
+import { ToastContainer } from 'react-toastify';
 
 const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, fetchUsers, getUserGroups, getAllGroupTypes }) => {
     const [currentPageState, setCurrentPageState] = useState(currentPage);
@@ -163,11 +164,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
         }
 
         if (userRole == 2 && loggedInUser.id !== id) {
-            Swal.fire({
-                title: 'Error',
-                icon: 'error',
-                text: "You are not allowed to update this data",
-            });
+            toast('ERROR', 'You are not allowed to update this data.');
         } else {
             let dynamicPath = "";
 
@@ -248,115 +245,118 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
     };
 
     return (
-        <div className={styles.tableContainer}>
-            {/* Search */}
-            <div className={`d-flex justify-content-between ${styles.searchContainer}`}>
-                {/* Search Input ve Button */}
-                <InputGroup className={`${styles.inputGroup} me-3`} style={{ maxWidth: '400px' }}>
-                    <Form.Control
-                        type="text"
-                        placeholder="Search..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                    {/* Search */}
-                    <InputGroup.Text style={{ cursor: "pointer" }} onClick={handleSearch}>
-                        <FontAwesomeIcon icon={icons.faSearch} />
-                    </InputGroup.Text>
-                    {/* Clear Search */}
-                    <Button variant="danger" onClick={handleClearSearch} disabled={searchQuery == null}>
-                        <FontAwesomeIcon icon={icons.faDeleteLeft} />
-                    </Button>
-                </InputGroup>
+        <>
+            <div className={styles.tableContainer}>
+                {/* Search */}
+                <div className={`d-flex justify-content-between ${styles.searchContainer}`}>
+                    {/* Search Input ve Button */}
+                    <InputGroup className={`${styles.inputGroup} me-3`} style={{ maxWidth: '400px' }}>
+                        <Form.Control
+                            type="text"
+                            placeholder="Search..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        {/* Search */}
+                        <InputGroup.Text style={{ cursor: "pointer" }} onClick={handleSearch}>
+                            <FontAwesomeIcon icon={icons.faSearch} />
+                        </InputGroup.Text>
+                        {/* Clear Search */}
+                        <Button variant="danger" onClick={handleClearSearch} disabled={searchQuery == null}>
+                            <FontAwesomeIcon icon={icons.faDeleteLeft} />
+                        </Button>
+                    </InputGroup>
 
-                {/* Sağdaki Butonlar */}
-                <div className="d-flex">
-                    <Button variant="primary" type="submit" href={buttonCustomizer(from).link} className="me-2">
-                        <FontAwesomeIcon icon={icons.faPlusCircle} className="me-2" />
-                        {buttonCustomizer(from).text}
-                    </Button>
-                    <Button variant="success" onClick={exportToExcel}>
-                        <FontAwesomeIcon icon={icons.faFileExcel} />
-                    </Button>
+                    {/* Sağdaki Butonlar */}
+                    <div className="d-flex">
+                        <Button variant="primary" type="submit" href={buttonCustomizer(from).link} className="me-2">
+                            <FontAwesomeIcon icon={icons.faPlusCircle} className="me-2" />
+                            {buttonCustomizer(from).text}
+                        </Button>
+                        <Button variant="success" onClick={exportToExcel}>
+                            <FontAwesomeIcon icon={icons.faFileExcel} />
+                        </Button>
+                    </div>
+                </div>
+
+                {/* Table */}
+                <table className={styles.table}>
+                    {/* Head */}
+                    <thead>
+                        <tr>
+                            {headers.map((header, index) => (
+                                <th
+                                    key={index}
+                                    onClick={() => handleSort(header)}
+                                    className={`${styles.tableHeader} ${sortConfig.key === header ? styles.activeSort : ""}`}
+                                >
+                                    {header}
+                                    {sortConfig.key === header && (
+                                        <FontAwesomeIcon
+                                            icon={sortConfig.direction === "asc" ? icons.faChevronUp : icons.faChevronDown}
+                                            className={styles.sortIcon}
+                                        />
+                                    )}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    {/* Body */}
+                    <tbody>
+                        {sortedData.length === 0 ? (
+                            <tr>
+                                <td colSpan={headers.length} className={styles.noData}>
+                                    No data available
+                                </td>
+                            </tr>
+                        ) : (
+                            sortedData.map((row, rowIndex) => (
+                                <tr
+                                    key={rowIndex}
+                                    className={styles.tableRow}
+                                    onClick={() => handleRowClick(row)}
+                                >
+                                    {headers.map((header, colIndex) => (
+                                        <td key={colIndex} className={styles.tableCell}>
+                                            {row[header] || "-"}
+                                            {row.isSelf && header === "Name" && (
+                                                <Badge bg="success" className={styles.selfBadge}>Self</Badge>
+                                            )}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+
+                <div className={styles.pageInfo}>
+                    There are {totalData} records in the table. Page {currentPage} of {totalPages} is currently displayed.
+                </div>
+
+                {/* Pagination */}
+                <div className={styles.pagination}>
+                    <Pagination size="md">
+                        <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPageState === 1} />
+                        <Pagination.Prev onClick={() => handlePageChange(currentPageState - 1)} disabled={currentPageState === 1} />
+
+                        {[...Array(totalPages)].map((_, index) => (
+                            <Pagination.Item
+                                key={index + 1}
+                                active={index + 1 === currentPageState}
+                                onClick={() => handlePageChange(index + 1)}
+                            >
+                                {index + 1}
+                            </Pagination.Item>
+                        ))}
+
+                        <Pagination.Next onClick={() => handlePageChange(currentPageState + 1)} disabled={currentPageState === totalPages} />
+                        <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPageState === totalPages} />
+                    </Pagination>
                 </div>
             </div>
-
-            {/* Table */}
-            <table className={styles.table}>
-                {/* Head */}
-                <thead>
-                    <tr>
-                        {headers.map((header, index) => (
-                            <th
-                                key={index}
-                                onClick={() => handleSort(header)}
-                                className={`${styles.tableHeader} ${sortConfig.key === header ? styles.activeSort : ""}`}
-                            >
-                                {header}
-                                {sortConfig.key === header && (
-                                    <FontAwesomeIcon
-                                        icon={sortConfig.direction === "asc" ? icons.faChevronUp : icons.faChevronDown}
-                                        className={styles.sortIcon}
-                                    />
-                                )}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                {/* Body */}
-                <tbody>
-                    {sortedData.length === 0 ? (
-                        <tr>
-                            <td colSpan={headers.length} className={styles.noData}>
-                                No data available
-                            </td>
-                        </tr>
-                    ) : (
-                        sortedData.map((row, rowIndex) => (
-                            <tr
-                                key={rowIndex}
-                                className={styles.tableRow}
-                                onClick={() => handleRowClick(row)}
-                            >
-                                {headers.map((header, colIndex) => (
-                                    <td key={colIndex} className={styles.tableCell}>
-                                        {row[header] || "-"}
-                                        {row.isSelf && header === "Name" && (
-                                            <Badge bg="success" className={styles.selfBadge}>Self</Badge>
-                                        )}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))
-                    )}
-                </tbody>
-            </table>
-
-            <div className={styles.pageInfo}>
-                There are {totalData} records in the table. Page {currentPage} of {totalPages} is currently displayed.
-            </div>
-
-            {/* Pagination */}
-            <div className={styles.pagination}>
-                <Pagination size="md">
-                    <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPageState === 1} />
-                    <Pagination.Prev onClick={() => handlePageChange(currentPageState - 1)} disabled={currentPageState === 1} />
-
-                    {[...Array(totalPages)].map((_, index) => (
-                        <Pagination.Item
-                            key={index + 1}
-                            active={index + 1 === currentPageState}
-                            onClick={() => handlePageChange(index + 1)}
-                        >
-                            {index + 1}
-                        </Pagination.Item>
-                    ))}
-
-                    <Pagination.Next onClick={() => handlePageChange(currentPageState + 1)} disabled={currentPageState === totalPages} />
-                    <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPageState === totalPages} />
-                </Pagination>
-            </div>
-        </div>
+            <ToastContainer />
+        </>
     );
 };
 

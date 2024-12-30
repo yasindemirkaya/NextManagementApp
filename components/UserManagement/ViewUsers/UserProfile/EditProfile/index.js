@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Card, Button, Form, Row, Col } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import toast from '@/utils/toastify';
+import { ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import styles from './index.module.scss';
-import axios from '@/utils/axios';
 import ChangePassword from '../ChangePassword';
 import { isSelf } from '@/helpers/isSelf';
 import { useDispatch, useSelector } from 'react-redux';
@@ -66,23 +67,12 @@ const EditProfileCard = ({ userData, onCancel }) => {
             const response = await updateUser(updatedData);
 
             if (response.code === 1) {
-                Swal.fire({
-                    title: response.message,
-                    icon: 'success',
-                });
+                toast('SUCCESS', response.message)
             } else {
-                Swal.fire({
-                    title: response.message,
-                    icon: 'error',
-                });
+                toast('ERROR', response.message)
             }
         } catch (error) {
-            console.error('Error updating user data:', error);
-            Swal.fire({
-                title: 'User could not be updated.',
-                icon: 'error',
-                text: 'An error occurred. Please try again.',
-            });
+            toast('ERROR', 'User could not be updated.')
         }
     };
 
@@ -114,23 +104,12 @@ const EditProfileCard = ({ userData, onCancel }) => {
             const response = await updateUserById(updatedData);
 
             if (response.code === 1) {
-                Swal.fire({
-                    title: response.message,
-                    icon: 'success',
-                });
+                toast('SUCCESS', response.message)
             } else {
-                Swal.fire({
-                    title: response.message,
-                    icon: 'error',
-                });
+                toast('ERROR', response.message)
             }
         } catch (error) {
-            console.error('Error updating user by ID:', error);
-            Swal.fire({
-                title: 'User could not be updated.',
-                icon: 'error',
-                text: 'An error occurred. Please try again.',
-            });
+            toast('SUCCESS', 'User could not be updated.')
         }
     };
 
@@ -151,28 +130,15 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 const response = await deleteUser();
 
                 if (response.code === 1) {
-                    Swal.fire({
-                        title: 'Account Deleted',
-                        text: 'Your account has been deleted successfully.',
-                        icon: 'success',
-                    });
+                    toast('SUCCESS', response.message || 'Your account has been deleted successfully.')
                     Cookies.remove('token');
                     dispatch(clearUser());
                     router.push('/login');
                 } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: response.message || 'Account could not be deleted. Please try again.',
-                        icon: 'error',
-                    });
+                    toast('ERROR', response.message || 'Account could not be deleted. Please try again.')
                 }
             } catch (error) {
-                console.error('Error deleting account:', error);
-                Swal.fire({
-                    title: 'Error',
-                    text: 'An error occurred while deleting the account. Please try again later.',
-                    icon: 'error',
-                });
+                toast('ERROR', 'An error occurred while deleting the account. Please try again later.')
             }
         }
     };
@@ -194,28 +160,16 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 const response = await deleteUserById(userId);
 
                 if (response.code === 1) {
-                    Swal.fire({
-                        title: 'Account Deleted',
-                        text: 'The user account has been deleted successfully.',
-                        icon: 'success',
-                    });
+                    toast('SUCCESS', response.message || 'The user account has been deleted successfully.')
                     setTimeout(() => {
                         router.push('/user-management/view-users');
                     }, 1000);
                 } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: response.message || 'User account could not be deleted. Please try again.',
-                        icon: 'error',
-                    });
+                    toast('ERROR', response.message || 'User account could not be deleted. Please try again.')
                 }
             } catch (error) {
-                console.error('Error deleting user by ID:', error);
-                Swal.fire({
-                    title: 'Error',
-                    text: 'An error occurred while deleting the user. Please try again later.',
-                    icon: 'error',
-                });
+                toast('ERROR', 'An error occurred while deleting the user. Please try again later.')
+
             }
         }
     };
@@ -285,165 +239,169 @@ const EditProfileCard = ({ userData, onCancel }) => {
     }
 
     return (
-        <Card className={styles.profileEditCard}>
-            <Card.Body>
-                <Card.Title>Edit Profile</Card.Title>
-                <Form onSubmit={handleSubmit(handleSave)}>
-                    {/* Name */}
-                    <Form.Group className="mb-3">
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter your first name"
-                            {...register("firstName", {
-                                required: "Name is required",
-                                minLength: { value: 2, message: "Name must be at least 2 characters" },
-                                pattern: { value: /^[a-zA-Z\s]*$/, message: "Name cannot contain numeric characters" },
-                            })}
-                            isInvalid={!!errors.firstName}
-                        />
-                        <Form.Control.Feedback type="invalid">{errors.firstName?.message}</Form.Control.Feedback>
-                    </Form.Group>
-
-                    {/* Surname */}
-                    <Form.Group className="mb-3">
-                        <Form.Label>Surname</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter your last name"
-                            {...register("lastName", {
-                                required: "Surname is required",
-                                minLength: { value: 2, message: "Surname must be at least 2 characters" },
-                                pattern: { value: /^[a-zA-Z\s]*$/, message: "Surname cannot contain numeric characters" },
-                            })}
-                            isInvalid={!!errors.lastName}
-                        />
-                        <Form.Control.Feedback type="invalid">{errors.lastName?.message}</Form.Control.Feedback>
-                    </Form.Group>
-
-                    {/* Email */}
-                    <Form.Group className="mb-3">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control
-                            type="email"
-                            placeholder="Enter your email"
-                            {...register("email", {
-                                required: "Email is required",
-                                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" },
-                            })}
-                            isInvalid={!!errors.email}
-                        />
-                        <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
-                    </Form.Group>
-
-                    {/* Mobile */}
-                    <Form.Group className="mb-3">
-                        <Form.Label>Mobile</Form.Label>
-                        <InputMask
-                            mask="(999) 999-9999"
-                            {...register("mobile", {
-                                required: "Mobile number is required",
-                                pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: "Invalid mobile format" },
-                            })}
-                        >
-                            {(inputProps) => (
-                                <Form.Control
-                                    {...inputProps}
-                                    type="tel"
-                                    placeholder="Enter your mobile number"
-                                    isInvalid={!!errors.mobile}
-                                />
-                            )}
-                        </InputMask>
-                        <Form.Control.Feedback type="invalid">{errors.mobile?.message}</Form.Control.Feedback>
-                    </Form.Group>
-
-                    {/* Role (Sadece adminler başkasını güncellerken görünür. Kullanıcı kendi rolünü değiştiremez */}
-                    {roleDisplayer(loggedInUser, userData) ? (
+        <>
+            <Card className={styles.profileEditCard}>
+                <Card.Body>
+                    <Card.Title>Edit Profile</Card.Title>
+                    <Form onSubmit={handleSubmit(handleSave)}>
+                        {/* Name */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Role</Form.Label>
-                            <div>
-                                <Form.Check
-                                    type="radio"
-                                    label="Standard User"
-                                    name="role"
-                                    value="0"
-                                    checked={role === 0}
-                                    onChange={(e) => setRole(parseInt(e.target.value))}
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Admin"
-                                    name="role"
-                                    value="1"
-                                    checked={role === 1}
-                                    onChange={(e) => setRole(parseInt(e.target.value))}
-                                />
-                                {/* Only Super Admins can see this */}
-                                {loggedInUser && loggedInUser.role == 2 ? (
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter your first name"
+                                {...register("firstName", {
+                                    required: "Name is required",
+                                    minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                    pattern: { value: /^[a-zA-Z\s]*$/, message: "Name cannot contain numeric characters" },
+                                })}
+                                isInvalid={!!errors.firstName}
+                            />
+                            <Form.Control.Feedback type="invalid">{errors.firstName?.message}</Form.Control.Feedback>
+                        </Form.Group>
+
+                        {/* Surname */}
+                        <Form.Group className="mb-3">
+                            <Form.Label>Surname</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter your last name"
+                                {...register("lastName", {
+                                    required: "Surname is required",
+                                    minLength: { value: 2, message: "Surname must be at least 2 characters" },
+                                    pattern: { value: /^[a-zA-Z\s]*$/, message: "Surname cannot contain numeric characters" },
+                                })}
+                                isInvalid={!!errors.lastName}
+                            />
+                            <Form.Control.Feedback type="invalid">{errors.lastName?.message}</Form.Control.Feedback>
+                        </Form.Group>
+
+                        {/* Email */}
+                        <Form.Group className="mb-3">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control
+                                type="email"
+                                placeholder="Enter your email"
+                                {...register("email", {
+                                    required: "Email is required",
+                                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" },
+                                })}
+                                isInvalid={!!errors.email}
+                            />
+                            <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
+                        </Form.Group>
+
+                        {/* Mobile */}
+                        <Form.Group className="mb-3">
+                            <Form.Label>Mobile</Form.Label>
+                            <InputMask
+                                mask="(999) 999-9999"
+                                {...register("mobile", {
+                                    required: "Mobile number is required",
+                                    pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: "Invalid mobile format" },
+                                })}
+                            >
+                                {(inputProps) => (
+                                    <Form.Control
+                                        {...inputProps}
+                                        type="tel"
+                                        placeholder="Enter your mobile number"
+                                        isInvalid={!!errors.mobile}
+                                    />
+                                )}
+                            </InputMask>
+                            <Form.Control.Feedback type="invalid">{errors.mobile?.message}</Form.Control.Feedback>
+                        </Form.Group>
+
+                        {/* Role (Sadece adminler başkasını güncellerken görünür. Kullanıcı kendi rolünü değiştiremez */}
+                        {roleDisplayer(loggedInUser, userData) ? (
+                            <Form.Group className="mb-3">
+                                <Form.Label>Role</Form.Label>
+                                <div>
                                     <Form.Check
                                         type="radio"
-                                        label="Super Admin"
+                                        label="Standard User"
                                         name="role"
-                                        value="2"
-                                        checked={role === 2}
+                                        value="0"
+                                        checked={role === 0}
                                         onChange={(e) => setRole(parseInt(e.target.value))}
                                     />
-                                ) : null}
-                            </div>
-                        </Form.Group>
-                    ) : null}
+                                    <Form.Check
+                                        type="radio"
+                                        label="Admin"
+                                        name="role"
+                                        value="1"
+                                        checked={role === 1}
+                                        onChange={(e) => setRole(parseInt(e.target.value))}
+                                    />
+                                    {/* Only Super Admins can see this */}
+                                    {loggedInUser && loggedInUser.role == 2 ? (
+                                        <Form.Check
+                                            type="radio"
+                                            label="Super Admin"
+                                            name="role"
+                                            value="2"
+                                            checked={role === 2}
+                                            onChange={(e) => setRole(parseInt(e.target.value))}
+                                        />
+                                    ) : null}
+                                </div>
+                            </Form.Group>
+                        ) : null}
 
-                    {/* Account Status */}
-                    <Form.Group className="mb-3">
-                        <Form.Label>Account Status</Form.Label>
-                        <Form.Check
-                            type="switch"
-                            id="isActive"
-                            name="isActive"
-                            checked={isActive}
-                            onChange={(e) => setIsActive(e.target.checked)}
-                        />
-                    </Form.Group>
-
-                    {/* Account Verification */}
-                    {visibleForSuperAdmins(loggedInUser) ? (
+                        {/* Account Status */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Account Verification</Form.Label>
+                            <Form.Label>Account Status</Form.Label>
                             <Form.Check
                                 type="switch"
-                                id="isVerified"
-                                name="isVerified"
-                                checked={isVerified}
-                                onChange={(e) => setIsVerified(e.target.checked)}
+                                id="isActive"
+                                name="isActive"
+                                checked={isActive}
+                                onChange={(e) => setIsActive(e.target.checked)}
                             />
                         </Form.Group>
-                    ) : null}
 
-                    <Button variant="primary" type="submit">Save</Button>
-                    <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
-                </Form>
+                        {/* Account Verification */}
+                        {visibleForSuperAdmins(loggedInUser) ? (
+                            <Form.Group className="mb-3">
+                                <Form.Label>Account Verification</Form.Label>
+                                <Form.Check
+                                    type="switch"
+                                    id="isVerified"
+                                    name="isVerified"
+                                    checked={isVerified}
+                                    onChange={(e) => setIsVerified(e.target.checked)}
+                                />
+                            </Form.Group>
+                        ) : null}
 
-                <Row className="mt-3">
-                    <Col md={12}>
-                        <div onClick={() => setShowModal(true)} className={styles.link}>
-                            <p className="text-primary">{changePasswordText}</p>
-                        </div>
-                    </Col>
+                        <Button variant="primary" type="submit">Save</Button>
+                        <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
+                    </Form>
 
-                    {/* Bir admin sadece kendisinin ve rolü 0 olan bir kullanıcının hesabını silebilir */}
-                    {deleteAccountDisplayer(loggedInUser, userData) ? (
+                    <Row className="mt-3">
                         <Col md={12}>
-                            <div onClick={handleDeleteAccount} className={styles.link}>
-                                <p className="text-danger">{deleteAccountText}</p>
+                            <div onClick={() => setShowModal(true)} className={styles.link}>
+                                <p className="text-primary">{changePasswordText}</p>
                             </div>
                         </Col>
-                    ) : null}
-                </Row>
 
-                <ChangePassword show={showModal} onHide={() => setShowModal(false)} isSelf={isSelf((loggedInUser ? loggedInUser.id : null), userData.id)} userId={userData.id} />
-            </Card.Body>
-        </Card>
+                        {/* Bir admin sadece kendisinin ve rolü 0 olan bir kullanıcının hesabını silebilir */}
+                        {deleteAccountDisplayer(loggedInUser, userData) ? (
+                            <Col md={12}>
+                                <div onClick={handleDeleteAccount} className={styles.link}>
+                                    <p className="text-danger">{deleteAccountText}</p>
+                                </div>
+                            </Col>
+                        ) : null}
+                    </Row>
+
+                    <ChangePassword show={showModal} onHide={() => setShowModal(false)} isSelf={isSelf((loggedInUser ? loggedInUser.id : null), userData.id)} userId={userData.id} />
+                </Card.Body>
+            </Card>
+            <ToastContainer />
+        </>
+
     );
 };
 

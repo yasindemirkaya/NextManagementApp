@@ -1,7 +1,7 @@
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
-import Swal from 'sweetalert2';
-import axios from '@/utils/axios';
+import toast from '@/utils/toastify';
+import { ToastContainer } from 'react-toastify';
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
@@ -43,35 +43,21 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
             const response = await changePassword(data);
 
             if (response.code === 1) {
-                Swal.fire({
-                    title: 'Password Changed',
-                    icon: 'success',
-                    text: response.message,
-                });
+                toast('SUCCESS', response.message)
                 onHide();
                 reset();
 
                 // Kullanıcı şifresini değiştirdikten sonra logout edilir
                 setTimeout(() => {
-                    Swal.close();
                     Cookies.remove('token');
                     dispatch(clearUser());
                     router.push('/login');
                 }, 2000);
             } else {
-                Swal.fire({
-                    title: 'Error',
-                    icon: 'error',
-                    text: response.message,
-                });
+                toast('ERROR', response.message)
             }
         } catch (error) {
-            console.error('Error changing password:', error);
-            Swal.fire({
-                title: 'Error',
-                icon: 'error',
-                text: 'An error occurred. Please try again.',
-            });
+            toast('ERROR', 'An error occurred. Please try again.')
         }
     };
 
@@ -81,27 +67,14 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
             const response = await changePasswordById(data, userId);
 
             if (response.code === 1) {
-                Swal.fire({
-                    title: 'Password Changed',
-                    icon: 'success',
-                    text: response.message,
-                });
+                toast('SUCCESS', response.message)
                 onHide();
                 reset();
             } else {
-                Swal.fire({
-                    title: 'Error',
-                    icon: 'error',
-                    text: response.message,
-                });
+                toast('ERROR', response.message)
             }
         } catch (error) {
-            console.error('Error changing password:', error);
-            Swal.fire({
-                title: 'Error',
-                icon: 'error',
-                text: 'An error occurred. Please try again.',
-            });
+            toast('ERROR', response.message)
         }
     }
 
@@ -119,103 +92,106 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
     };
 
     return (
-        <Modal show={show} onHide={handleClose} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>Change Password</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    {/* Current Password (Only visible when updating yourself) */}
-                    {isSelf ? (
+        <>
+            <Modal show={show} onHide={handleClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Change Password</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleSubmit(onSubmit)}>
+                        {/* Current Password (Only visible when updating yourself) */}
+                        {isSelf ? (
+                            <Form.Group className="mb-3">
+                                <Form.Label>Current Password</Form.Label>
+                                <InputGroup>
+                                    <Form.Control
+                                        type={showCurrentPassword ? "text" : "password"}
+                                        placeholder="Enter current password"
+                                        isInvalid={!!errors.currentPassword}
+                                        {...register("currentPassword", {
+                                            required: "Current password is required"
+                                        })}
+                                    />
+                                    <InputGroup.Text
+                                        onClick={() => togglePasswordVisibility('current')}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        <FontAwesomeIcon icon={showCurrentPassword ? icons.faEyeSlash : icons.faEye} />
+                                    </InputGroup.Text>
+                                </InputGroup>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.currentPassword?.message}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        ) : null}
+                        {/* New Password */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Current Password</Form.Label>
+                            <Form.Label>New Password</Form.Label>
                             <InputGroup>
                                 <Form.Control
-                                    type={showCurrentPassword ? "text" : "password"}
-                                    placeholder="Enter current password"
-                                    isInvalid={!!errors.currentPassword}
-                                    {...register("currentPassword", {
-                                        required: "Current password is required"
+                                    type={showNewPassword ? "text" : "password"}
+                                    placeholder="Enter new password"
+                                    isInvalid={!!errors.newPassword}
+                                    {...register("newPassword", {
+                                        required: "New password is required",
+                                        minLength: {
+                                            value: 6,
+                                            message: "New password must be at least 6 characters"
+                                        }
                                     })}
                                 />
                                 <InputGroup.Text
-                                    onClick={() => togglePasswordVisibility('current')}
+                                    onClick={() => togglePasswordVisibility('new')}
                                     style={{ cursor: "pointer" }}
                                 >
-                                    <FontAwesomeIcon icon={showCurrentPassword ? icons.faEyeSlash : icons.faEye} />
+                                    <FontAwesomeIcon icon={showNewPassword ? icons.faEyeSlash : icons.faEye} />
                                 </InputGroup.Text>
                             </InputGroup>
                             <Form.Control.Feedback type="invalid">
-                                {errors.currentPassword?.message}
+                                {errors.newPassword?.message}
                             </Form.Control.Feedback>
                         </Form.Group>
-                    ) : null}
-                    {/* New Password */}
-                    <Form.Group className="mb-3">
-                        <Form.Label>New Password</Form.Label>
-                        <InputGroup>
-                            <Form.Control
-                                type={showNewPassword ? "text" : "password"}
-                                placeholder="Enter new password"
-                                isInvalid={!!errors.newPassword}
-                                {...register("newPassword", {
-                                    required: "New password is required",
-                                    minLength: {
-                                        value: 6,
-                                        message: "New password must be at least 6 characters"
-                                    }
-                                })}
-                            />
-                            <InputGroup.Text
-                                onClick={() => togglePasswordVisibility('new')}
-                                style={{ cursor: "pointer" }}
-                            >
-                                <FontAwesomeIcon icon={showNewPassword ? icons.faEyeSlash : icons.faEye} />
-                            </InputGroup.Text>
-                        </InputGroup>
-                        <Form.Control.Feedback type="invalid">
-                            {errors.newPassword?.message}
-                        </Form.Control.Feedback>
-                    </Form.Group>
 
-                    {/* Confirm Password */}
-                    <Form.Group className="mb-3">
-                        <Form.Label>Confirm New Password</Form.Label>
-                        <InputGroup>
-                            <Form.Control
-                                type={showConfirmPassword ? "text" : "password"}
-                                placeholder="Confirm new password"
-                                isInvalid={!!errors.confirmPassword}
-                                {...register("confirmPassword", {
-                                    required: "Please confirm your new password",
-                                    validate: (value) =>
-                                        value === watch("newPassword") || "Passwords do not match"
-                                })}
-                            />
-                            <InputGroup.Text
-                                onClick={() => togglePasswordVisibility('confirm')}
-                                style={{ cursor: "pointer" }}
-                            >
-                                <FontAwesomeIcon icon={showConfirmPassword ? icons.faEyeSlash : icons.faEye} />
-                            </InputGroup.Text>
-                        </InputGroup>
-                        <Form.Control.Feedback type="invalid">
-                            {errors.confirmPassword?.message}
-                        </Form.Control.Feedback>
-                    </Form.Group>
+                        {/* Confirm Password */}
+                        <Form.Group className="mb-3">
+                            <Form.Label>Confirm New Password</Form.Label>
+                            <InputGroup>
+                                <Form.Control
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    placeholder="Confirm new password"
+                                    isInvalid={!!errors.confirmPassword}
+                                    {...register("confirmPassword", {
+                                        required: "Please confirm your new password",
+                                        validate: (value) =>
+                                            value === watch("newPassword") || "Passwords do not match"
+                                    })}
+                                />
+                                <InputGroup.Text
+                                    onClick={() => togglePasswordVisibility('confirm')}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <FontAwesomeIcon icon={showConfirmPassword ? icons.faEyeSlash : icons.faEye} />
+                                </InputGroup.Text>
+                            </InputGroup>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.confirmPassword?.message}
+                            </Form.Control.Feedback>
+                        </Form.Group>
 
-                    {/* Submit Button */}
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                            Cancel
-                        </Button>
-                        <Button variant="primary" type="submit">
-                            Change Password
-                        </Button>
-                    </Modal.Footer>
-                </Form>
-            </Modal.Body>
-        </Modal>
+                        {/* Submit Button */}
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose}>
+                                Cancel
+                            </Button>
+                            <Button variant="primary" type="submit">
+                                Change Password
+                            </Button>
+                        </Modal.Footer>
+                    </Form>
+                </Modal.Body>
+            </Modal>
+            <ToastContainer />
+        </>
     );
 };
 

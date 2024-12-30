@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import styles from './index.module.scss';
-import axios from "@/utils/axios";
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/userSlice';
 import toast from '@/utils/toastify';

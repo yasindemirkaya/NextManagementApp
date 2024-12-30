@@ -1,5 +1,7 @@
 import { Card, Button, Form, Row, Col } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import toast from '@/utils/toastify';
+import { ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import styles from './index.module.scss';
@@ -24,23 +26,12 @@ const EditProfileCard = ({ groupTypeData, onCancel }) => {
             const response = await updateGroupType(groupTypeId, newTypeName);
 
             if (response.code === 1) {
-                Swal.fire({
-                    title: response.message,
-                    icon: 'success',
-                });
+                toast('SUCCESS', response.message)
             } else {
-                Swal.fire({
-                    title: response.message,
-                    icon: 'error',
-                });
+                toast('ERROR', response.message)
             }
         } catch (error) {
-            console.error('Error updating group type data:', error);
-            Swal.fire({
-                title: 'Group Type could not be updated.',
-                icon: 'error',
-                text: 'An error occurred. Please try again.',
-            });
+            toast('ERROR', 'Group Type could not be updated.')
         }
     };
 
@@ -61,28 +52,15 @@ const EditProfileCard = ({ groupTypeData, onCancel }) => {
                 const response = await deleteGroupType(groupTypeId);
 
                 if (response.code === 1) {
-                    Swal.fire({
-                        title: 'Account Deleted',
-                        text: 'The user account has been deleted successfully.',
-                        icon: 'success',
-                    });
+                    toast('SUCCESS', 'The user account has been deleted successfully.')
                     setTimeout(() => {
                         router.push('/group-type-management/view-group-types');
                     }, 1000);
                 } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: response.message || 'User account could not be deleted. Please try again.',
-                        icon: 'error',
-                    });
+                    toast('ERROR', response.message || 'User account could not be deleted. Please try again.')
                 }
             } catch (error) {
-                console.error('Error deleting user by ID:', error);
-                Swal.fire({
-                    title: 'Error',
-                    text: 'An error occurred while deleting the user. Please try again later.',
-                    icon: 'error',
-                });
+                toast('ERROR', 'An error occurred while deleting the user. Please try again later.')
             }
         }
     };
@@ -96,38 +74,41 @@ const EditProfileCard = ({ groupTypeData, onCancel }) => {
     };
 
     return (
-        <Card className={styles.profileEditCard}>
-            <Card.Body>
-                <Card.Title>Edit Group Type</Card.Title>
-                <Form onSubmit={handleSubmit(handleSave)}>
-                    {/* Name */}
-                    <Form.Group className="mb-3 mt-3">
-                        <Form.Label>Type Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter group type name"
-                            {...register("typeName", {
-                                required: "Name is required",
-                                minLength: { value: 2, message: "Name must be at least 2 characters" },
-                            })}
-                            isInvalid={!!errors.typeName}
-                        />
-                        <Form.Control.Feedback type="invalid">{errors.typeName?.message}</Form.Control.Feedback>
-                    </Form.Group>
+        <>
+            <Card className={styles.profileEditCard}>
+                <Card.Body>
+                    <Card.Title>Edit Group Type</Card.Title>
+                    <Form onSubmit={handleSubmit(handleSave)}>
+                        {/* Name */}
+                        <Form.Group className="mb-3 mt-3">
+                            <Form.Label>Type Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter group type name"
+                                {...register("typeName", {
+                                    required: "Name is required",
+                                    minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                })}
+                                isInvalid={!!errors.typeName}
+                            />
+                            <Form.Control.Feedback type="invalid">{errors.typeName?.message}</Form.Control.Feedback>
+                        </Form.Group>
 
-                    <Button variant="primary" type="submit">Save</Button>
-                    <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
-                </Form>
+                        <Button variant="primary" type="submit">Save</Button>
+                        <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
+                    </Form>
 
-                <Row className="mt-3">
-                    <Col md={12}>
-                        <div onClick={handleDeleteAccount} className={styles.link}>
-                            <p className="text-danger">{deleteAccountText}</p>
-                        </div>
-                    </Col>
-                </Row>
-            </Card.Body>
-        </Card>
+                    <Row className="mt-3">
+                        <Col md={12}>
+                            <div onClick={handleDeleteAccount} className={styles.link}>
+                                <p className="text-danger">{deleteAccountText}</p>
+                            </div>
+                        </Col>
+                    </Row>
+                </Card.Body>
+            </Card>
+            <ToastContainer />
+        </>
     );
 };
 
