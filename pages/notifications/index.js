@@ -9,6 +9,7 @@ import { icons } from "@/static/icons";
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { getStyleForNotificationType } from "@/helpers/getStyleForNotificationType";
+import Swal from "sweetalert2";
 
 const Notifications = () => {
     const router = useRouter();
@@ -111,24 +112,36 @@ const Notifications = () => {
     // Handle delete notification
     const handleDeleteNotification = async (notification) => {
         try {
-            // Bildirimin silinmesi için gerekli işlem
-            const result = await deleteNotification(notification._id);
+            const confirmation = await Swal.fire({
+                title: 'Are you sure?',
+                text: "This notification will be permanently deleted and cannot be recovered.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            });
 
-            if (result.success) {
-                toast('SUCCESS', result.message);
+            if (confirmation.isConfirmed) {
+                // Bildirimin silinmesi için gerekli işlem
+                const result = await deleteNotification(notification._id);
 
-                // Silinen bildirimi state'den de kaldır
-                setMyNotifications((prevNotifications) =>
-                    prevNotifications.filter((notif) => notif._id !== notification._id)
-                );
-                setGroupNotifications((prevNotifications) =>
-                    prevNotifications.filter((notif) => notif._id !== notification._id)
-                );
-                setPersonalNotifications((prevNotifications) =>
-                    prevNotifications.filter((notif) => notif._id !== notification._id)
-                );
-            } else {
-                toast('ERROR', result.error);
+                if (result.success) {
+                    toast('SUCCESS', result.message);
+
+                    // Silinen bildirimi state'den de kaldır
+                    setMyNotifications((prevNotifications) =>
+                        prevNotifications.filter((notif) => notif._id !== notification._id)
+                    );
+                    setGroupNotifications((prevNotifications) =>
+                        prevNotifications.filter((notif) => notif._id !== notification._id)
+                    );
+                    setPersonalNotifications((prevNotifications) =>
+                        prevNotifications.filter((notif) => notif._id !== notification._id)
+                    );
+                } else {
+                    toast('ERROR', result.error);
+                }
             }
         } catch (err) {
             toast('ERROR', 'An error occurred while deleting the notification. Please try again later.');

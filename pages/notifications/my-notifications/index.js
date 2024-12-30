@@ -8,6 +8,7 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { getStyleForNotificationType } from '@/helpers/getStyleForNotificationType';
+import Swal from 'sweetalert2';
 
 const MyNotifications = () => {
     const [notifications, setNotifications] = useState([]);
@@ -67,18 +68,30 @@ const MyNotifications = () => {
 
     // Handle delete notification
     const handleDeleteNotification = async (notification) => {
-        try {
-            // Bildirimin silinmesi için gerekli işlem
-            const result = await deleteNotification(notification._id);
+        const confirmation = await Swal.fire({
+            title: 'Are you sure?',
+            text: "This notification will be permanently deleted and cannot be recovered.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        });
 
-            if (result.success) {
-                toast('SUCCESS', result.message);
-                fetchNotifications();
-            } else {
-                toast('ERROR', result.error);
+        if (confirmation.isConfirmed) {
+            try {
+                // Bildirimin silinmesi için gerekli işlem
+                const result = await deleteNotification(notification._id);
+
+                if (result.success) {
+                    toast('SUCCESS', result.message);
+                    fetchNotifications();
+                } else {
+                    toast('ERROR', result.error);
+                }
+            } catch (err) {
+                toast('ERROR', 'An error occurred while deleting the notification. Please try again later.');
             }
-        } catch (err) {
-            toast('ERROR', 'An error occurred while deleting the notification. Please try again later.');
         }
     };
 

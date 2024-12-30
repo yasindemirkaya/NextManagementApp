@@ -4,6 +4,15 @@
 
 * Swal olan bazı alanların toast'a dönüştürülmesi için tüm swal kullanılan alanların kontrolü.
 
+
+
+
+
+
+
+
+
+
 * Log tablosu elden geçirilecek, özelleştirilerek tekrar yazılacak.
 
 * Servis responselarına GUID eklenmesi.
