@@ -6,6 +6,10 @@ const logSchema = new mongoose.Schema({
         ref: 'User', // userId, User koleksiyonundaki bir belgeyi referans alacak
         required: false,
     },
+    userEmail: {
+        type: String,
+        required: false
+    },
     ip: {
         type: String,
         required: false,

@@ -3,7 +3,10 @@ import Log from '@/models/Log';
 export default async function logger(req, res, next) {
     try {
         // Kullanıcı Id'si (varsa)
-        const userId = req.user ? req.user.userId : null;
+        const userId = req.user ? req.user.id : null;
+
+        // Kullanıcı username
+        const userEmail = req.user ? req.user.email : null;
 
         // IP adresi
         const ip = req.connection.remoteAddress || req.socket.remoteAddress;
@@ -33,6 +36,7 @@ export default async function logger(req, res, next) {
                 // Log verisini MongoDB'ye kaydediyoruz
                 await Log.create({
                     userId: userId,
+                    userEmail: userEmail,
                     ip: ip,
                     userAgent: userAgent,
                     path: path,
