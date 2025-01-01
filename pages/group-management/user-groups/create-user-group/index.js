@@ -3,7 +3,7 @@ import { Container, Card, Form, Button, Row, Col, Tooltip, OverlayTrigger, Spinn
 import styles from './index.module.scss';
 import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import Select from 'react-select';
@@ -11,9 +11,11 @@ import { getUsers } from '@/services/userApi';
 import { createUserGroup } from '@/services/userGroupApi';
 import { getGroupTypes } from '@/services/groupTypeApi';
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
+import { useRouter } from 'next/router';
 
 const CreateUserGroup = () => {
-    const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
+    const router = useRouter();
+    const { register, handleSubmit, setValue, reset, control, formState: { errors, isSubmitting } } = useForm({
         mode: 'onBlur',
         defaultValues: {
             isActive: "1",
@@ -82,8 +84,11 @@ const CreateUserGroup = () => {
                     role: '0',
                 });
                 toast('SUCCESS', result.message);
+                setTimeout(() => {
+                    router.push('/group-management/user-groups/view-user-groups')
+                }, 2000);
             } else {
-                toast('ERROR', result.message);
+                toast('ERROR', result.error);
             }
         } catch (error) {
             toast('ERROR', 'An error occurred when creating a new user group. Please try again later.');
@@ -143,10 +148,24 @@ const CreateUserGroup = () => {
                                 <Col md={6}>
                                     <Form.Group controlId="type">
                                         <Form.Label>Group Type</Form.Label>
-                                        <Select
-                                            options={userGroupTypes.map(type => ({ value: type.type_name, label: type.type_name }))}
-                                            onChange={(selectedOption) => setValue('type', selectedOption.value)}
-                                            placeholder="Select group type"
+                                        <Controller
+                                            control={control}
+                                            name="type"
+                                            rules={{ required: "Group Type is required" }}
+                                            render={({ field, fieldState }) => (
+                                                <>
+                                                    <Select
+                                                        {...field}
+                                                        options={userGroupTypes.map(type => ({ value: type.type_name, label: type.type_name }))}
+                                                        placeholder="Select group type"
+                                                    />
+                                                    {fieldState.error && (
+                                                        <Form.Text className="text-danger">
+                                                            {fieldState.error.message}
+                                                        </Form.Text>
+                                                    )}
+                                                </>
+                                            )}
                                         />
                                     </Form.Group>
                                 </Col>
@@ -155,19 +174,33 @@ const CreateUserGroup = () => {
                                 <Col md={6}>
                                     <Form.Group controlId="groupLeader">
                                         <Form.Label>Group Leader</Form.Label>
-                                        {loading ? (
-                                            <div className="text-center">
-                                                <Spinner animation="border" variant="primary" />
-                                            </div>
-                                        ) : error ? (
-                                            <p style={{ color: 'red' }}>Error: {error}</p>
-                                        ) : (
-                                            <Select
-                                                options={userData.map(user => ({ value: user._id, label: user.first_name + ' ' + user.last_name }))}
-                                                onChange={(selectedOption) => setValue('groupLeader', selectedOption.value)}
-                                                placeholder="Select group leader"
-                                            />
-                                        )}
+                                        <Controller
+                                            control={control}
+                                            name="groupLeader"
+                                            rules={{ required: "Group Leader is required" }}
+                                            render={({ field, fieldState }) => (
+                                                <>
+                                                    {loading ? (
+                                                        <div className="text-center">
+                                                            <Spinner animation="border" variant="primary" />
+                                                        </div>
+                                                    ) : error ? (
+                                                        <p style={{ color: 'red' }}>Error: {error}</p>
+                                                    ) : (
+                                                        <Select
+                                                            {...field}
+                                                            options={userData.map(user => ({ value: user._id, label: user.first_name + ' ' + user.last_name }))}
+                                                            placeholder="Select group leader"
+                                                        />
+                                                    )}
+                                                    {fieldState.error && (
+                                                        <Form.Text className="text-danger">
+                                                            {fieldState.error.message}
+                                                        </Form.Text>
+                                                    )}
+                                                </>
+                                            )}
+                                        />
                                     </Form.Group>
                                 </Col>
                             </Row>
@@ -177,20 +210,39 @@ const CreateUserGroup = () => {
                                 <Col md={12}>
                                     <Form.Group controlId="members">
                                         <Form.Label>Group Members</Form.Label>
-                                        {loading ? (
-                                            <div className="text-center">
-                                                <Spinner animation="border" variant="primary" />
-                                            </div>
-                                        ) : error ? (
-                                            <p style={{ color: 'red' }}>Error: {error}</p>
-                                        ) : (
-                                            <Select
-                                                options={userData.map(user => ({ value: user._id, label: user.first_name + ' ' + user.last_name }))}
-                                                isMulti
-                                                onChange={(selectedOptions) => setValue('members', selectedOptions.map(option => option.value))}
-                                                placeholder="Select group members"
-                                            />
-                                        )}
+                                        <Controller
+                                            control={control}
+                                            name="members"
+                                            rules={{ required: "Group members are required" }}
+                                            render={({ field, fieldState }) => (
+                                                <>
+                                                    {loading ? (
+                                                        <div className="text-center">
+                                                            <Spinner animation="border" variant="primary" />
+                                                        </div>
+                                                    ) : error ? (
+                                                        <p style={{ color: 'red' }}>Error: {error}</p>
+                                                    ) : (
+                                                        <Select
+                                                            {...field}
+                                                            options={userData.map(user => ({ value: user._id, label: user.first_name + ' ' + user.last_name }))}
+                                                            isMulti
+                                                            value={userData.filter(user => field.value?.includes(user._id)).map(user => ({
+                                                                value: user._id,
+                                                                label: user.first_name + ' ' + user.last_name,
+                                                            }))}
+                                                            onChange={(selectedOptions) => field.onChange(selectedOptions ? selectedOptions.map(option => option.value) : [])}
+                                                            placeholder="Select group members"
+                                                        />
+                                                    )}
+                                                    {fieldState.error && (
+                                                        <Form.Text className="text-danger">
+                                                            {fieldState.error.message}
+                                                        </Form.Text>
+                                                    )}
+                                                </>
+                                            )}
+                                        />
                                     </Form.Group>
                                 </Col>
                             </Row>
