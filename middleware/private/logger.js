@@ -32,6 +32,16 @@ export default async function logger(req, res, next) {
         res.send = async (...args) => {
             const response = args[0] || {};
 
+            // Eğer response bir stringse, onu JSON objesine çevir
+            let parsedResponse = response;
+            if (typeof response === 'string') {
+                try {
+                    parsedResponse = JSON.parse(response); // JSON string'ini objeye dönüştür
+                } catch (error) {
+                    console.log("Response JSON parsing error: ", error);
+                }
+            }
+
             try {
                 // Log verisini MongoDB'ye kaydediyoruz
                 await Log.create({
@@ -40,9 +50,10 @@ export default async function logger(req, res, next) {
                     ip: ip,
                     userAgent: userAgent,
                     path: path,
-                    request: request, // İstek verisini JSON formatında saklıyoruz
-                    response: response,  // Response'u doğrudan saklıyoruz
+                    request: request,
+                    response: parsedResponse,
                     method: method,
+                    guid: parsedResponse?.guid
                 });
             } catch (error) {
                 console.log("DB Log Error: ", error);

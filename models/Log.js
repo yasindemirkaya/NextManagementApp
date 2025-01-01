@@ -34,6 +34,12 @@ const logSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    guid: {
+        type: String,
+        required: false,
+        unique: true,
+        index: true,
+    },
 }, {
     timestamps: true, // createdAt ve updatedAt alanları otomatik olarak ekler
 });
