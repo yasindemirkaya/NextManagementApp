@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Card, Button, Spinner, Alert } from 'react-bootstrap';
 import { formatAccountStatus } from '@/helpers/formatAccountItems';
 import styles from './index.module.scss';
-import axios from '@/utils/axios';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import EditGroupProfileCard from '../EditGroup';

@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from './index.module.scss';
 import InputMask from 'react-input-mask';
-import axios from '@/utils/axios';
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { useForm } from 'react-hook-form';

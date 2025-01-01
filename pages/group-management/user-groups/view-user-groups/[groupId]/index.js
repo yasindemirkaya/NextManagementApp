@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import axios from '@/utils/axios';
 import styles from './index.module.scss';
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";

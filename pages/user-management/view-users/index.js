@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Spinner, Alert, Badge } from 'react-bootstrap';
 import Table from "@/components/Common/Table";
-import axios from "@/utils/axios";
 import { mobileFormatter } from '@/helpers/mobileFormatter';
 import { useSelector } from "react-redux";
 import { getUsers } from "@/services/userApi";
