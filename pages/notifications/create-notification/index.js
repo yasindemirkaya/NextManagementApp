@@ -142,11 +142,12 @@ const CreateNotification = () => {
 
     return (
         <>
-            <Container className={styles.notificationContainer}>
-                <h2>Create Notification</h2>
-                <Card>
+            <Container>
+
+                <Card className={`${styles.notificationContainer}`}>
                     <Card.Body>
-                        <div className="d-flex justify-content-center mb-4">
+                        <h2>Create Notification</h2>
+                        <div className="d-flex justify-content-center mb-4 mt-4">
                             {/* Toggle */}
                             <ToggleButtonGroup
                                 type="radio"

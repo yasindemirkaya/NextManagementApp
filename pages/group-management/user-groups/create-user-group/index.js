@@ -98,7 +98,7 @@ const CreateUserGroup = () => {
     return (
         <>
             <Container>
-                <Card className={`${styles.createUserContainer}`}>
+                <Card className={`${styles.createUserGroupContainer}`}>
                     <Card.Body>
                         <h2>Create User Group</h2>
                         <Form onSubmit={handleSubmit(onSubmit)}>

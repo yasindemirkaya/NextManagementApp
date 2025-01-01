@@ -68,3 +68,10 @@
 * Bildirimleri sadece bildirim sahipleri silebilir. Ancak Super Adminler tüm bildirimleri silebilir.
 * Super Adminler tüm bildirimleri görebilir, Adminler sadece kendi oluşturdukları ve kendilerine atılan bildirimleri görebilir.
 * Notification Types: REMINDER, WARNING, INFO, FEEDBACK, TASK ASSIGNMENT, CRITICAL
+
+
+<!-- * SERVICE LOGS * -->
+* Super Adminler tüm servis loglarını inceleyebilir.
+* Her servisin response kısmında "guid" bulunur.
+* Her bir guid bir servis logunu temsil eder.
+* Settings/Service Logs kısmından response'tan kopyalanan guid yapıştırılıp log tablosundaki detaylar çekilebilir

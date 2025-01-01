@@ -1,4 +1,3 @@
-* Servis responselarına GUID eklenmesi.
-GUID ile servis request responselarının sorgulanabileceği bir endpoint yapısının kurulması.
+* Servis logları için ekran yapılacak
 
 * Anasayfa dashboard için kullanılabilecek kartların eklenmesi

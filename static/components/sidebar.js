@@ -166,6 +166,27 @@ const sidebarMenu = [
                 permission: 1,
             }
         ]
+    },
+    // SETTINGS
+    {
+        id: 5,
+        name: "Settings",
+        link: "/settings",
+        iconPrimary: "faChevronUp",
+        iconSecondary: "faChevronCircleUp",
+        permission: 0,
+        subMenus: [
+            // SERVICE LOGS
+            {
+                id: 51,
+                name: "Service Logs",
+                link: "/settings/service-logs",
+                description: "From here you can review the detailed logs, requests and responses of the web services.",
+                iconPrimary: "faFileInvoice",
+                iconSecondary: "",
+                permission: 2,
+            },
+        ]
     }
 ];
 
