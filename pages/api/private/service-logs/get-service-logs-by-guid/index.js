@@ -1,19 +1,19 @@
 // --------------------------------
 // |
 // | Service Name: Get Service Logs
-// | Description: Kullanıcıların yaptıkları isteklerin loglarını getiren servis
+// | Description: Service that brings logs of requests made by users
 // | Parameters: guid
-// | Endpoint: /api/private/logs/get-service-logs
+// | Endpoint: /api/private/service-logs/get-service-logs-by-guid
 // |
 // ------------------------------
 
 
 import { verify } from 'jsonwebtoken';
 import Log from '@/models/Log';
-import privateMiddleware from "@/middleware/private/index"
+import privateMiddleware from "@/middleware/private/index";
 
 const handler = async (req, res) => {
-    if (req.method === 'POST') {
+    if (req.method === 'GET') {
         try {
             // Token'ı decode et ve kullanıcı rolünü al
             const token = req.headers.authorization?.split(' ')[1];
@@ -28,8 +28,8 @@ const handler = async (req, res) => {
                 });
             }
 
-            // Request body'den gelen guid al
-            const { guid } = req.body;
+            // Query parametresinden gelen guid al
+            const { guid } = req.query;
 
             if (!guid) {
                 return res.status(200).json({
@@ -63,7 +63,7 @@ const handler = async (req, res) => {
             });
         }
     } else {
-        res.setHeader('Allow', ['POST']);
+        res.setHeader('Allow', ['GET']);
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 };

@@ -79,7 +79,6 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
             const response = await getGroupTypes();
             if (response.success) {
                 setUserGroupTypes(response.data);
-                console.log(userGroupTypes)
             } else {
                 setGroupTypesError('Failed to fetch user group types');
             }
