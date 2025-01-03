@@ -240,7 +240,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
     return (
         <>
-            <Card className={styles.profileEditCard}>
+            <Card className={styles.editProfileContainer}>
                 <Card.Body>
                     <Card.Title>Edit Profile</Card.Title>
                     <Form onSubmit={handleSubmit(handleSave)}>
@@ -357,6 +357,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                                 id="isActive"
                                 name="isActive"
                                 checked={isActive}
+                                className={styles.formCheck}
                                 onChange={(e) => setIsActive(e.target.checked)}
                             />
                         </Form.Group>
@@ -370,6 +371,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                                     id="isVerified"
                                     name="isVerified"
                                     checked={isVerified}
+                                    className={styles.formCheck}
                                     onChange={(e) => setIsVerified(e.target.checked)}
                                 />
                             </Form.Group>
@@ -382,7 +384,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     <Row className="mt-3">
                         <Col md={12}>
                             <div onClick={() => setShowModal(true)} className={styles.link}>
-                                <p className="text-primary">{changePasswordText}</p>
+                                <p className="text-success">{changePasswordText}</p>
                             </div>
                         </Col>
 

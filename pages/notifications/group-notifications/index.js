@@ -114,7 +114,7 @@ const GroupNotifications = () => {
                                                         {/* Description */}
                                                         <p className="mb-2">{notification.description}</p>
                                                         {/* Date */}
-                                                        <p className="text-muted mb-2">{notification.date}</p>
+                                                        <p className="mb-2">{notification.date}</p>
                                                     </Row>
 
                                                     <hr />
@@ -154,7 +154,7 @@ const GroupNotifications = () => {
                                                                 )}
 
                                                                 {notification.is_seen && (
-                                                                    <em className={`${styles.seenAtDate} text-muted`}>
+                                                                    <em className={`${styles.seenAtDate}`}>
                                                                         (Seen at {notification.updatedAt})
                                                                     </em>
                                                                 )}

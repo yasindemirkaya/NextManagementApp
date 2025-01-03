@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { changePassword, changePasswordById } from '@/services/userApi';
+import styles from './index.module.scss'
 
 const ChangePassword = ({ show, onHide, isSelf, userId }) => {
     const {
@@ -93,11 +94,11 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
 
     return (
         <>
-            <Modal show={show} onHide={handleClose} centered>
+            <Modal show={show} onHide={handleClose} centered className={styles.modalContainer}>
                 <Modal.Header closeButton>
                     <Modal.Title>Change Password</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body className={styles.modalContainer}>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         {/* Current Password (Only visible when updating yourself) */}
                         {isSelf ? (

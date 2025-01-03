@@ -4,17 +4,26 @@
 
 .groupMembers {
     border-radius: 0.5rem;
-    background-color: #eeeeeee6;
+    background-color: var(--group-members-bg-color);
     padding: .5rem;
     margin-bottom: 1rem;
 }
 
 .memberLink {
     text-decoration: none;
-    color: #212529;
+    color: var(--menu-color);
 }
 
 .memberLink:hover {
     text-decoration: underline;
     color: #18BC9C;
+}
+
+.profileCard {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid var(--form-border-color);
+    border-radius: 5px;
+    background-color: var(--form-bg-color);
 }

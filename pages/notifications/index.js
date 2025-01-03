@@ -169,10 +169,10 @@ const Notifications = () => {
                                         {/* Description */}
                                         <p className="mb-2">{notification.description}</p>
                                         {/* Date */}
-                                        <p className="text-muted mb-2">{notification.date}</p>
+                                        <p className="mb-2">{notification.date}</p>
                                     </Row>
 
-                                    <hr />
+                                    <hr className={styles.notificationLine} />
 
                                     {/* Type & From */}
                                     <Row className="mb-2">
@@ -207,7 +207,7 @@ const Notifications = () => {
                                         <Row>
                                             <Col md={12}>
                                                 <div className="mb-2">
-                                                    <em className={`${styles.seenAtDate} text-muted`}>
+                                                    <em className={`${styles.seenAtDate}`}>
                                                         (Seen at {notification.updatedAt})
                                                     </em>
                                                 </div>
@@ -233,7 +233,7 @@ const Notifications = () => {
                                                 </div>
                                             </Col>
                                         )}
-                                        {loggedInUser.role !== 0 && (
+                                        {loggedInUser?.role !== 0 && (
                                             <Col md={12}>
                                                 <div className={styles.markAsSeen}>
                                                     <div className="d-inline-flex align-items-center">

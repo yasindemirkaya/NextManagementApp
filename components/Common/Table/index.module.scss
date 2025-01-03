@@ -50,7 +50,7 @@
 }
 
 .tableHeader {
-    background-color: #f4f4f4;
+    background-color: var(--table-header-bg-color);
     padding: 10px;
     font-weight: bold;
     cursor: pointer;
@@ -58,14 +58,14 @@
 
 .tableCell {
     padding: 8px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--table-border-color);
     margin: auto
 }
 
 .noData {
     text-align: center;
     font-style: italic;
-    color: #777;
+    color: var(--table-no-data-font-color);
 }
 
 .pagination {
@@ -87,7 +87,7 @@
 }
 
 .activeSort {
-    color: #007bff;
+    color: var(--table-active-sort-font-color);
 }
 
 .sortIcon {
@@ -100,7 +100,7 @@
 
 .tableRow {
     &:hover {
-        background-color: #f1f1f1; // Hover için açık bir renk
+        background-color: var(--table-item-hover-color);
     }
 }
 

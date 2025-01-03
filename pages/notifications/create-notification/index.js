@@ -154,7 +154,7 @@ const CreateNotification = () => {
                                 name="notificationType"
                                 value={notificationType}
                                 onChange={handleSwitch}
-                                className="mb-4"
+                                className={styles.toggleButton}
                             >
                                 <ToggleButton id="personal" value="personal" variant="outline-primary">
                                     Personal Notification
@@ -224,6 +224,17 @@ const CreateNotification = () => {
                                             <>
                                                 <Select
                                                     {...field}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            primary25: 'var(--primary-25)',
+                                                            primary: 'var(--primary)',
+                                                            neutral0: 'var(--neutral-0)',
+                                                            neutral80: 'var(--neutral-80)',
+                                                            neutral25: 'var(--neutral-25)',
+                                                        },
+                                                    })}
                                                     options={typeOptions}
                                                     placeholder="Select notification type"
                                                 />
@@ -264,6 +275,17 @@ const CreateNotification = () => {
                                                     <>
                                                         <Select
                                                             {...field}
+                                                            theme={(theme) => ({
+                                                                ...theme,
+                                                                colors: {
+                                                                    ...theme.colors,
+                                                                    primary25: 'var(--primary-25)',
+                                                                    primary: 'var(--primary)',
+                                                                    neutral0: 'var(--neutral-0)',
+                                                                    neutral80: 'var(--neutral-80)',
+                                                                    neutral25: 'var(--neutral-25)',
+                                                                },
+                                                            })}
                                                             options={userData.map(user => ({
                                                                 value: user._id,
                                                                 label: user.first_name + ' ' + user.last_name
@@ -301,6 +323,17 @@ const CreateNotification = () => {
                                                     <>
                                                         <Select
                                                             {...field}
+                                                            theme={(theme) => ({
+                                                                ...theme,
+                                                                colors: {
+                                                                    ...theme.colors,
+                                                                    primary25: 'var(--primary-25)',
+                                                                    primary: 'var(--primary)',
+                                                                    neutral0: 'var(--neutral-0)',
+                                                                    neutral80: 'var(--neutral-80)',
+                                                                    neutral25: 'var(--neutral-25)',
+                                                                },
+                                                            })}
                                                             options={groupData.map(group => ({
                                                                 value: group._id,
                                                                 label: group.group_name

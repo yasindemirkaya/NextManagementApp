@@ -46,7 +46,7 @@ const BreadcrumbComponent = () => {
                         href={segmentPath}
                         className={styles.breadcrumbItem}
                     >
-                        {segmentFormatter(segment)}
+                        <span>{segmentFormatter(segment)}</span>
                     </Breadcrumb.Item>
                 );
             })}

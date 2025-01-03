@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Card, Button, Spinner, Alert } from 'react-bootstrap';
 import styles from './index.module.scss';
 import { mobileFormatter } from '@/helpers/mobileFormatter';
 import { formatAccountRole, formatAccountStatus, formatAccountVerification } from '@/helpers/formatAccountItems';
@@ -53,9 +53,9 @@ const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) =>
     }
 
     return (
-        <div className={styles.profileContainer}>
+        <Container>
             {!isEditing ? (
-                <Card className={styles.profileCard}>
+                <Card className={styles.profileContainer}>
                     <Card.Body>
                         <Card.Title>Profile Information</Card.Title>
                         <div className={styles.profileInfo}>
@@ -77,7 +77,7 @@ const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) =>
                     <EditProfileCard userData={user} onCancel={handleCancelClick} />
                 </div>
             )}
-        </div>
+        </Container>
     );
 };
 

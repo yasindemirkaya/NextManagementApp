@@ -5,20 +5,25 @@
 .logout {
     cursor: pointer;
     margin-left: .5rem;
+    transition: background-color 1s, border-radius 0.5s;
+    /* Transition ekledik */
 }
 
 .logout:hover {
     border-radius: .5rem;
-    background-color: #cececee6;
+    background-color: #18bc9c;
 }
 
 .menuItem {
     margin-right: .5rem;
+    transition: background-color 1s, border-radius 0.5s;
+    /* Transition ekledik */
 }
 
 .menuItem:hover {
     border-radius: .5rem;
-    background-color: #cececee6;
+    background-color: #18bc9c;
+    cursor: pointer;
 }
 
 .notificationBadge {

@@ -1,2 +1,65 @@
-// Bootswatch Library
 @import 'bootswatch/dist/flatly/bootstrap.min.css';
+
+// LIGHT THEME COLOR CODES
+html[data-bs-theme="light"] {
+    // Menu variables
+    --menu-color: #000000A6;
+    --sub-menu-color: #000000A6;
+    --link-font-color: #18BC9C;
+    --sidebar-item-bg-color: #18BC9C;
+
+    // Form variables
+    --form-bg-color: #F9F9F9;
+    --form-border-color: #CCCCCC;
+    --form-check-color: #2C3E50;
+    --group-members-bg-color: #EEEEEEE6;
+
+    // Select variables
+    --primary-25: #18BC9C;
+    --primary: #18BC9C;
+    --neutral-0: #FFFFFF;
+    --neutral-80: #2C3E50;
+    --neutral-25: #FFFFFF;
+
+    // Notification variables
+    --notification-font-color: #212529;
+
+    // Table variables
+    --table-header-bg-color: #F4F4F4;
+    --table-item-hover-color: #F4F4F4;
+    --table-border-color: #DDDDDD;
+    --table-no-data-font-color: #777777;
+    --table-active-sort-font-color: #18BC9C;
+}
+
+// DARK THEME COLOR CODES
+html[data-bs-theme="dark"] {
+    // Menu variables
+    --menu-color: #FFFFFFA6;
+    --sub-menu-color: #FFFFFFA6;
+    --link-font-color: #18BC9C;
+    --sidebar-item-bg-color: #18BC9C;
+
+    // Form variables
+    --form-bg-color: #121518;
+    --form-border-color: #444444;
+    --form-check-color: #F9F9F9;
+    --group-members-bg-color: #EEEEEE06;
+
+    // Select variables
+    --primary-25: #18BC9C;
+    --primary: #18BC9C;
+    --neutral-0: #212529;
+    --neutral-80: #3774b1;
+    --neutral-25: #000000;
+
+    // Notification variables
+    --notification-font-color: #212529;
+
+    // Table variables
+    --table-header-bg-color: #121518;
+    --table-item-hover-color: #121518;
+    --table-border-color: #121518;
+    --table-no-data-font-color: #777777;
+    --table-active-sort-font-color: #18BC9C;
+}

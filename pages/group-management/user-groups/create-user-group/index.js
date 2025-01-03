@@ -156,6 +156,17 @@ const CreateUserGroup = () => {
                                                 <>
                                                     <Select
                                                         {...field}
+                                                        theme={(theme) => ({
+                                                            ...theme,
+                                                            colors: {
+                                                                ...theme.colors,
+                                                                primary25: 'var(--primary-25)',
+                                                                primary: 'var(--primary)',
+                                                                neutral0: 'var(--neutral-0)',
+                                                                neutral80: 'var(--neutral-80)',
+                                                                neutral25: 'var(--neutral-25)',
+                                                            },
+                                                        })}
                                                         options={userGroupTypes.map(type => ({ value: type.type_name, label: type.type_name }))}
                                                         placeholder="Select group type"
                                                     />
@@ -189,6 +200,17 @@ const CreateUserGroup = () => {
                                                     ) : (
                                                         <Select
                                                             {...field}
+                                                            theme={(theme) => ({
+                                                                ...theme,
+                                                                colors: {
+                                                                    ...theme.colors,
+                                                                    primary25: 'var(--primary-25)',
+                                                                    primary: 'var(--primary)',
+                                                                    neutral0: 'var(--neutral-0)',
+                                                                    neutral80: 'var(--neutral-80)',
+                                                                    neutral25: 'var(--neutral-25)',
+                                                                },
+                                                            })}
                                                             options={userData.map(user => ({ value: user._id, label: user.first_name + ' ' + user.last_name }))}
                                                             placeholder="Select group leader"
                                                         />
@@ -225,6 +247,17 @@ const CreateUserGroup = () => {
                                                     ) : (
                                                         <Select
                                                             {...field}
+                                                            theme={(theme) => ({
+                                                                ...theme,
+                                                                colors: {
+                                                                    ...theme.colors,
+                                                                    primary25: 'var(--primary-25)',
+                                                                    primary: 'var(--primary)',
+                                                                    neutral0: 'var(--neutral-0)',
+                                                                    neutral80: 'var(--neutral-80)',
+                                                                    neutral25: 'var(--neutral-25)',
+                                                                },
+                                                            })}
                                                             options={userData.map(user => ({ value: user._id, label: user.first_name + ' ' + user.last_name }))}
                                                             isMulti
                                                             value={userData.filter(user => field.value?.includes(user._id)).map(user => ({

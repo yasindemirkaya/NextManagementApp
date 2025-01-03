@@ -209,6 +209,17 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                                         ) : (
                                             <Select
                                                 {...field}
+                                                theme={(theme) => ({
+                                                    ...theme,
+                                                    colors: {
+                                                        ...theme.colors,
+                                                        primary25: 'var(--primary-25)',
+                                                        primary: 'var(--primary)',
+                                                        neutral0: 'var(--neutral-0)',
+                                                        neutral80: 'var(--neutral-80)',
+                                                        neutral25: 'var(--neutral-25)',
+                                                    },
+                                                })}
                                                 options={userData.map(user => ({
                                                     value: user._id,
                                                     label: `${user.first_name} ${user.last_name}`
@@ -249,6 +260,17 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                                         ) : (
                                             <Select
                                                 {...field}
+                                                theme={(theme) => ({
+                                                    ...theme,
+                                                    colors: {
+                                                        ...theme.colors,
+                                                        primary25: 'var(--primary-25)',
+                                                        primary: 'var(--primary)',
+                                                        neutral0: 'var(--neutral-0)',
+                                                        neutral80: 'var(--neutral-80)',
+                                                        neutral25: 'var(--neutral-25)',
+                                                    },
+                                                })}
                                                 options={userGroupTypes.map(groupType => ({
                                                     value: groupType._id,
                                                     label: groupType.type_name
@@ -289,6 +311,17 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                                         ) : (
                                             <Select
                                                 {...field}
+                                                theme={(theme) => ({
+                                                    ...theme,
+                                                    colors: {
+                                                        ...theme.colors,
+                                                        primary25: 'var(--primary-25)',
+                                                        primary: 'var(--primary)',
+                                                        neutral0: 'var(--neutral-0)',
+                                                        neutral80: 'var(--neutral-80)',
+                                                        neutral25: 'var(--neutral-25)',
+                                                    },
+                                                })}
                                                 options={userData.map(user => ({
                                                     value: user._id,
                                                     label: `${user.first_name} ${user.last_name}`

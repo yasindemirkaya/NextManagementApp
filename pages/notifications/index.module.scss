@@ -8,7 +8,7 @@
         top: 0;
         bottom: 0;
         width: 2px;
-        background: #e9ecef;
+        background: "#e9ecef";
     }
 }
 
@@ -40,6 +40,7 @@
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 5px;
+    color: var(--notification-font-color);
 }
 
 .timelineContent {
@@ -50,6 +51,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     position: relative;
     transition: box-shadow 0.5s ease, transform 0.5s ease;
+    color: var(--notification-font-color);
 
     &::before {
         content: '';
@@ -82,6 +84,10 @@
     &:hover {
         text-decoration: underline;
     }
+}
+
+.notificationLine {
+    color: var(--notification-font-color);
 }
 
 .seenAtDate {

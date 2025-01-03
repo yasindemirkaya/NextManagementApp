@@ -56,7 +56,8 @@ const GetServiceLogs = () => {
     };
 
     const handleSwitch = (value) => {
-        setActiveTab(value); // Change active tab based on selected value
+        setActiveTab(value);
+        setLogs(null)
     };
 
     return (
@@ -69,7 +70,7 @@ const GetServiceLogs = () => {
                             name="notificationType"
                             value={activeTab}
                             onChange={handleSwitch}
-                            className="mb-4"
+                            className={styles.toggleButton}
                         >
                             <ToggleButton id="guid" value="guid" variant="outline-primary">
                                 Get Logs by GUID

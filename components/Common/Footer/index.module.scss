@@ -2,16 +2,14 @@
     width: 100%;
     padding: 20px 0;
     margin-top: auto;
-    background-color: #f8f9fa;
-    color: #6c757d;
 
     .links {
         a {
-            color: #6c757d;
             text-decoration: none;
 
             &:hover {
                 text-decoration: underline;
+                color: var(--link-font-color);
             }
         }
     }

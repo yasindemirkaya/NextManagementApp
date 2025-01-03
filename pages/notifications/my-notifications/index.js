@@ -128,7 +128,7 @@ const MyNotifications = () => {
                                                         {/* Description */}
                                                         <p className="mb-2">{notification.description}</p>
                                                         {/* Date */}
-                                                        <p className="text-muted mb-2">{notification.date}</p>
+                                                        <p className="mb-2">{notification.date}</p>
                                                     </Row>
 
                                                     <hr />
@@ -153,7 +153,7 @@ const MyNotifications = () => {
                                                         <Col md={5}>
                                                             {notification.is_seen && (
                                                                 <div className="mb-2">
-                                                                    <em className={`${styles.seenAtDate} text-muted`}>
+                                                                    <em className={`${styles.seenAtDate}`}>
                                                                         (Seen at {notification.updatedAt})
                                                                     </em>
                                                                 </div>

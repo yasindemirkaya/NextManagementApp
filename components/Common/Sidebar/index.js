@@ -46,7 +46,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
         <div key={menu.id} className={level === 0 ? styles.mainMenuWrapper : styles.subMenuWrapper}>
             {/* Ana menüler */}
             <Nav.Link
-                className={`text-primary fw-bold ${styles.mainMenu} ${level > 0 ? styles.subMenu : ''} ${activeMenuId === menu.id ? styles.activeMenu : ''}`}
+                className={`fw-bold ${styles.mainMenu} ${level > 0 ? styles.subMenu : ''} ${activeMenuId === menu.id ? styles.activeMenu : ''}`}
                 as="button"
                 onClick={() => {
                     if (!menu.subMenus || !menu.subMenus.length) {
@@ -91,7 +91,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                         .map((subMenu) => (
                             <div key={subMenu.id}>
                                 <Nav.Link
-                                    className={`text-dark ${styles.subMenuItem}`}
+                                    className={`${styles.subMenuItem}`}
                                     as="button"
                                     onClick={() => {
                                         if (!subMenu.subMenus || !subMenu.subMenus.length) {
@@ -145,7 +145,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                                             .map((subSubMenu) => (
                                                 <div key={subSubMenu.id}>
                                                     <Nav.Link
-                                                        className={`text-dark ${styles.subMenuItem}`}
+                                                        className={`${styles.subMenuItem}`}
                                                         as="button"
                                                         onClick={() => {
                                                             if (!subSubMenu.subMenus || !subSubMenu.subMenus.length) {

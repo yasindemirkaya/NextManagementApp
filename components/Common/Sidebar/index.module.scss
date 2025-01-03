@@ -2,26 +2,27 @@
     border-radius: 0.5rem;
     margin-bottom: .5rem;
     margin-top: .5rem;
+    color: var(--menu-color) !important;
 }
 
 .mainMenu:hover {
     cursor: pointer;
-    // text-decoration: underline;
-    background-color: #e6e6e6;
+    background-color: var(--sidebar-item-bg-color);
+    transition: background-color 1s, border-radius 0.5s;
 }
-
 
 .subMenuItem {
     border-radius: 0.5rem;
+    color: var(--menu-color) !important;
 }
 
 .subMenuItem:hover {
     cursor: pointer;
-    // text-decoration: underline;
-    background-color: #e6e6e6;
+    background-color: var(--sidebar-item-bg-color);
     border-radius: 0.5rem;
+    transition: background-color 1s, border-radius 0.5s;
 }
 
 .activeMenu {
-    background-color: #e6e6e6;
+    background-color: var(--sidebar-item-bg-color);
 }
