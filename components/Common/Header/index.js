@@ -22,10 +22,11 @@ const Header = ({ toggleSidebar }) => {
     const [loading, setLoading] = useState(false)
 
     const [isDarkMode, setIsDarkMode] = useState(() => {
-        // Eğer localStorage'da "theme" değeri varsa, onu kullan
         const savedTheme = localStorage.getItem("theme");
-        return savedTheme ? savedTheme === "dark" : false; // Varsayılan olarak light (false) kullanıyoruz
+        return savedTheme ? savedTheme === "dark" : false;
     });
+
+    const toggleTheme = () => setIsDarkMode(prevMode => !prevMode);
 
     let profileText = loggedInUser ? loggedInUser.email : "Profile";
 
@@ -108,7 +109,20 @@ const Header = ({ toggleSidebar }) => {
                         }
 
                         {/* Right Menu */}
-                        <Nav className="ms-auto">
+                        <Nav className="ms-auto d-flex align-items-center">
+                            {/* Theme Toggle Button */}
+                            <label className={styles.toggleSwitch}>
+                                <input
+                                    type="checkbox"
+                                    checked={isDarkMode}
+                                    onChange={toggleTheme}
+                                />
+                                <span className={styles.slider}>
+                                    <FontAwesomeIcon icon={icons.faMoon} className={styles.iconMoon} />
+                                    <FontAwesomeIcon icon={icons.faSun} className={styles.iconSun} />
+                                </span>
+                            </label>
+
                             {headerMenu
                                 .filter(menu => menu.id > 2)
                                 .map(menu => (
@@ -167,11 +181,6 @@ const Header = ({ toggleSidebar }) => {
                                     </Nav>
                                 ))
                             }
-
-                            {/* Theme Toggle Button */}
-                            <Nav.Link as="span" onClick={handleToggleTheme} className={styles.menuItem}>
-                                <FontAwesomeIcon icon={isDarkMode ? icons.faSun : icons.faMoon} />
-                            </Nav.Link>
 
                             {/* Profile / Log Out */}
                             {loggedInUser ? (
