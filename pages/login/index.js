@@ -11,9 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { login } from '@/services/loginApi';
-
 import { useTranslations } from 'next-intl';
-
 
 const Login = () => {
     const t = useTranslations();

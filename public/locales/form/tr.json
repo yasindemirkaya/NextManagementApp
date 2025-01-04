@@ -8,5 +8,14 @@
     "Surname": "Soyad",
     "Enter your last name": "Soyadınızı girin.",
     "Mobile": "Cep Telefonu",
-    "Enter your mobile number": "Cep telefonunuzu girin."
+    "Enter your mobile number": "Cep telefonunuzu girin.",
+    "GUID": "GUID",
+    "Enter GUID": "GUID girin",
+    "Start Date": "Başlangıç Tarihi",
+    "End Date": "Bitiş Tarihi",
+    "User Email": "Kullanıcı E-Postası",
+    "Enter User Email": "Kullanıcı E-Postası girin.",
+    "User ID": "Kullanıcı ID",
+    "Enter User ID": "Kullanıcı ID'si girin.",
+    "Optional": "Opsiyonel"
 }

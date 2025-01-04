@@ -92,3 +92,18 @@ input:checked+.slider:before {
 .iconSun {
     right: 10px;
 }
+
+// TOGGLE LANGUAGE
+.languageSwitch {
+    color: var(--menu-font-color);
+    text-decoration: none;
+    margin-right: 1rem;
+}
+
+.languageSwitch:hover {
+    border-radius: .5rem;
+    background-color: #18bc9c;
+    cursor: pointer;
+    color: #000000A6;
+    transition: background-color 1s, border-radius 0.5s;
+}

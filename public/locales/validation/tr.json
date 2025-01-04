@@ -8,5 +8,8 @@
     "Surname must be at least 2 characters": "Soyad en az 2 karakter olmalıdır.",
     "Invalid email format": "Geçersiz e-posta formatı.",
     "Mobile is required": "Cep telefonu zorunludur.",
-    "Invalid mobile format": "Geçersiz cep telefonu formatı."
+    "Invalid mobile format": "Geçersiz cep telefonu formatı.",
+    "GUID is required": "GUID zorunludur.",
+    "Start date is required": "Başlangıç tarihi zorunludur.",
+    "End date is required": "Bitiş tarihi zorunludur."
 }

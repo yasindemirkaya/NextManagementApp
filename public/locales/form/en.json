@@ -8,5 +8,14 @@
     "Surname": "Surname",
     "Enter your last name": "Enter your last name.",
     "Mobile": "Mobile",
-    "Enter your mobile number": "Enter your mobile number."
+    "Enter your mobile number": "Enter your mobile number.",
+    "GUID": "GUID",
+    "Enter GUID": "Enter GUID",
+    "Start Date": "Start Date",
+    "End Date": "End Date",
+    "User Email": "User Email",
+    "Enter User Email": "Enter User Email.",
+    "User ID": "User ID",
+    "Enter User ID": "Enter User ID.",
+    "Optional": "Optional"
 }

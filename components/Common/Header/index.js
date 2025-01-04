@@ -10,8 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
 import Cookies from 'js-cookie';
 import { getNotificationCount, getNotifications } from '@/services/notificationApi';
+import { useTranslations } from 'next-intl';
 
 const Header = ({ toggleSidebar }) => {
+    const t = useTranslations()
     const router = useRouter()
     const dispatch = useDispatch()
     const loggedInUser = useSelector(state => state.user.user)
@@ -27,6 +29,10 @@ const Header = ({ toggleSidebar }) => {
     });
 
     const toggleTheme = () => setIsDarkMode(prevMode => !prevMode);
+
+    const changeLanguage = (lang) => {
+        router.push(router.asPath, router.asPath, { locale: lang });
+    };
 
     let profileText = loggedInUser ? loggedInUser.email : "Profile";
 
@@ -76,11 +82,6 @@ const Header = ({ toggleSidebar }) => {
         router.push('/login');
     };
 
-    // Handle toggle theme
-    const handleToggleTheme = () => {
-        setIsDarkMode(prevState => !prevState);
-    };
-
     // Login olmuş user yoksa, Header'ı render etme
     if (!loggedInUser || !token) {
         return null;
@@ -123,6 +124,15 @@ const Header = ({ toggleSidebar }) => {
                                 </span>
                             </label>
 
+                            {/* Language Switch */}
+                            <Button
+                                variant="link"
+                                onClick={() => changeLanguage(router.locale === 'en' ? 'tr' : 'en')}
+                                className={styles.languageSwitch}
+                            >
+                                {router.locale === 'en' ? 'TR' : 'EN'}
+                            </Button>
+
                             {headerMenu
                                 .filter(menu => menu.id > 2)
                                 .map(menu => (
@@ -144,7 +154,7 @@ const Header = ({ toggleSidebar }) => {
 
                                                     <Dropdown.Menu>
                                                         {loading ? (
-                                                            <Dropdown.Item disabled>Loading...</Dropdown.Item>
+                                                            <Dropdown.Item disabled>{t("Loading")}</Dropdown.Item>
                                                         ) : notifications.length > 0 ? (
                                                             <>
                                                                 {/* Show only first 3 */}
@@ -160,11 +170,11 @@ const Header = ({ toggleSidebar }) => {
 
                                                                 {/* "View More..." butonu */}
                                                                 <Dropdown.Item as={Link} href="/notifications" className={styles.viewMore}>
-                                                                    View More...
+                                                                    {t("View More")}
                                                                 </Dropdown.Item>
                                                             </>
                                                         ) : (
-                                                            <Dropdown.Item>No notifications</Dropdown.Item>
+                                                            <Dropdown.Item>{t("No notifications")}</Dropdown.Item>
                                                         )}
                                                     </Dropdown.Menu>
                                                 </Dropdown>
@@ -191,7 +201,7 @@ const Header = ({ toggleSidebar }) => {
                                     </Nav.Link>
                                 </>
                             ) : (
-                                <Nav.Link as={Link} href="/login">Log In</Nav.Link>
+                                <Nav.Link as={Link} href="/login">{t("Login")}</Nav.Link>
                             )}
                         </Nav>
                     </Navbar.Collapse>
@@ -200,5 +210,17 @@ const Header = ({ toggleSidebar }) => {
         </>
     );
 };
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../public/locales/common/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+            },
+        },
+    };
+}
 
 export default Header;

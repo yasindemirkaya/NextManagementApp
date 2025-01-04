@@ -3,5 +3,13 @@
     "Login": "Login",
     "Sign Up": "Sign Up",
     "Back to": "Back to",
-    "Homepage": "Homepage"
+    "Homepage": "Homepage",
+    "Loading": "Loading...",
+    "View More": "View More...",
+    "No notifications": "No notifications",
+    "Get Service Logs by GUID": "Get Service Logs by GUID",
+    "Get Service Logs by Date": "Get Service Logs by Date",
+    "Logs": "Logs",
+    "Get Logs": "Get Logs",
+    "Fetching Logs": "Fetching Logs..."
 }

@@ -4,8 +4,10 @@ import Table from "@/components/Common/Table";
 import { mobileFormatter } from '@/helpers/mobileFormatter';
 import { useSelector } from "react-redux";
 import { getUsers } from "@/services/userApi";
+import { useTranslations } from 'next-intl';
 
 const ViewUsers = () => {
+    const t = useTranslations();
     const headers = ["Name", "Surname", "Email", 'Role', 'Mobile', 'Is Active', 'Is Verified']
     const [userData, setUserData] = useState([])
     const [loading, setLoading] = useState(false)
@@ -99,5 +101,20 @@ const ViewUsers = () => {
         </div>
     );
 }
+
+export async function getStaticProps(context) {
+    const headerMessages = await import(`../../../public/locales/common/${context.locale}.json`);
+    const formMessages = await import(`../../../public/locales/form/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...headerMessages.default,
+                ...formMessages.default,
+            },
+        },
+    };
+}
+
 
 export default ViewUsers;

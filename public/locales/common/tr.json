@@ -3,5 +3,13 @@
     "Login": "Giriş Yap",
     "Sign Up": "Kayıt Ol",
     "Back to": "Anasayfaya",
-    "Homepage": "Geri Dön"
+    "Homepage": "Geri Dön",
+    "Loading": "Yükleniyor...",
+    "View More": "Daha Fazl Göüntüle...",
+    "No notifications": "Bildirim yok",
+    "Get Service Logs by GUID": "Servis Loglarını GUID'ye Göre Getir",
+    "Get Service Logs by Date": "Servis Loglarını Tarihe Göre Getir",
+    "Logs": "Loglar",
+    "Get Logs": "Logları Getir",
+    "Fetching Logs": "Loglar Yükleniyor..."
 }

@@ -8,5 +8,8 @@
     "Surname must be at least 2 characters": "Surname must be at least 2 characters.",
     "Invalid email format": "Invalid email format.",
     "Mobile is required": "Mobile is required.",
-    "Invalid mobile format": "Invalid mobile format."
+    "Invalid mobile format": "Invalid mobile format.",
+    "GUID is required": "GUID is required",
+    "Start date is required": "Start date is required.",
+    "End date is required": "End date is required."
 }

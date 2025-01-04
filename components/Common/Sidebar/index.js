@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Offcanvas, Nav, Button } from "react-bootstrap";
+import { Offcanvas, Nav } from "react-bootstrap";
 import sidebarMenu from "@/static/components/sidebar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 
 const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
-    const router = useRouter();
     const loggedInUser = useSelector(state => state.user.user);
 
     const [activeMenuId, setActiveMenuId] = useState(null);
