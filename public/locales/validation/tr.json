@@ -1,0 +1,12 @@
+{
+    "Email is required": "E-posta zorunludur.",
+    "Password is required": "Şifre zorunludur.",
+    "Password must be at least 6 characters": "Şifre en az 6 karakterli olmalıdır.",
+    "Name is required": "Ad zorunludur.",
+    "Name must be at least 2 characters": "Ad en az 2 karakter olmalıdır.",
+    "Surname is required": "Soyad zorunludur.",
+    "Surname must be at least 2 characters": "Soyad en az 2 karakter olmalıdır.",
+    "Invalid email format": "Geçersiz e-posta formatı.",
+    "Mobile is required": "Cep telefonu zorunludur.",
+    "Invalid mobile format": "Geçersiz cep telefonu formatı."
+}

@@ -12,7 +12,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { signUp } from '@/services/registerApi';
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 
+import { useTranslations } from 'next-intl';
+
 const SignUp = () => {
+    const t = useTranslations();
     const router = useRouter();
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
         mode: 'onChange',
@@ -54,19 +57,19 @@ const SignUp = () => {
     return (
         <>
             <Container className={`mt-5 ${styles.signupContainer}`}>
-                <h2>Register</h2>
+                <h2>{t('Register')}</h2>
                 <Form onSubmit={handleSubmit(onSubmit)}>
 
                     {/* First Name */}
                     <Form.Group controlId="formBasicName" className="mt-1">
-                        <Form.Label>Name</Form.Label>
+                        <Form.Label>{t('Name')}</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Enter your first name"
+                            placeholder={t('Enter your first name')}
                             isInvalid={!!errors.firstName}
                             {...register("firstName", {
-                                required: "Name is required",
-                                minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                required: t("Name is required"),
+                                minLength: { value: 2, message: t("Name must be at least 2 characters") },
                                 onBlur: (e) => {
                                     const formattedValue = capitalizeFirstLetter(e.target.value);
                                     setValue("firstName", formattedValue);
@@ -78,14 +81,14 @@ const SignUp = () => {
 
                     {/* Last Name */}
                     <Form.Group controlId="formBasicLastName" className="mt-1">
-                        <Form.Label>Surname</Form.Label>
+                        <Form.Label>{t('Surname')}</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Enter your last name"
+                            placeholder={t('Enter your last name')}
                             isInvalid={!!errors.lastName}
                             {...register("lastName", {
-                                required: "Surname is required",
-                                minLength: { value: 2, message: "Surname must be at least 2 characters" },
+                                required: t("Surname is required"),
+                                minLength: { value: 2, message: t("Surname must be at least 2 characters") },
                                 onBlur: (e) => {
                                     const formattedValue = capitalizeFirstLetter(e.target.value);
                                     setValue("lastName", formattedValue);
@@ -97,14 +100,14 @@ const SignUp = () => {
 
                     {/* Email */}
                     <Form.Group controlId="formBasicEmail" className="mt-1">
-                        <Form.Label>Email address</Form.Label>
+                        <Form.Label>{t("Email")}</Form.Label>
                         <Form.Control
                             type="email"
-                            placeholder="Enter your email"
+                            placeholder={t('Enter your email')}
                             isInvalid={!!errors.email}
                             {...register("email", {
-                                required: "Email is required",
-                                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" },
+                                required: t("Email is required"),
+                                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t("Invalid email format") },
                             })}
                         />
                         <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
@@ -112,16 +115,16 @@ const SignUp = () => {
 
                     {/* Password */}
                     <Form.Group controlId="formBasicPassword" className="mt-1">
-                        <Form.Label>Password</Form.Label>
+                        <Form.Label>{t("Password")}</Form.Label>
                         <InputGroup>
                             <Form.Control
                                 type={showPassword ? "text" : "password"}
-                                placeholder="Enter password"
+                                placeholder={t('Enter password')}
                                 {...register("password", {
-                                    required: "Password is required",
+                                    required: t("Password is required"),
                                     minLength: {
                                         value: 6,
-                                        message: "Password must be at least 6 characters"
+                                        message: t("Password must be at least 6 characters")
                                     }
                                 })}
                                 isInvalid={!!errors.password}
@@ -137,19 +140,19 @@ const SignUp = () => {
 
                     {/* Mobile */}
                     <Form.Group controlId="formBasicMobile" className="mt-1">
-                        <Form.Label>Mobile</Form.Label>
+                        <Form.Label>{t("Mobile")}</Form.Label>
                         <InputMask
                             mask="(999) 999-9999"
                             {...register("mobile", {
-                                required: "Mobile number is required",
-                                pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: "Invalid mobile format" },
+                                required: t("Mobile number is required"),
+                                pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: t("Invalid mobile format") },
                             })}
                         >
                             {(inputProps) => (
                                 <Form.Control
                                     {...inputProps}
                                     type="tel"
-                                    placeholder="Enter your mobile number"
+                                    placeholder={t("Enter your mobile number")}
                                     isInvalid={!!errors.mobile}
                                 />
                             )}
@@ -161,12 +164,12 @@ const SignUp = () => {
                     <Row className="mt-3">
                         <Col>
                             <Button variant="secondary" onClick={handleBack} className="w-100">
-                                Back
+                                {t("Back")}
                             </Button>
                         </Col>
                         <Col>
                             <Button variant="primary" type="submit" className="w-100" disabled={isSubmitting}>
-                                {isSubmitting ? 'Signing Up...' : 'Sign Up'}
+                                {isSubmitting ? t('Signing Up') : t('Sign Up')}
                             </Button>
                         </Col>
                     </Row>
@@ -174,15 +177,15 @@ const SignUp = () => {
                     {/* Login redirect */}
                     <Row className="mt-3">
                         <p>
-                            Already have an account?{' '}
-                            <Link href="/login" className={styles.link}>Login now!</Link>
+                            {t("Already have an account?")}{' '}
+                            <Link href="/login" className={styles.link}>{t("Login now!")}</Link>
                         </p>
                     </Row>
 
                     {/* Homepage redirect */}
                     <Row>
                         <p>
-                            Back to <Link href="/" className={styles.link}>Homepage</Link>
+                            {t("Back to")} <Link href="/" className={styles.link}>{t("Homepage")}</Link>
                         </p>
                     </Row>
                 </Form>
@@ -191,5 +194,23 @@ const SignUp = () => {
         </>
     );
 };
+
+export async function getStaticProps(context) {
+    const authMessages = await import(`../../public/locales/auth/${context.locale}.json`);
+    const formMessages = await import(`../../public/locales/form/${context.locale}.json`);
+    const commonMessages = await import(`../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../public/locales/validation/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...authMessages.default,
+                ...formMessages.default,
+                ...commonMessages.default,
+                ...validationMessages.default,
+            },
+        },
+    };
+}
 
 export default SignUp;

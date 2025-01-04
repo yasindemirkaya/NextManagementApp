@@ -1,0 +1,12 @@
+{
+    "Email is required": "Email is required.",
+    "Password is required": "Password is required.",
+    "Password must be at least 6 characters": "Password must be at least 6 characters.",
+    "Name is required": "Name is required.",
+    "Name must be at least 2 characters": "Name must be at least 2 characters.",
+    "Surname is required": "Surname is required.",
+    "Surname must be at least 2 characters": "Surname must be at least 2 characters.",
+    "Invalid email format": "Invalid email format.",
+    "Mobile is required": "Mobile is required.",
+    "Invalid mobile format": "Invalid mobile format."
+}

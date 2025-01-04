@@ -12,7 +12,11 @@ import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { login } from '@/services/loginApi';
 
+import { useTranslations } from 'next-intl';
+
+
 const Login = () => {
+    const t = useTranslations();
     const router = useRouter();
     const dispatch = useDispatch();
 
@@ -72,19 +76,19 @@ const Login = () => {
     return (
         <>
             <Container className={`mt-5 ${styles.loginContainer}`}>
-                <h2>Login</h2>
+                <h2>{t('Login')}</h2>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     {/* Email */}
                     <Form.Group controlId="formBasicEmail" className="mt-1">
-                        <Form.Label>Email Address</Form.Label>
+                        <Form.Label>{t('Email')}</Form.Label>
                         <Form.Control
                             type="email"
-                            placeholder="Enter email"
+                            placeholder={t('Enter your email')}
                             {...register("email", {
-                                required: "Email is required",
+                                required: t('Email is required'),
                                 pattern: {
                                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                    message: "Invalid email format"
+                                    message: t('Invalid email format')
                                 }
                             })}
                             isInvalid={!!errors.email}
@@ -94,16 +98,16 @@ const Login = () => {
 
                     {/* Password */}
                     <Form.Group controlId="formBasicPassword" className="mt-1">
-                        <Form.Label>Password</Form.Label>
+                        <Form.Label>{t('Password')}</Form.Label>
                         <InputGroup>
                             <Form.Control
                                 type={showPassword ? "text" : "password"}
-                                placeholder="Enter password"
+                                placeholder={t('Enter password')}
                                 {...register("password", {
-                                    required: "Password is required",
+                                    required: t('Password is required'),
                                     minLength: {
                                         value: 6,
-                                        message: "Password must be at least 6 characters"
+                                        message: t('Password must be at least 6 characters')
                                     }
                                 })}
                                 isInvalid={!!errors.password}
@@ -117,11 +121,12 @@ const Login = () => {
                         </InputGroup>
                     </Form.Group>
 
+
                     <Row className="mt-3">
                         <Col>
                             {/* Back Button */}
                             <Button variant="secondary" onClick={handleBack} className="w-100">
-                                Back
+                                {t('Back')}
                             </Button>
                         </Col>
                         <Col>
@@ -130,10 +135,10 @@ const Login = () => {
                                 {loading ? (
                                     <>
                                         <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className='text-white me-2' />
-                                        Logging In...
+                                        {t('Logging In')}
                                     </>
                                 ) : (
-                                    <>Login</>
+                                    <>{t('Login')}</>
                                 )}
                             </Button>
                         </Col>
@@ -142,8 +147,8 @@ const Login = () => {
 
                 <Row className="mt-3">
                     <p>
-                        Don't have an account?{' '}
-                        <Link href="/register" className={styles.link}>Sign up now!</Link>
+                        {t("Don't have an account?")}{' '}
+                        <Link href="/register" className={styles.link}>{t("Sign up now!")}</Link>
                     </p>
                 </Row>
             </Container>
@@ -151,5 +156,23 @@ const Login = () => {
         </>
     );
 };
+
+export async function getStaticProps(context) {
+    const authMessages = await import(`../../public/locales/auth/${context.locale}.json`);
+    const formMessages = await import(`../../public/locales/form/${context.locale}.json`);
+    const commonMessages = await import(`../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../public/locales/validation/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...authMessages.default,
+                ...formMessages.default,
+                ...commonMessages.default,
+                ...validationMessages.default,
+            },
+        },
+    };
+}
 
 export default Login;

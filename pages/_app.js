@@ -13,6 +13,8 @@ import { useRouter } from 'next/router';
 import DefaultLayout from '@/components/Layouts/Default/index';
 import NotFoundLayout from '@/components/Layouts/404';
 
+import { NextIntlClientProvider } from 'next-intl';
+
 import { Montserrat } from 'next/font/google';
 
 const montserrat = Montserrat({
@@ -33,12 +35,15 @@ export default function App({ Component, pageProps }) {
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <title>Next Management App</title>
           </Head>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+
+          <NextIntlClientProvider locale={router.locale} messages={pageProps.messages}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </NextIntlClientProvider>
+
         </PersistGate>
       </Provider>
     </div>
-
   );
 }
