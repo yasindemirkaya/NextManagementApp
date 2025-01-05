@@ -11,6 +11,7 @@ import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { changePassword, changePasswordById } from '@/services/userApi';
 import styles from './index.module.scss'
+import { useTranslations } from 'next-intl';
 
 const ChangePassword = ({ show, onHide, isSelf, userId }) => {
     const {
@@ -35,6 +36,7 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
         }
     };
 
+    const t = useTranslations();
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -96,7 +98,7 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
         <>
             <Modal show={show} onHide={handleClose} centered className={styles.modalContainer}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Change Password</Modal.Title>
+                    <Modal.Title>{t("Change Password")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className={styles.modalContainer}>
                     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -107,10 +109,10 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
                                 <InputGroup>
                                     <Form.Control
                                         type={showCurrentPassword ? "text" : "password"}
-                                        placeholder="Enter current password"
+                                        placeholder={t("Enter current password")}
                                         isInvalid={!!errors.currentPassword}
                                         {...register("currentPassword", {
-                                            required: "Current password is required"
+                                            required: t("Current password is required")
                                         })}
                                     />
                                     <InputGroup.Text
@@ -127,17 +129,17 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
                         ) : null}
                         {/* New Password */}
                         <Form.Group className="mb-3">
-                            <Form.Label>New Password</Form.Label>
+                            <Form.Label>{t("New Password")}</Form.Label>
                             <InputGroup>
                                 <Form.Control
                                     type={showNewPassword ? "text" : "password"}
-                                    placeholder="Enter new password"
+                                    placeholder={t("Enter new password")}
                                     isInvalid={!!errors.newPassword}
                                     {...register("newPassword", {
-                                        required: "New password is required",
+                                        required: t("New password is required"),
                                         minLength: {
                                             value: 6,
-                                            message: "New password must be at least 6 characters"
+                                            message: t("New password must be at least 6 characters")
                                         }
                                     })}
                                 />
@@ -155,16 +157,16 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
 
                         {/* Confirm Password */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Confirm New Password</Form.Label>
+                            <Form.Label>{t("Confirm New Password")}</Form.Label>
                             <InputGroup>
                                 <Form.Control
                                     type={showConfirmPassword ? "text" : "password"}
                                     placeholder="Confirm new password"
                                     isInvalid={!!errors.confirmPassword}
                                     {...register("confirmPassword", {
-                                        required: "Please confirm your new password",
+                                        required: t("Please confirm your new password"),
                                         validate: (value) =>
-                                            value === watch("newPassword") || "Passwords do not match"
+                                            value === watch("newPassword") || t("Passwords do not match")
                                     })}
                                 />
                                 <InputGroup.Text
@@ -182,10 +184,10 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
                         {/* Submit Button */}
                         <Modal.Footer>
                             <Button variant="secondary" onClick={handleClose}>
-                                Cancel
+                                {t("Cancel")}
                             </Button>
                             <Button variant="primary" type="submit">
-                                Change Password
+                                {t("Change Password")}
                             </Button>
                         </Modal.Footer>
                     </Form>

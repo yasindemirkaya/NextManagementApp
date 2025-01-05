@@ -11,5 +11,18 @@
     "Invalid mobile format": "Invalid mobile format.",
     "GUID is required": "GUID is required",
     "Start date is required": "Start date is required.",
-    "End date is required": "End date is required."
+    "End date is required": "End date is required.",
+    "Name cannot contain numeric characters": "Name cannot contain numeric characters.",
+    "Surname cannot contain numeric characters": "Surname cannot contain numeric characters.",
+    "Current password is required": "Current password is required.",
+    "New password is required": "New password is required.",
+    "New password must be at least 6 characters": "New password must be at least 6 characters.",
+    "Please confirm your new password": "Please confirm your new password.",
+    "Passwords do not match": "Passwords do not match.",
+    "Group Leader is required": "Group Leader is required.",
+    "At least one member is required": "At least one member is required.",
+    "Group Type is required": "Group Type is required.",
+    "Group members are required": "Group members are required.",
+    "Create User Group Tooltip Message 1": "You may want to create the user group and leave it inactive. You can reactivate the group at any time.",
+    "Description must be at least 2 characters": "Description must be at least 2 characters"
 }

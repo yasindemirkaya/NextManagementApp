@@ -22,4 +22,16 @@ const DefaultLayout = ({ children }) => {
     );
 };
 
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../public/locales/common/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+            },
+        },
+    };
+}
+
 export default DefaultLayout;

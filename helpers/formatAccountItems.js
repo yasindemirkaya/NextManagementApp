@@ -1,21 +1,57 @@
 import { Badge } from 'react-bootstrap';
+const getLanguage = () => localStorage.getItem("language") || "en";
 
-export const formatAccountRole = (role) => (
-    <Badge bg={
-        role === 0 ? "secondary" : role === 1 ? "warning" : role === 2 ? "danger" : "secondary"
-    }>
-        {role === 0 ? "Standard User" : role === 1 ? "Admin" : role === 2 ? "Super Admin" : "Undefined Role"}
-    </Badge>
-);
+export const formatAccountRole = (role) => {
+    const lang = getLanguage();
+    return (
+        <Badge
+            bg={role === 0 ? "secondary" : role === 1 ? "warning" : role === 2 ? "danger" : "secondary"}
+        >
+            {role === 0
+                ? lang === "en"
+                    ? "Standard User"
+                    : "Standart Kullanıcı"
+                : role === 1
+                    ? lang === "en"
+                        ? "Admin"
+                        : "Yönetici"
+                    : role === 2
+                        ? lang === "en"
+                            ? "Super Admin"
+                            : "Sistem Yetkilisi"
+                        : lang === "en"
+                            ? "Undefined Role"
+                            : "Tanımsız Rol"}
+        </Badge>
+    );
+};
 
-export const formatAccountStatus = (status) => (
-    <Badge bg={status === true ? "success" : "danger"}>
-        {status === true ? "Active" : "Not Active"}
-    </Badge>
-);
+export const formatAccountStatus = (status) => {
+    const lang = getLanguage();
+    return (
+        <Badge bg={status ? "success" : "danger"}>
+            {status
+                ? lang === "en"
+                    ? "Active"
+                    : "Aktif"
+                : lang === "en"
+                    ? "Not Active"
+                    : "Pasif"}
+        </Badge>
+    );
+};
 
-export const formatAccountVerification = (verification) => (
-    <Badge bg={verification === true ? "success" : "danger"}>
-        {verification === true ? "Verified" : "Not Verified"}
-    </Badge>
-);
+export const formatAccountVerification = (verification) => {
+    const lang = getLanguage();
+    return (
+        <Badge bg={verification ? "success" : "danger"}>
+            {verification
+                ? lang === "en"
+                    ? "Verified"
+                    : "Doğrulandı"
+                : lang === "en"
+                    ? "Not Verified"
+                    : "Doğrulanmadı"}
+        </Badge>
+    );
+};

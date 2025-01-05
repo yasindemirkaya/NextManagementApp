@@ -144,7 +144,7 @@ const SignUp = () => {
                         <InputMask
                             mask="(999) 999-9999"
                             {...register("mobile", {
-                                required: t("Mobile number is required"),
+                                required: t("Mobile is required"),
                                 pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: t("Invalid mobile format") },
                             })}
                         >

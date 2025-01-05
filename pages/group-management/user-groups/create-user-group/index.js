@@ -12,9 +12,12 @@ import { createUserGroup } from '@/services/userGroupApi';
 import { getGroupTypes } from '@/services/groupTypeApi';
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 import { useRouter } from 'next/router';
+import { useTranslations } from 'next-intl';
 
 const CreateUserGroup = () => {
     const router = useRouter();
+    const t = useTranslations();
+
     const { register, handleSubmit, setValue, reset, control, formState: { errors, isSubmitting } } = useForm({
         mode: 'onBlur',
         defaultValues: {
@@ -100,19 +103,19 @@ const CreateUserGroup = () => {
             <Container>
                 <Card className={`${styles.createUserGroupContainer}`}>
                     <Card.Body>
-                        <h2>Create User Group</h2>
+                        <h2>{t("Create User Group")}</h2>
                         <Form onSubmit={handleSubmit(onSubmit)}>
                             {/* Group Name */}
                             <Col md={12}>
                                 <Form.Group controlId="groupName">
-                                    <Form.Label>Group Name</Form.Label>
+                                    <Form.Label>{t("Group Name")}</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter group name"
+                                        placeholder={t("Enter group name")}
                                         isInvalid={!!errors.groupName}
                                         {...register("groupName", {
-                                            required: "Name is required",
-                                            minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                            required: t("Name is required"),
+                                            minLength: { value: 2, message: t("Name must be at least 2 characters") },
                                             onBlur: (e) => {
                                                 const formattedValue = capitalizeFirstLetter(e.target.value);
                                                 setValue("groupName", formattedValue);
@@ -126,13 +129,13 @@ const CreateUserGroup = () => {
                             {/* Description */}
                             <Col md={12}>
                                 <Form.Group controlId="description">
-                                    <Form.Label>Description</Form.Label>
+                                    <Form.Label>{t("Description")}</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter a description"
+                                        placeholder={t("Enter a description")}
                                         isInvalid={!!errors.description}
                                         {...register("description", {
-                                            minLength: { value: 2, message: "Description must be at least 2 characters" },
+                                            minLength: { value: 2, message: t("Description must be at least 2 characters") },
                                             onBlur: (e) => {
                                                 const formattedValue = capitalizeFirstLetter(e.target.value);
                                                 setValue("description", formattedValue);
@@ -147,11 +150,11 @@ const CreateUserGroup = () => {
                                 {/* Type */}
                                 <Col md={6}>
                                     <Form.Group controlId="type">
-                                        <Form.Label>Group Type</Form.Label>
+                                        <Form.Label>{t("Group Type")}</Form.Label>
                                         <Controller
                                             control={control}
                                             name="type"
-                                            rules={{ required: "Group Type is required" }}
+                                            rules={{ required: t("Group Type is required") }}
                                             render={({ field, fieldState }) => (
                                                 <>
                                                     <Select
@@ -168,7 +171,7 @@ const CreateUserGroup = () => {
                                                             },
                                                         })}
                                                         options={userGroupTypes.map(type => ({ value: type.type_name, label: type.type_name }))}
-                                                        placeholder="Select group type"
+                                                        placeholder={t("Select group type")}
                                                     />
                                                     {fieldState.error && (
                                                         <Form.Text className="text-danger">
@@ -184,11 +187,11 @@ const CreateUserGroup = () => {
                                 {/* Group Leader */}
                                 <Col md={6}>
                                     <Form.Group controlId="groupLeader">
-                                        <Form.Label>Group Leader</Form.Label>
+                                        <Form.Label>{t("Group Leader")}</Form.Label>
                                         <Controller
                                             control={control}
                                             name="groupLeader"
-                                            rules={{ required: "Group Leader is required" }}
+                                            rules={{ required: t("Group Leader is required") }}
                                             render={({ field, fieldState }) => (
                                                 <>
                                                     {loading ? (
@@ -212,7 +215,7 @@ const CreateUserGroup = () => {
                                                                 },
                                                             })}
                                                             options={userData.map(user => ({ value: user._id, label: user.first_name + ' ' + user.last_name }))}
-                                                            placeholder="Select group leader"
+                                                            placeholder={t("Select group leader")}
                                                         />
                                                     )}
                                                     {fieldState.error && (
@@ -231,11 +234,11 @@ const CreateUserGroup = () => {
                             <Row>
                                 <Col md={12}>
                                     <Form.Group controlId="members">
-                                        <Form.Label>Group Members</Form.Label>
+                                        <Form.Label>{t("Group Members")}</Form.Label>
                                         <Controller
                                             control={control}
                                             name="members"
-                                            rules={{ required: "Group members are required" }}
+                                            rules={{ required: t("Group members are required") }}
                                             render={({ field, fieldState }) => (
                                                 <>
                                                     {loading ? (
@@ -265,7 +268,7 @@ const CreateUserGroup = () => {
                                                                 label: user.first_name + ' ' + user.last_name,
                                                             }))}
                                                             onChange={(selectedOptions) => field.onChange(selectedOptions ? selectedOptions.map(option => option.value) : [])}
-                                                            placeholder="Select group members"
+                                                            placeholder={t("Select group members")}
                                                         />
                                                     )}
                                                     {fieldState.error && (
@@ -282,20 +285,20 @@ const CreateUserGroup = () => {
 
                             {/* Is Active */}
                             <Form.Group controlId="isActive" className="mt-3">
-                                <Form.Label className="me-2">Is Active</Form.Label>
+                                <Form.Label className="me-2">{t("Is Active")}</Form.Label>
                                 <OverlayTrigger
                                     placement="right"
-                                    overlay={<Tooltip>You may want to create the user group and leave it inactive. You can reactivate the group at any time.</Tooltip>}>
+                                    overlay={<Tooltip>{t("Create User Tooltip Message 1")}</Tooltip>}>
                                     <FontAwesomeIcon icon={icons.faInfoCircle} />
                                 </OverlayTrigger>
                                 <br />
-                                <Form.Check type="radio" label="Yes" {...register("isActive")} value="1" inline />
-                                <Form.Check type="radio" label="No" {...register("isActive")} value="0" inline />
+                                <Form.Check type="radio" label={t("Yes")} {...register("isActive")} value="1" inline />
+                                <Form.Check type="radio" label={t("No")} {...register("isActive")} value="0" inline />
                             </Form.Group>
 
                             {/* Button */}
                             <Button variant="primary" type="submit" disabled={isSubmitting} className="mt-3">
-                                {isSubmitting ? 'Creating User Group...' : 'Create User Group'}
+                                {isSubmitting ? t('Creating User Group') : t('Create User Group')}
                             </Button>
                         </Form>
                     </Card.Body>
@@ -305,5 +308,22 @@ const CreateUserGroup = () => {
         </>
     );
 };
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../../../public/locales/validation/${context.locale}.json`);
+    const formMessages = await import(`../../../../public/locales/form/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+                ...validationMessages.default,
+                ...formMessages.default,
+            },
+        },
+    };
+}
+
 
 export default CreateUserGroup;

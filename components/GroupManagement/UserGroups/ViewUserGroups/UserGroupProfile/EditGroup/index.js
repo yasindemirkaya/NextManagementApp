@@ -12,11 +12,12 @@ import Swal from 'sweetalert2';
 import { getUsers } from '@/services/userApi';
 import { getGroupTypes } from '@/services/groupTypeApi';
 import { deleteUserGroup, updateUserGroup } from '@/services/userGroupApi';
-
+import { useTranslations } from 'next-intl';
 
 const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
     const loggedInUser = useSelector(state => state.user.user);
     const router = useRouter();
+    const t = useTranslations();
 
     const [isActive, setIsActive] = useState(userGroupData.is_active === true);
     const [userGroupTypes, setUserGroupTypes] = useState([]);
@@ -114,13 +115,14 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
     // Delete User Group
     const handleDeleteUserGroup = async (userGroupId) => {
         const confirmation = await Swal.fire({
-            title: 'Are you sure?',
-            text: "This user group will be permanently deleted and cannot be recovered.",
+            title: t('Are you sure?'),
+            text: t('This user group will be permanently deleted and cannot be recovered'),
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
+            confirmButtonText: t('Delete'),
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!'
+            cancelButtonText: t('Cancel')
         });
 
         if (confirmation.isConfirmed) {
@@ -161,17 +163,17 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
             <Card className={styles.profileEditCard}>
                 <Card.Body>
                     {/* Title */}
-                    <Card.Title>Edit User Group</Card.Title>
+                    <Card.Title>{t("Edit User Group")}</Card.Title>
                     <Form onSubmit={handleSubmit(handleSave)}>
                         {/* Group Name */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Group Name</Form.Label>
+                            <Form.Label>{t("Group Name")}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter group name"
+                                placeholder={t("Enter group name")}
                                 {...register("groupName", {
-                                    required: "Name is required",
-                                    minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                    required: t("Name is required"),
+                                    minLength: { value: 2, message: t("Name must be at least 2 characters") },
                                 })}
                                 isInvalid={!!errors.groupName}
                             />
@@ -180,10 +182,10 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
 
                         {/* Group Description */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Group Description</Form.Label>
+                            <Form.Label>{t("Group Description")}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter description"
+                                placeholder={t("Enter description")}
                                 {...register("description", {
                                 })}
                                 isInvalid={!!errors.description}
@@ -193,11 +195,11 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
 
                         {/* Group Leader */}
                         <Form.Group className="mb-3" controlId="groupLeader">
-                            <Form.Label>Group Leader</Form.Label>
+                            <Form.Label>{t("Group Leader")}</Form.Label>
                             <Controller
                                 control={control}
                                 name="groupLeader"
-                                rules={{ required: "Group Leader is required" }}
+                                rules={{ required: t("Group Leader is required") }}
                                 render={({ field, fieldState }) => (
                                     <>
                                         {usersLoading ? (
@@ -229,7 +231,7 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                                                     label: `${userData.find(user => user._id === field.value).first_name} ${userData.find(user => user._id === field.value).last_name}`
                                                 } : null}
                                                 onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
-                                                placeholder="Select group leader"
+                                                placeholder={t("Select group leader")}
                                             />
                                         )}
                                         {fieldState.error && (
@@ -244,7 +246,7 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
 
                         {/* Group Type */}
                         <Form.Group controlId="groupType">
-                            <Form.Label>Group Type</Form.Label>
+                            <Form.Label>{t("Group Type")}</Form.Label>
                             <Controller
                                 control={control}
                                 name="groupType"
@@ -280,7 +282,7 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                                                     label: userGroupTypes.find(groupType => groupType.type_name === field.value).type_name
                                                 } : null}
                                                 onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.label : null)}
-                                                placeholder="Select group type"
+                                                placeholder={t("Select group type")}
                                             />
                                         )}
                                         {fieldState.error && (
@@ -295,11 +297,11 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
 
                         {/* Group Members */}
                         <Form.Group className="mb-3" controlId="members">
-                            <Form.Label>Group Members</Form.Label>
+                            <Form.Label>{t("Group Members")}</Form.Label>
                             <Controller
                                 control={control}
                                 name="groupMembers"
-                                rules={{ required: "At least one member is required" }}
+                                rules={{ required: t("At least one member is required") }}
                                 render={({ field, fieldState }) => (
                                     <>
                                         {usersLoading ? (
@@ -332,7 +334,7 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                                                     return member ? { value: member._id, label: `${member.first_name} ${member.last_name}` } : null;
                                                 }).filter(item => item !== null)}
                                                 onChange={(selectedOptions) => field.onChange(selectedOptions.map(option => option.value))}
-                                                placeholder="Select group members"
+                                                placeholder={t("Select group members")}
                                             />
                                         )}
                                         {fieldState.error && (
@@ -347,18 +349,19 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
 
                         {/* Status */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Group Status</Form.Label>
+                            <Form.Label>{t("Group Status")}</Form.Label>
                             <Form.Check
                                 type="switch"
                                 id="isActive"
                                 name="isActive"
                                 checked={isActive}
                                 onChange={(e) => setIsActive(e.target.checked)}
+                                className={styles.formCheck}
                             />
                         </Form.Group>
 
-                        <Button variant="primary" type="submit">Save</Button>
-                        <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
+                        <Button variant="primary" type="submit">{t("Save")}</Button>
+                        <Button variant="secondary" className="ms-2" onClick={onCancel}>{t("Back")}</Button>
                     </Form>
 
                     {/* Delete user group */}
@@ -366,7 +369,7 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                         <Row className="mt-3">
                             <Col md={12}>
                                 <div onClick={handleDelete} className={styles.link}>
-                                    <p className="text-danger">Delete this user group.</p>
+                                    <p className="text-danger">{t("Delete this user group")}</p>
                                 </div>
                             </Col>
                         </Row>

@@ -7,8 +7,10 @@ import EditProfileCard from '../EditProfile';
 import { isSelf } from '@/helpers/isSelf';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
+import { useTranslations } from 'use-intl';
 
 const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) => {
+    const t = useTranslations();
     const [isEditing, setIsEditing] = useState(false);
     const token = Cookies.get('token');
     const loggedInUser = useSelector(state => state.user.user);
@@ -49,7 +51,7 @@ const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) =>
     }
 
     if (error || !user) {
-        return <Alert variant="warning">User data is not available. Please try again later.</Alert>;
+        return <Alert variant="warning">{t("User data is not available Please try again later")}</Alert>;
     }
 
     return (
@@ -57,19 +59,19 @@ const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) =>
             {!isEditing ? (
                 <Card className={styles.profileContainer}>
                     <Card.Body>
-                        <Card.Title>Profile Information</Card.Title>
+                        <Card.Title>{t("Profile Information")}</Card.Title>
                         <div className={styles.profileInfo}>
-                            <p><strong>Name:</strong> {user.first_name}</p>
-                            <p><strong>Surname:</strong> {user.last_name}</p>
-                            <p><strong>Email:</strong> {user.email}</p>
-                            <p><strong>Mobile:</strong> {mobileFormatter(user.mobile)}</p>
-                            <p><strong>Account Status:</strong> {formatAccountStatus(user.is_active)}</p>
-                            <p><strong>Verification Status:</strong> {formatAccountVerification(user.is_verified)}</p>
-                            <p><strong>Account Role:</strong> {formatAccountRole(user.role)}</p>
-                            <p className={styles.infoText}>*This account is created by {user.created_by}</p>
-                            <p className={styles.infoText}>*The last update for this account is made by {user.updated_by}</p>
+                            <p><strong>{t("Name")}:</strong> {user.first_name}</p>
+                            <p><strong>{t("Surname")}:</strong> {user.last_name}</p>
+                            <p><strong>{t("Email")}:</strong> {user.email}</p>
+                            <p><strong>{t("Mobile")}:</strong> {mobileFormatter(user.mobile)}</p>
+                            <p><strong>{t("Account Status")}:</strong> {formatAccountStatus(user.is_active)}</p>
+                            <p><strong>{t("Verification Status")}:</strong> {formatAccountVerification(user.is_verified)}</p>
+                            <p><strong>{t("Account Role")}:</strong> {formatAccountRole(user.role)}</p>
+                            <p className={styles.infoText}>*{t("This account is created by")} <b>{user.created_by}</b></p>
+                            <p className={styles.infoText}>*{t("The last update for this account is made by")} <b>{user.updated_by}</b></p>
                         </div>
-                        {editButtonDisplayer(loggedInUser, token, user.id, from) ? (<Button variant="primary" onClick={handleEditClick}>Edit</Button>) : null}
+                        {editButtonDisplayer(loggedInUser, token, user.id, from) ? (<Button variant="primary" onClick={handleEditClick}>{t("Edit")}</Button>) : null}
                     </Card.Body>
                 </Card>
             ) : (
@@ -80,5 +82,6 @@ const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) =>
         </Container>
     );
 };
+
 
 export default ProfileCard;

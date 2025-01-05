@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import * as XLSX from 'xlsx'
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
+import { useTranslations } from "next-intl";
 
 const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, fetchUsers, getUserGroups, getAllGroupTypes }) => {
     const [currentPageState, setCurrentPageState] = useState(currentPage);
@@ -22,6 +23,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
     const loggedInUser = useSelector(state => state.user.user);
 
     const router = useRouter()
+    const t = useTranslations()
 
     useEffect(() => {
         setSortedData(data);
@@ -32,22 +34,22 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
         switch (from) {
             case 'view-users':
                 return {
-                    text: 'Add New User',
+                    text: t('Add New User'),
                     link: '/user-management/create-user'
                 };
             case 'view-user-groups':
                 return {
-                    text: 'Add New User Group',
+                    text: t('Add New User Group'),
                     link: '/group-management/user-groups/create-user-group'
                 };
             case 'view-group-types':
                 return {
-                    text: 'Add New Group Type',
+                    text: t('Add New Group Type'),
                     link: '/group-type-management/create-group-type'
                 };
             default:
                 return {
-                    text: 'Add New Item',
+                    text: t('Add New Item'),
                     link: '#'
                 };
         }
@@ -253,7 +255,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                     <InputGroup className={`${styles.inputGroup} me-3`} style={{ maxWidth: '400px' }}>
                         <Form.Control
                             type="text"
-                            placeholder="Search..."
+                            placeholder={t("Search")}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -331,7 +333,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                 </table>
 
                 <div className={styles.pageInfo}>
-                    There are {totalData} records in the table. Page {currentPage} of {totalPages} is currently displayed.
+                    {t("There are")} {totalData} {t("records in the table")}. {t("Page")} {currentPage} {t("of")} {totalPages} {t("is currently displayed")}.
                 </div>
 
                 {/* Pagination */}

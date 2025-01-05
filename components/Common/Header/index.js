@@ -31,6 +31,7 @@ const Header = ({ toggleSidebar }) => {
     const toggleTheme = () => setIsDarkMode(prevMode => !prevMode);
 
     const changeLanguage = (lang) => {
+        localStorage.setItem("language", lang)
         router.push(router.asPath, router.asPath, { locale: lang });
     };
 
@@ -130,7 +131,7 @@ const Header = ({ toggleSidebar }) => {
                                 onClick={() => changeLanguage(router.locale === 'en' ? 'tr' : 'en')}
                                 className={styles.languageSwitch}
                             >
-                                {router.locale === 'en' ? 'TR' : 'EN'}
+                                {router.locale === 'en' ? 'EN' : 'TR'}
                             </Button>
 
                             {headerMenu
@@ -210,17 +211,5 @@ const Header = ({ toggleSidebar }) => {
         </>
     );
 };
-
-export async function getStaticProps(context) {
-    const commonMessages = await import(`../../../public/locales/common/${context.locale}.json`);
-
-    return {
-        props: {
-            messages: {
-                ...commonMessages.default,
-            },
-        },
-    };
-}
 
 export default Header;

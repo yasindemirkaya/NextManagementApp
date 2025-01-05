@@ -9,8 +9,10 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { createUser } from '@/services/userApi';
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
+import { useTranslations } from 'next-intl';
 
 const CreateUser = () => {
+    const t = useTranslations()
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
         mode: 'onBlur',
         defaultValues: {
@@ -50,20 +52,20 @@ const CreateUser = () => {
             <Container>
                 <Card className={`${styles.createUserContainer}`}>
                     <Card.Body>
-                        <h2>Create User</h2>
+                        <h2>{t("Create User")}</h2>
                         <Form onSubmit={handleSubmit(onSubmit)}>
                             <Row>
                                 {/* First Name */}
                                 <Col md={6}>
                                     <Form.Group controlId="firstName">
-                                        <Form.Label>First Name</Form.Label>
+                                        <Form.Label>{t("Name")}</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter user's name"
+                                            placeholder={t("Enter users name")}
                                             isInvalid={!!errors.lastName}
                                             {...register("firstName", {
-                                                required: "Name is required",
-                                                minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                                required: t('Name is required'),
+                                                minLength: { value: 2, message: t("Name must be at least 2 characters") },
                                                 onBlur: (e) => {
                                                     const formattedValue = capitalizeFirstLetter(e.target.value);
                                                     setValue("firstName", formattedValue);
@@ -77,14 +79,14 @@ const CreateUser = () => {
                                 {/* Last Name */}
                                 <Col md={6}>
                                     <Form.Group controlId="lastName">
-                                        <Form.Label>Last Name</Form.Label>
+                                        <Form.Label>{t("Surname")}</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter user's surname"
+                                            placeholder={t("Enter user's surname")}
                                             isInvalid={!!errors.lastName}
                                             {...register("lastName", {
-                                                required: "Surname is required",
-                                                minLength: { value: 2, message: "Surname must be at least 2 characters" },
+                                                required: t("Surname is required"),
+                                                minLength: { value: 2, message: t("Surname must be at least 2 characters") },
                                                 onBlur: (e) => {
                                                     const formattedValue = capitalizeFirstLetter(e.target.value);
                                                     setValue("lastName", formattedValue);
@@ -98,14 +100,14 @@ const CreateUser = () => {
 
                             {/* Email */}
                             <Form.Group controlId="email">
-                                <Form.Label>Email</Form.Label>
+                                <Form.Label>{t("Email")}</Form.Label>
                                 <Form.Control
                                     type="email"
-                                    placeholder="Enter user's email"
+                                    placeholder={t("Enter user's email")}
                                     isInvalid={!!errors.email}
                                     {...register("email", {
-                                        required: "Email is required",
-                                        pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" },
+                                        required: t("Email is required"),
+                                        pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t("Invalid email format") },
                                     })}
                                 />
                                 <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
@@ -113,14 +115,14 @@ const CreateUser = () => {
 
                             {/* Password */}
                             <Form.Group controlId="password">
-                                <Form.Label>Password</Form.Label>
+                                <Form.Label>{t("Password")}</Form.Label>
                                 <Form.Control
                                     type="password"
-                                    placeholder="Enter a password for the user"
+                                    placeholder={t("Enter a password for the user")}
                                     isInvalid={!!errors.password}
                                     {...register("password", {
-                                        required: "Password is required",
-                                        minLength: { value: 6, message: "Password must be at least 6 characters" },
+                                        required: t("Password is required"),
+                                        minLength: { value: 6, message: t("Password must be at least 6 characters") },
                                     })}
                                 />
                                 <Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>
@@ -128,12 +130,12 @@ const CreateUser = () => {
 
                             {/* Mobile */}
                             <Form.Group controlId="formBasicMobile" className="mt-1">
-                                <Form.Label>Mobile</Form.Label>
+                                <Form.Label>{t("Mobile")}</Form.Label>
                                 <InputMask
                                     mask="(999) 999-9999"
                                     {...register("mobile", {
-                                        required: "Mobile number is required",
-                                        pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: "Invalid mobile format" },
+                                        required: t("Mobile is required"),
+                                        pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: t("Invalid mobile format") },
                                     })}
                                 >
                                     {(inputProps) => (
@@ -150,10 +152,10 @@ const CreateUser = () => {
 
                             {/* Is Active */}
                             <Form.Group controlId="isActive" className="mt-3">
-                                <Form.Label className="me-2">Is Active</Form.Label>
+                                <Form.Label className="me-2">{t("Is Active")}</Form.Label>
                                 <OverlayTrigger
                                     placement="right"
-                                    overlay={<Tooltip>You may want to create the user account and leave it inactive. You can reactivate the account at any time.</Tooltip>}>
+                                    overlay={<Tooltip>{t("Create User Tooltip Message 1")}</Tooltip>}>
                                     <FontAwesomeIcon icon={icons.faInfoCircle} />
                                 </OverlayTrigger>
                                 <br />
@@ -163,10 +165,10 @@ const CreateUser = () => {
 
                             {/* Is Verified */}
                             <Form.Group controlId="isVerified" className="mt-3">
-                                <Form.Label className="me-2">Is Verified</Form.Label>
+                                <Form.Label className="me-2">{t("Is Verified")}</Form.Label>
                                 <OverlayTrigger
                                     placement="right"
-                                    overlay={<Tooltip>You can also verify the user's account while creating it. If verification is not made here, an e-mail is sent to the user.</Tooltip>}>
+                                    overlay={<Tooltip>{t("Create User Tooltip Message 2")}</Tooltip>}>
                                     <FontAwesomeIcon icon={icons.faInfoCircle} />
                                 </OverlayTrigger>
                                 <br />
@@ -176,16 +178,16 @@ const CreateUser = () => {
 
                             {/* User Role */}
                             <Form.Group controlId="role" className="mt-3">
-                                <Form.Label>Role</Form.Label>
+                                <Form.Label>{t("Role")}</Form.Label>
                                 <br />
-                                <Form.Check type="radio" label="Standard User" {...register("role")} value="0" inline />
-                                <Form.Check type="radio" label="Admin" {...register("role")} value="1" inline />
-                                <Form.Check type="radio" label="Super Admin" {...register("role")} value="2" inline />
+                                <Form.Check type="radio" label={t("Standard User")} {...register("role")} value="0" inline />
+                                <Form.Check type="radio" label={t("Admin")} {...register("role")} value="1" inline />
+                                <Form.Check type="radio" label={t("Super Admin")} {...register("role")} value="2" inline />
                             </Form.Group>
 
                             {/* Button */}
                             <Button variant="primary" type="submit" disabled={isSubmitting} className="mt-3">
-                                {isSubmitting ? 'Creating User...' : 'Create User'}
+                                {isSubmitting ? t('Creating User') : t('Create User')}
                             </Button>
                         </Form>
                     </Card.Body>
@@ -195,5 +197,21 @@ const CreateUser = () => {
         </>
     );
 };
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../../public/locales/validation/${context.locale}.json`);
+    const formMessages = await import(`../../../public/locales/form/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+                ...validationMessages.default,
+                ...formMessages.default,
+            },
+        },
+    };
+}
 
 export default CreateUser;

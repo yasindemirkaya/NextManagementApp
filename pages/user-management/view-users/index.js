@@ -82,7 +82,7 @@ const ViewUsers = () => {
 
     if (error || !userData) {
         return (
-            <Alert variant="warning">User data is not available. Please try again later.</Alert>
+            <Alert variant="warning">{t("User data is not available Please try again later")}</Alert>
         )
     }
 

@@ -42,4 +42,23 @@ const Profile = () => {
     );
 };
 
+export async function getStaticProps(context) {
+    const formMessages = await import(`../../public/locales/form/${context.locale}.json`);
+    const commonMessages = await import(`../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../public/locales/validation/${context.locale}.json`);
+    const responseMessages = await import(`../../public/locales/response/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...formMessages.default,
+                ...commonMessages.default,
+                ...validationMessages.default,
+                ...responseMessages.default,
+            },
+        },
+    };
+}
+
+
 export default Profile;

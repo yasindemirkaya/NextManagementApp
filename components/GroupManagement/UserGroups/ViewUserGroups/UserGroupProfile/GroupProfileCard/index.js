@@ -6,8 +6,10 @@ import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import EditGroupProfileCard from '../EditGroup';
 import { getUserById } from '@/services/userApi';
+import { useTranslations } from 'next-intl';
 
 const GroupProfileCard = ({ userGroup, loading, error, getUserGroupDetails }) => {
+    const t = useTranslations();
     const [isEditing, setIsEditing] = useState(false);
     const [membersInfo, setMembersInfo] = useState([]);
     const loggedInUser = useSelector(state => state.user.user);
@@ -57,7 +59,7 @@ const GroupProfileCard = ({ userGroup, loading, error, getUserGroupDetails }) =>
     }
 
     if (error || !userGroup) {
-        return <Alert variant="warning">User data is not available. Please try again later.</Alert>;
+        return <Alert variant="warning">{t("User data is not available Please try again later")}</Alert>;
     }
 
     return (
@@ -65,21 +67,21 @@ const GroupProfileCard = ({ userGroup, loading, error, getUserGroupDetails }) =>
             {!isEditing ? (
                 <Card className={styles.profileCard}>
                     <Card.Body>
-                        <Card.Title>User Group Information</Card.Title>
+                        <Card.Title>{t("User Group Information")}</Card.Title>
                         <div className={styles.profileInfo}>
                             {/* Group Name */}
-                            <p><strong>Group Name:</strong> {userGroup.group_name}</p>
+                            <p><strong>{t("Group Name")}:</strong> {userGroup.group_name}</p>
                             {/* Description */}
-                            <p><strong>Description:</strong> {userGroup.description}</p>
+                            <p><strong>{t("Description")}:</strong> {userGroup.description}</p>
                             {/* Group Leader */}
-                            <p><strong>Group Leader:</strong> {userGroup.group_leader}</p>
+                            <p><strong>{t("Group Leader")}:</strong> {userGroup.group_leader}</p>
                             {/* Group Status */}
-                            <p><strong>Group Status:</strong> {formatAccountStatus(userGroup.is_active)}</p>
+                            <p><strong>{t("Group Status")}:</strong> {formatAccountStatus(userGroup.is_active)}</p>
                             {/* Group Type */}
-                            <p><strong>Group Type:</strong> {userGroup.type}</p>
+                            <p><strong>{t("Group Type")}:</strong> {userGroup.type}</p>
                             {/* Group Members */}
                             <div className={styles.groupMembers}>
-                                <strong>Group Members:</strong>
+                                <strong>{t("Group Members")}:</strong>
                                 {loading ? (
                                     <Spinner animation="border" />
                                 ) : error ? (
@@ -98,16 +100,16 @@ const GroupProfileCard = ({ userGroup, loading, error, getUserGroupDetails }) =>
                                         ))}
                                     </ul>
                                 ) : (
-                                    <p>No members in this group.</p>
+                                    <p>{t("No members in this group")}</p>
                                 )}
                             </div>
 
                             {/* Created By */}
-                            <p className={styles.infoText}>*This user group is created by {userGroup.created_by}</p>
+                            <p className={styles.infoText}>*{t("This user group is created by")} {userGroup.created_by}</p>
                             {/* Updated By */}
                             {
                                 userGroup.updated_by ?
-                                    (<p className={styles.infoText}>*The last update for this account is made by {userGroup.updated_by}</p>)
+                                    (<p className={styles.infoText}>*{t("The last update for this account is made by")} {userGroup.updated_by}</p>)
                                     : null
                             }
                         </div>

@@ -1,0 +1,8 @@
+{
+    "Your account has been deleted successfully": "Hesabınız başarıyla silinmiştir.",
+    "Account could not be deleted. Please try again": "Hesabınız silinemedi. Lütfen tekrar deneyin.",
+    "An error occurred while deleting the account. Please try again later": "Hesap silinirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
+    "The user account has been deleted successfully": "Kullanıcı hesabı başarıyla silindi.",
+    "User account could not be deleted. Please try again": "Kullanıcı hesabı silinemedi. Lütfen tekrar deneyin.",
+    "An error occurred while deleting the user. Please try again later": "Kullanıcı silinirken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
+}

@@ -14,3 +14,13 @@
     border-radius: 5px;
     background-color: var(--form-bg-color);
 }
+
+.formCheck input:checked {
+    border-color: var(--form-check-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--form-check-color), 0.5);
+}
+
+.formCheck input:focus {
+    border-color: var(--form-check-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--form-check-color), 0.5);
+}

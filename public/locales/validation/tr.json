@@ -11,5 +11,18 @@
     "Invalid mobile format": "Geçersiz cep telefonu formatı.",
     "GUID is required": "GUID zorunludur.",
     "Start date is required": "Başlangıç tarihi zorunludur.",
-    "End date is required": "Bitiş tarihi zorunludur."
+    "End date is required": "Bitiş tarihi zorunludur.",
+    "Name cannot contain numeric characters": "Ad numerik karakter içeremez.",
+    "Surname cannot contain numeric characters": "Soyad numerik karakter içeremez.",
+    "Current password is required": "Güncel şifre zorunludur.",
+    "New password is required": "Yeni şifre zorunludur.",
+    "New password must be at least 6 characters": "Yeni şifre en az 6 karakterli olmalıdır.",
+    "Please confirm your new password": "Lütfen yeni şifrenizi doğrulayın.",
+    "Passwords do not match": "Şifreler eşleşmiyor.",
+    "Group Leader is required": "Grup Lideri seçimi zorunludur.",
+    "At least one member is required": "En az 1 üye seçilmesi gerekmektedir.",
+    "Group Type is required": "Group Tipi zorunludur.",
+    "Group members are required": "Grup üyesi seçimi zorunludur.",
+    "Create User Group Tooltip Message 1": "Kullanıcı grubunu oluşturup devre dışı bırakmak isteyebilirsiniz. Grubu istediğiniz zaman yeniden etkinleştirebilirsiniz.",
+    "Description must be at least 2 characters": "Açıklama en az 2 karakter olmalıdır."
 }

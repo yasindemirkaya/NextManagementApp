@@ -73,4 +73,27 @@ const GroupDetail = () => {
     );
 }
 
+export async function getStaticPaths() {
+    return {
+        paths: [], // Başlangıçta hiçbir sayfa oluşturulmayacak
+        fallback: 'blocking', // İlk ziyaret sırasında sayfa oluşturulacak
+    };
+}
+
+export async function getStaticProps(context) {
+    const formMessages = await import(`../../../../../public/locales/form/${context.locale}.json`);
+    const commonMessages = await import(`../../../../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../../../../public/locales/validation/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...formMessages.default,
+                ...commonMessages.default,
+                ...validationMessages.default,
+            },
+        },
+    };
+}
+
 export default GroupDetail;

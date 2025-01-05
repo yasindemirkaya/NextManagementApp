@@ -13,16 +13,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
 import Cookies from 'js-cookie';
 import { deleteUser, deleteUserById, updateUser, updateUserById } from '@/services/userApi';
+import { useTranslations } from 'next-intl';
 
 const EditProfileCard = ({ userData, onCancel }) => {
+    const lang = localStorage.getItem("language")
+    const t = useTranslations()
     const loggedInUser = useSelector(state => state.user.user);
 
     let changePasswordText = "";
     let deleteAccountText = "";
 
     if (loggedInUser) {
-        changePasswordText = !isSelf(loggedInUser.id, userData.id) ? "Change this user's password." : "I want to change my password."
-        deleteAccountText = !isSelf(loggedInUser.id, userData.id) ? "Delete this user's account." : "I want to delete my account."
+        changePasswordText = !isSelf(loggedInUser.id, userData.id) ? lang === "en" ? "Change this user's password." : "Bu kullanıcının şifresini değiştir" : lang == "en" ? "I want to change my password." : "Şifremi değiştirmek istiyorum."
+        deleteAccountText = !isSelf(loggedInUser.id, userData.id) ? lang === "en" ? "Delete this user's account." : "Bu kullanıcının hesabını sil" : lang == "en" ? "I want to delete my account." : "Hesabımı silmek istiyorum."
     }
 
     const router = useRouter();
@@ -116,13 +119,14 @@ const EditProfileCard = ({ userData, onCancel }) => {
     // Kullanıcının kendi profilini sildiği servis
     const handleDeleteUser = async () => {
         const confirmation = await Swal.fire({
-            title: 'Are you sure?',
-            text: 'Your account will be permanently deleted and cannot be recovered.',
+            title: t('Are you sure?'),
+            text: t('Your account will be permanently deleted and cannot be recovered'),
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
+            confirmButtonText: t('Delete'),
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: t('Cancel')
         });
 
         if (confirmation.isConfirmed) {
@@ -130,15 +134,15 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 const response = await deleteUser();
 
                 if (response.code === 1) {
-                    toast('SUCCESS', response.message || 'Your account has been deleted successfully.')
+                    toast('SUCCESS', response.message || t('Your account has been deleted successfully.'))
                     Cookies.remove('token');
                     dispatch(clearUser());
                     router.push('/login');
                 } else {
-                    toast('ERROR', response.message || 'Account could not be deleted. Please try again.')
+                    toast('ERROR', response.message || t('Account could not be deleted. Please try again.'))
                 }
             } catch (error) {
-                toast('ERROR', 'An error occurred while deleting the account. Please try again later.')
+                toast('ERROR', t('An error occurred while deleting the account. Please try again later'))
             }
         }
     };
@@ -146,13 +150,14 @@ const EditProfileCard = ({ userData, onCancel }) => {
     // Kullanıcının bir başka profili sildiği servis
     const handleDeleteUserById = async (userId) => {
         const confirmation = await Swal.fire({
-            title: 'Are you sure?',
-            text: 'This user account will be permanently deleted and cannot be recovered.',
+            title: t('Are you sure?'),
+            text: t('This account will be permanently deleted and cannot be recovered'),
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
+            confirmButtonText: t('Delete'),
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: t('Cancel')
         });
 
         if (confirmation.isConfirmed) {
@@ -160,15 +165,15 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 const response = await deleteUserById(userId);
 
                 if (response.code === 1) {
-                    toast('SUCCESS', response.message || 'The user account has been deleted successfully.')
+                    toast('SUCCESS', response.message || t('The user account has been deleted successfully'))
                     setTimeout(() => {
                         router.push('/user-management/view-users');
                     }, 1000);
                 } else {
-                    toast('ERROR', response.message || 'User account could not be deleted. Please try again.')
+                    toast('ERROR', response.message || t('User account could not be deleted. Please try again'))
                 }
             } catch (error) {
-                toast('ERROR', 'An error occurred while deleting the user. Please try again later.')
+                toast('ERROR', t('An error occurred while deleting the user. Please try again later'))
 
             }
         }
@@ -242,18 +247,18 @@ const EditProfileCard = ({ userData, onCancel }) => {
         <>
             <Card className={styles.editProfileContainer}>
                 <Card.Body>
-                    <Card.Title>Edit Profile</Card.Title>
+                    <Card.Title>{t("Edit Profile")}</Card.Title>
                     <Form onSubmit={handleSubmit(handleSave)}>
                         {/* Name */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Name</Form.Label>
+                            <Form.Label>{t("Name")}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter your first name"
+                                placeholder={t("Enter your first name")}
                                 {...register("firstName", {
-                                    required: "Name is required",
-                                    minLength: { value: 2, message: "Name must be at least 2 characters" },
-                                    pattern: { value: /^[a-zA-Z\s]*$/, message: "Name cannot contain numeric characters" },
+                                    required: t("Name is required"),
+                                    minLength: { value: 2, message: t("Name must be at least 2 characters") },
+                                    pattern: { value: /^[a-zA-Z\s]*$/, message: t("Name cannot contain numeric characters") },
                                 })}
                                 isInvalid={!!errors.firstName}
                             />
@@ -262,14 +267,14 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
                         {/* Surname */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Surname</Form.Label>
+                            <Form.Label>{t("Surname")}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter your last name"
+                                placeholder={t("Enter your last name")}
                                 {...register("lastName", {
-                                    required: "Surname is required",
-                                    minLength: { value: 2, message: "Surname must be at least 2 characters" },
-                                    pattern: { value: /^[a-zA-Z\s]*$/, message: "Surname cannot contain numeric characters" },
+                                    required: t("Surname is required"),
+                                    minLength: { value: 2, message: t("Surname must be at least 2 characters") },
+                                    pattern: { value: /^[a-zA-Z\s]*$/, message: t("Surname cannot contain numeric characters") },
                                 })}
                                 isInvalid={!!errors.lastName}
                             />
@@ -278,13 +283,13 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
                         {/* Email */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Email</Form.Label>
+                            <Form.Label>{t("Email")}</Form.Label>
                             <Form.Control
                                 type="email"
-                                placeholder="Enter your email"
+                                placeholder={t("Enter your email")}
                                 {...register("email", {
-                                    required: "Email is required",
-                                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" },
+                                    required: t("Email is required"),
+                                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t("Invalid email format") },
                                 })}
                                 isInvalid={!!errors.email}
                             />
@@ -293,19 +298,19 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
                         {/* Mobile */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Mobile</Form.Label>
+                            <Form.Label>{t("Mobile")}</Form.Label>
                             <InputMask
                                 mask="(999) 999-9999"
                                 {...register("mobile", {
-                                    required: "Mobile number is required",
-                                    pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: "Invalid mobile format" },
+                                    required: t("Mobile is required"),
+                                    pattern: { value: /^\(\d{3}\) \d{3}-\d{4}$/, message: t("Invalid mobile format") },
                                 })}
                             >
                                 {(inputProps) => (
                                     <Form.Control
                                         {...inputProps}
                                         type="tel"
-                                        placeholder="Enter your mobile number"
+                                        placeholder={t("Enter your mobile number")}
                                         isInvalid={!!errors.mobile}
                                     />
                                 )}
@@ -316,11 +321,11 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         {/* Role (Sadece adminler başkasını güncellerken görünür. Kullanıcı kendi rolünü değiştiremez */}
                         {roleDisplayer(loggedInUser, userData) ? (
                             <Form.Group className="mb-3">
-                                <Form.Label>Role</Form.Label>
+                                <Form.Label>{t("Role")}</Form.Label>
                                 <div>
                                     <Form.Check
                                         type="radio"
-                                        label="Standard User"
+                                        label={t("Standard User")}
                                         name="role"
                                         value="0"
                                         checked={role === 0}
@@ -328,7 +333,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                                     />
                                     <Form.Check
                                         type="radio"
-                                        label="Admin"
+                                        label={t("Admin")}
                                         name="role"
                                         value="1"
                                         checked={role === 1}
@@ -338,7 +343,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                                     {loggedInUser && loggedInUser.role == 2 ? (
                                         <Form.Check
                                             type="radio"
-                                            label="Super Admin"
+                                            label={t("Super Admin")}
                                             name="role"
                                             value="2"
                                             checked={role === 2}
@@ -351,7 +356,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
 
                         {/* Account Status */}
                         <Form.Group className="mb-3">
-                            <Form.Label>Account Status</Form.Label>
+                            <Form.Label>{t("Account Status")}</Form.Label>
                             <Form.Check
                                 type="switch"
                                 id="isActive"
@@ -365,7 +370,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         {/* Account Verification */}
                         {visibleForSuperAdmins(loggedInUser) ? (
                             <Form.Group className="mb-3">
-                                <Form.Label>Account Verification</Form.Label>
+                                <Form.Label>{t("Account Verification")}</Form.Label>
                                 <Form.Check
                                     type="switch"
                                     id="isVerified"
@@ -377,8 +382,8 @@ const EditProfileCard = ({ userData, onCancel }) => {
                             </Form.Group>
                         ) : null}
 
-                        <Button variant="primary" type="submit">Save</Button>
-                        <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
+                        <Button variant="primary" type="submit">{t("Save")}</Button>
+                        <Button variant="secondary" className="ms-2" onClick={onCancel}>{t("Back")}</Button>
                     </Form>
 
                     <Row className="mt-3">
