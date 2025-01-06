@@ -5,6 +5,8 @@ import styles from './index.module.scss';
 import footerMenu from '@/static/components/footer';
 
 const Footer = () => {
+    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "en"; // Dil parametresini al
+
     return (
         <footer className={styles.footer}>
             <Container>
@@ -18,7 +20,9 @@ const Footer = () => {
                     <Col md={6} className="d-flex justify-content-center justify-content-md-end h-100">
                         {footerMenu.map((menu) => (
                             <div key={menu.id} className={styles.links}>
-                                <Link href={menu.link} className="me-3">{menu.name}</Link>
+                                <Link href={menu.link} className="me-3">
+                                    {lang === "tr" ? menu.nameTR : menu.name}
+                                </Link>
                             </div>
                         ))}
                     </Col>
@@ -27,6 +31,5 @@ const Footer = () => {
         </footer>
     );
 };
-
 
 export default Footer;

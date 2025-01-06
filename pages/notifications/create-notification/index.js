@@ -10,8 +10,10 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import styles from './index.module.scss'
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
+import { useTranslations } from 'next-intl';
 
 const CreateNotification = () => {
+    const t = useTranslations()
     const { register, handleSubmit, setValue, reset, control, formState: { errors, isSubmitting } } = useForm({
         mode: 'onBlur',
         defaultValues: {
@@ -129,7 +131,7 @@ const CreateNotification = () => {
                 toast('ERROR', result.error);
             }
         } catch (error) {
-            toast('ERROR', 'An error occurred when creating a new notification. Please try again later.');
+            toast('ERROR', 'An error occurred when creating a new notification Please try again later');
         }
     };
 
@@ -146,7 +148,7 @@ const CreateNotification = () => {
 
                 <Card className={`${styles.notificationContainer}`}>
                     <Card.Body>
-                        <h2>Create Notification</h2>
+                        <h2>{t("Create Notification")}</h2>
                         <div className="d-flex justify-content-center mb-4 mt-4">
                             {/* Toggle */}
                             <ToggleButtonGroup
@@ -157,10 +159,10 @@ const CreateNotification = () => {
                                 className={styles.toggleButton}
                             >
                                 <ToggleButton id="personal" value="personal" variant="outline-primary">
-                                    Personal Notification
+                                    {t("Personal Notification")}
                                 </ToggleButton>
                                 <ToggleButton id="group" value="group" variant="outline-primary">
-                                    Group Notification
+                                    {t("Group Notification")}
                                 </ToggleButton>
                             </ToggleButtonGroup>
                         </div>
@@ -169,14 +171,14 @@ const CreateNotification = () => {
                             {/* Title */}
                             <Col md={12}>
                                 <Form.Group controlId="title">
-                                    <Form.Label>Title</Form.Label>
+                                    <Form.Label>{t("Title")}</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter a title"
+                                        placeholder={t("Enter a title")}
                                         isInvalid={!!errors.title}
                                         {...register("title", {
-                                            required: "Title is required",
-                                            minLength: { value: 2, message: "Title must be at least 2 characters" },
+                                            required: t("Title is required"),
+                                            minLength: { value: 2, message: t("Title must be at least 2 characters") },
                                             onBlur: (e) => {
                                                 const formattedValue = capitalizeFirstLetter(e.target.value);
                                                 setValue("title", formattedValue);
@@ -190,16 +192,16 @@ const CreateNotification = () => {
                             {/* Description */}
                             <Col md={12}>
                                 <Form.Group controlId="description">
-                                    <Form.Label>Description</Form.Label>
+                                    <Form.Label>{t("Description")}</Form.Label>
                                     <Form.Control
                                         as="textarea"
                                         rows={3}
-                                        placeholder="Enter a description"
+                                        placeholder={t("Enter a description")}
                                         isInvalid={!!errors.description}
                                         {...register("description", {
-                                            required: "Description is required",
-                                            minLength: { value: 2, message: "Description must be at least 2 characters" },
-                                            maxLength: { value: 255, message: 'Description cannot exceed 255 characters.' },
+                                            required: t("Description is required"),
+                                            minLength: { value: 2, message: t("Description must be at least 2 characters") },
+                                            maxLength: { value: 255, message: t('Description cannot exceed 255 characters') },
                                             onBlur: (e) => {
                                                 const formattedValue = capitalizeFirstLetter(e.target.value);
                                                 setValue("description", formattedValue);
@@ -215,11 +217,11 @@ const CreateNotification = () => {
                             {/* Notification Type*/}
                             <Col md={12}>
                                 <Form.Group controlId="type">
-                                    <Form.Label>Notification Type</Form.Label>
+                                    <Form.Label>{t("Notification Type")}</Form.Label>
                                     <Controller
                                         control={control}
                                         name="type"
-                                        rules={{ required: "Notification Type is required" }}
+                                        rules={{ required: t("Notification Type is required") }}
                                         render={({ field, fieldState }) => (
                                             <>
                                                 <Select
@@ -236,7 +238,7 @@ const CreateNotification = () => {
                                                         },
                                                     })}
                                                     options={typeOptions}
-                                                    placeholder="Select notification type"
+                                                    placeholder={t("Select notification type")}
                                                 />
                                                 {fieldState.error && (
                                                     <Form.Text className="text-danger">
@@ -251,7 +253,7 @@ const CreateNotification = () => {
 
                             {/* Date */}
                             <Form.Group controlId="date" className="mb-3">
-                                <Form.Label>Date</Form.Label>
+                                <Form.Label>{t("Date")}</Form.Label>
                                 <Form.Control type="date" {...register('date')} />
                             </Form.Group>
 
@@ -259,7 +261,7 @@ const CreateNotification = () => {
                             {notificationType === 'personal' ? (
                                 <Col md={12}>
                                     <Form.Group controlId="users">
-                                        <Form.Label>Users</Form.Label>
+                                        <Form.Label>{t("Users")}</Form.Label>
                                         {userDataLoading ? (
                                             <div className="text-center">
                                                 <Spinner animation="border" variant="primary" />
@@ -270,7 +272,7 @@ const CreateNotification = () => {
                                             <Controller
                                                 control={control}
                                                 name="users"
-                                                rules={{ required: "Please select at least one user" }}
+                                                rules={{ required: t("Please select at least one user") }}
                                                 render={({ field, fieldState }) => (
                                                     <>
                                                         <Select
@@ -291,7 +293,7 @@ const CreateNotification = () => {
                                                                 label: user.first_name + ' ' + user.last_name
                                                             }))}
                                                             isMulti
-                                                            placeholder="Select user(s)"
+                                                            placeholder={t("Select user(s)")}
                                                         />
                                                         {fieldState.error && (
                                                             <Form.Text className="text-danger">
@@ -307,7 +309,7 @@ const CreateNotification = () => {
                             ) : (
                                 <Col md={12}>
                                     <Form.Group controlId="groups">
-                                        <Form.Label>User Groups</Form.Label>
+                                        <Form.Label>{t("User Groups")}</Form.Label>
                                         {groupDataLoading ? (
                                             <div className="text-center">
                                                 <Spinner animation="border" variant="primary" />
@@ -318,7 +320,7 @@ const CreateNotification = () => {
                                             <Controller
                                                 control={control}
                                                 name="groups"
-                                                rules={{ required: "Please select at least one group" }}
+                                                rules={{ required: t("Please select at least one group") }}
                                                 render={({ field, fieldState }) => (
                                                     <>
                                                         <Select
@@ -339,7 +341,7 @@ const CreateNotification = () => {
                                                                 label: group.group_name
                                                             }))}
                                                             isMulti
-                                                            placeholder="Select group(s)"
+                                                            placeholder={t("Select group(s)")}
                                                         />
                                                         {fieldState.error && (
                                                             <Form.Text className="text-danger">
@@ -356,7 +358,7 @@ const CreateNotification = () => {
 
                             {/* Submit */}
                             <Button variant="primary" type="submit" disabled={isSubmitting} className="mt-3">
-                                {isSubmitting ? 'Creating Notification...' : 'Create Notification'}
+                                {isSubmitting ? t('Creating Notification') : t('Create Notification')}
                             </Button>
                         </Form>
                     </Card.Body>
@@ -366,5 +368,21 @@ const CreateNotification = () => {
         </>
     );
 };
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../../public/locales/validation/${context.locale}.json`);
+    const formMessages = await import(`../../../public/locales/form/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+                ...validationMessages.default,
+                ...formMessages.default,
+            },
+        },
+    };
+}
 
 export default CreateNotification;

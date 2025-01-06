@@ -185,7 +185,7 @@ const EditGroupProfileCard = ({ userGroupData, onCancel }) => {
                             <Form.Label>{t("Group Description")}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder={t("Enter description")}
+                                placeholder={t("Enter a description")}
                                 {...register("description", {
                                 })}
                                 isInvalid={!!errors.description}

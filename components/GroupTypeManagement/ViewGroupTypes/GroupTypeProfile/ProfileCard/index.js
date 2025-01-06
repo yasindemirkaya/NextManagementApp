@@ -3,8 +3,10 @@ import { Card, Button, Spinner, Alert } from 'react-bootstrap';
 import styles from './index.module.scss';
 import EditProfileCard from '../EditProfile';
 import { useSelector } from 'react-redux';
+import { useTranslations } from 'next-intl';
 
 const ProfileCard = ({ groupType, loading, error, fetchGroupTypeById }) => {
+    const t = useTranslations();
     const [isEditing, setIsEditing] = useState(false);
     const loggedInUser = useSelector(state => state.user.user);
 
@@ -29,7 +31,7 @@ const ProfileCard = ({ groupType, loading, error, fetchGroupTypeById }) => {
     }
 
     if (error || !groupType) {
-        return <Alert variant="warning">Group Type data is not available. Please try again later.</Alert>;
+        return <Alert variant="warning">{t("Group type data is not available Please try again later")}</Alert>;
     }
 
     return (
@@ -37,13 +39,13 @@ const ProfileCard = ({ groupType, loading, error, fetchGroupTypeById }) => {
             {!isEditing ? (
                 <Card className={styles.profileCard}>
                     <Card.Body>
-                        <Card.Title>Group Type Information</Card.Title>
+                        <Card.Title>{t("Group Type Information")}</Card.Title>
                         <div className={styles.profileInfo}>
-                            <p className='mt-3'><strong>Type Name:</strong> {groupType.type_name}</p>
-                            <p className={styles.infoText}>*This account is created by {groupType.created_by}</p>
-                            <p className={styles.infoText}>*The last update for this account is made by {groupType.updated_by}</p>
+                            <p className='mt-3'><strong>{t("Type Name")}:</strong> {groupType.type_name}</p>
+                            <p className={styles.infoText}>*{t("This account is created by")} {groupType.created_by}</p>
+                            <p className={styles.infoText}>*{t("The last update for this account is made by")} {groupType.updated_by}</p>
                         </div>
-                        {editButtonDisplayer(loggedInUser) ? (<Button variant="primary" onClick={handleEditClick}>Edit</Button>) : null}
+                        {editButtonDisplayer(loggedInUser) ? (<Button variant="primary" onClick={handleEditClick}>{t("Edit")}</Button>) : null}
                     </Card.Body>
                 </Card>
             ) : (

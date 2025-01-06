@@ -6,9 +6,12 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import styles from './index.module.scss';
 import { deleteGroupType, updateGroupType } from '@/services/groupTypeApi';
+import { useTranslations } from 'next-intl';
 
 const EditProfileCard = ({ groupTypeData, onCancel }) => {
-    let deleteAccountText = "Delete this group type.";
+    const t = useTranslations();
+    const lang = localStorage.getItem("language")
+    let deleteAccountText = lang == "en" ? "Delete this group type." : "Bu grup tipini sil.";
 
     const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -38,13 +41,14 @@ const EditProfileCard = ({ groupTypeData, onCancel }) => {
     // Delete group type
     const handleDeleteGroupType = async (groupTypeId) => {
         const confirmation = await Swal.fire({
-            title: 'Are you sure?',
-            text: 'This group type will be permanently deleted and cannot be recovered.',
+            title: t('Are you sure?'),
+            text: t('This group type will be permanently deleted and cannot be recovered'),
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
+            confirmButtonText: t('Delete'),
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: t('Cancel')
         });
 
         if (confirmation.isConfirmed) {
@@ -57,10 +61,10 @@ const EditProfileCard = ({ groupTypeData, onCancel }) => {
                         router.push('/group-type-management/view-group-types');
                     }, 1000);
                 } else {
-                    toast('ERROR', response.message || 'User account could not be deleted. Please try again.')
+                    toast('ERROR', response.message || t('Group type could not be deleted Please try again'))
                 }
             } catch (error) {
-                toast('ERROR', 'An error occurred while deleting the user. Please try again later.')
+                toast('ERROR', t('An error occurred while deleting the group type Please try again later'))
             }
         }
     };
@@ -77,25 +81,25 @@ const EditProfileCard = ({ groupTypeData, onCancel }) => {
         <>
             <Card className={styles.profileEditCard}>
                 <Card.Body>
-                    <Card.Title>Edit Group Type</Card.Title>
+                    <Card.Title>{t("Edit Group Type")}</Card.Title>
                     <Form onSubmit={handleSubmit(handleSave)}>
                         {/* Name */}
                         <Form.Group className="mb-3 mt-3">
-                            <Form.Label>Type Name</Form.Label>
+                            <Form.Label>{t("Type Name")}</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter group type name"
+                                placeholder={t("Enter group type name")}
                                 {...register("typeName", {
-                                    required: "Name is required",
-                                    minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                    required: t("Name is required"),
+                                    minLength: { value: 2, message: t("Name must be at least 2 characters") },
                                 })}
                                 isInvalid={!!errors.typeName}
                             />
                             <Form.Control.Feedback type="invalid">{errors.typeName?.message}</Form.Control.Feedback>
                         </Form.Group>
 
-                        <Button variant="primary" type="submit">Save</Button>
-                        <Button variant="secondary" className="ms-2" onClick={onCancel}>Back</Button>
+                        <Button variant="primary" type="submit">{t("Save")}</Button>
+                        <Button variant="secondary" className="ms-2" onClick={onCancel}>{t("Back")}</Button>
                     </Form>
 
                     <Row className="mt-3">

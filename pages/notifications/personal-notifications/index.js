@@ -8,6 +8,7 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { getStyleForNotificationType } from '@/helpers/getStyleForNotificationType';
+import { useTranslations } from 'next-intl';
 
 const PersonalNotifications = () => {
     const [notifications, setNotifications] = useState([]);
@@ -18,6 +19,7 @@ const PersonalNotifications = () => {
     const [hasMore, setHasMore] = useState(true); // Diğer sayfa var mı kontrolü
 
     const router = useRouter();
+    const t = useTranslations();
 
     // Kişisel bildirimleri çekme
     const fetchNotifications = async () => {
@@ -91,7 +93,7 @@ const PersonalNotifications = () => {
             <Container>
                 <Row>
                     <Col md={8}>
-                        <h4>Personal Notifications</h4>
+                        <h4>{t("Personal Notifications")}</h4>
                         {loading ? (
                             <Spinner animation="border" />
                         ) : error ? (
@@ -124,10 +126,10 @@ const PersonalNotifications = () => {
                                                     {/* Type & From */}
                                                     <Row className="mb-2">
                                                         <Col md={5}>
-                                                            Type: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
+                                                            {t("Type")}: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
                                                         </Col>
                                                         <Col md={7}>
-                                                            From: <span className="text-danger fw-bold">{notification.created_by}</span>
+                                                            {t("From")}: <span className="text-danger fw-bold">{notification.created_by}</span>
                                                         </Col>
                                                     </Row>
 
@@ -135,7 +137,7 @@ const PersonalNotifications = () => {
                                                     <Row>
                                                         <Col md={12}>
                                                             <div>
-                                                                Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                                                {t("Seen")}: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
                                                             </div>
                                                         </Col>
                                                     </Row>
@@ -149,7 +151,7 @@ const PersonalNotifications = () => {
                                                                         <div onClick={() => handleMarkAsSeen(notification)} className={styles.markAsSeenButton}>
                                                                             <FontAwesomeIcon icon={icons.faEye} className="me-2 text-info" />
                                                                             <em className={`text-info ${styles.markAsSeenButton}`}>
-                                                                                Mark as seen
+                                                                                {t("Mark as seen")}
                                                                             </em>
                                                                         </div>
                                                                     </div>
@@ -157,7 +159,7 @@ const PersonalNotifications = () => {
 
                                                                 {notification.is_seen && (
                                                                     <em className={`${styles.seenAtDate}`}>
-                                                                        (Seen at {notification.updatedAt})
+                                                                        ({t("Seen at")} {notification.updatedAt})
                                                                     </em>
                                                                 )}
 
@@ -166,7 +168,7 @@ const PersonalNotifications = () => {
                                                                     placement="right"
                                                                     overlay={
                                                                         <Tooltip>
-                                                                            Notifications marked as seen will be removed from your page.
+                                                                            {t("Notifications marked as seen will be removed from your page")}
                                                                         </Tooltip>
                                                                     }
                                                                 >
@@ -183,11 +185,11 @@ const PersonalNotifications = () => {
 
                                 <div className="d-flex justify-content-center mb-3">
                                     <Button variant="link" className="text-secondary" onClick={handleBack}>
-                                        Back
+                                        {t("Back")}
                                     </Button>
                                     {hasMore && (
                                         <Button variant="link" onClick={handleViewMore}>
-                                            View More
+                                            {t("View More")}
                                         </Button>
                                     )}
                                 </div>
@@ -201,5 +203,23 @@ const PersonalNotifications = () => {
 
     );
 };
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../../public/locales/validation/${context.locale}.json`);
+    const formMessages = await import(`../../../public/locales/form/${context.locale}.json`);
+    const responseMessages = await import(`../../../public/locales/response/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+                ...validationMessages.default,
+                ...formMessages.default,
+                ...responseMessages.default,
+            },
+        },
+    };
+}
 
 export default PersonalNotifications;

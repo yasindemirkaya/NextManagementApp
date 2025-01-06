@@ -139,10 +139,10 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     dispatch(clearUser());
                     router.push('/login');
                 } else {
-                    toast('ERROR', response.message || t('Account could not be deleted. Please try again.'))
+                    toast('ERROR', response.message || t('Account could not be deleted Please try again.'))
                 }
             } catch (error) {
-                toast('ERROR', t('An error occurred while deleting the account. Please try again later'))
+                toast('ERROR', t('An error occurred while deleting the account Please try again later'))
             }
         }
     };
@@ -170,10 +170,10 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         router.push('/user-management/view-users');
                     }, 1000);
                 } else {
-                    toast('ERROR', response.message || t('User account could not be deleted. Please try again'))
+                    toast('ERROR', response.message || t('User Account could not be deleted Please try again'))
                 }
             } catch (error) {
-                toast('ERROR', t('An error occurred while deleting the user. Please try again later'))
+                toast('ERROR', t('An error occurred while deleting the user Please try again later'))
 
             }
         }

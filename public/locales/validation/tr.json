@@ -24,5 +24,13 @@
     "Group Type is required": "Group Tipi zorunludur.",
     "Group members are required": "Grup üyesi seçimi zorunludur.",
     "Create User Group Tooltip Message 1": "Kullanıcı grubunu oluşturup devre dışı bırakmak isteyebilirsiniz. Grubu istediğiniz zaman yeniden etkinleştirebilirsiniz.",
-    "Description must be at least 2 characters": "Açıklama en az 2 karakter olmalıdır."
+    "Description must be at least 2 characters": "Açıklama en az 2 karakter olmalıdır.",
+    "Only letters, numbers, and spaces are allowed": "Yalnızca harflere, sayılara ve boşluklara izin verilir",
+    "Title is required": "Başlık zorunludur.",
+    "Title must be at least 2 characters": "Başlık en az iki karakter olmalıdır.",
+    "Description cannot exceed 255 characters": "Başlık 255 karakteri geçemez.",
+    "Notification Type is required": "Bildirim türü zorunludur.",
+    "Please select at least one user": "Lütfen en az bir kullanıcı seçin.",
+    "Please select at least one group": "Lütfen en az bir kullanıcı grubu seçin.",
+    "Description is required": "Açıklama zorunludur."
 }

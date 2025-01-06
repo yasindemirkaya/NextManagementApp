@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { getStyleForNotificationType } from '@/helpers/getStyleForNotificationType';
 import Swal from 'sweetalert2';
+import { useTranslations } from 'next-intl';
 
 const MyNotifications = () => {
     const [notifications, setNotifications] = useState([]);
@@ -19,6 +20,7 @@ const MyNotifications = () => {
     const [hasMore, setHasMore] = useState(true); // Diğer sayfa var mı kontrolü
 
     const router = useRouter();
+    const t = useTranslations();
 
     // My Notifications verilerini çekme
     const fetchNotifications = async () => {
@@ -69,13 +71,14 @@ const MyNotifications = () => {
     // Handle delete notification
     const handleDeleteNotification = async (notification) => {
         const confirmation = await Swal.fire({
-            title: 'Are you sure?',
-            text: "This notification will be permanently deleted and cannot be recovered.",
+            title: t('Are you sure?'),
+            text: t("This notification will be permanently deleted and cannot be recovered"),
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
+            confirmButtonText: t('Delete'),
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!'
+            cancelButtonText: t('Cancel')
         });
 
         if (confirmation.isConfirmed) {
@@ -90,7 +93,7 @@ const MyNotifications = () => {
                     toast('ERROR', result.error);
                 }
             } catch (err) {
-                toast('ERROR', 'An error occurred while deleting the notification. Please try again later.');
+                toast('ERROR', t('An error occurred while deleting the notification Please try again later'));
             }
         }
     };
@@ -105,7 +108,7 @@ const MyNotifications = () => {
             <Container>
                 <Row>
                     <Col md={8}>
-                        <h4>My Notifications</h4>
+                        <h4>{t("My Notifications")}</h4>
                         {loading ? (
                             <Spinner animation="border" />
                         ) : error ? (
@@ -136,7 +139,7 @@ const MyNotifications = () => {
                                                     {/* Type & User or Group */}
                                                     <Row className="mb-2">
                                                         <Col md={5}>
-                                                            Type: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
+                                                            {t("Type")}: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
                                                         </Col>
                                                         <Col md={7}>
                                                             {notification.user ? 'User:' : 'Group:'} <span className="text-danger fw-bold">{notification.user || notification.group}</span>
@@ -147,14 +150,14 @@ const MyNotifications = () => {
                                                     <Row className="mb-2">
                                                         <Col md={5}>
                                                             <div>
-                                                                Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                                                {t("Seen")}: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
                                                             </div>
                                                         </Col>
                                                         <Col md={5}>
                                                             {notification.is_seen && (
                                                                 <div className="mb-2">
                                                                     <em className={`${styles.seenAtDate}`}>
-                                                                        (Seen at {notification.updatedAt})
+                                                                        ({t("Seen at")} {notification.updatedAt})
                                                                     </em>
                                                                 </div>
                                                             )}
@@ -169,7 +172,7 @@ const MyNotifications = () => {
                                                                     <div onClick={() => handleDeleteNotification(notification)}>
                                                                         <FontAwesomeIcon icon={icons.faTrash} className="me-2 text-danger" />
                                                                         <em className={`text-danger ${styles.markAsSeenButton}`}>
-                                                                            Delete Notification
+                                                                            {t("Delete Notification")}
                                                                         </em>
                                                                     </div>
                                                                 </div>
@@ -179,7 +182,7 @@ const MyNotifications = () => {
                                                                     placement="right"
                                                                     overlay={
                                                                         <Tooltip>
-                                                                            Deleted notifications cannot be brought back.
+                                                                            {t("Deleted notifications cannot be brought back")}
                                                                         </Tooltip>
                                                                     }
                                                                 >
@@ -197,11 +200,11 @@ const MyNotifications = () => {
                                 {/* Back & View More */}
                                 <div className="d-flex justify-content-center mb-3">
                                     <Button variant="link" className="text-secondary" onClick={handleBack}>
-                                        Back
+                                        {t("Back")}
                                     </Button>
                                     {hasMore && (
                                         <Button variant="link" onClick={handleViewMore}>
-                                            View More
+                                            {t("View More")}
                                         </Button>
                                     )}
                                 </div>
@@ -214,5 +217,23 @@ const MyNotifications = () => {
         </>
     );
 };
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../../public/locales/validation/${context.locale}.json`);
+    const formMessages = await import(`../../../public/locales/form/${context.locale}.json`);
+    const responseMessages = await import(`../../../public/locales/response/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+                ...validationMessages.default,
+                ...formMessages.default,
+                ...responseMessages.default,
+            },
+        },
+    };
+}
 
 export default MyNotifications;

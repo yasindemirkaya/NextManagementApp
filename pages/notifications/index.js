@@ -10,8 +10,10 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { getStyleForNotificationType } from "@/helpers/getStyleForNotificationType";
 import Swal from "sweetalert2";
+import { useTranslations } from "use-intl";
 
 const Notifications = () => {
+    const t = useTranslations();
     const router = useRouter();
     const [myNotifications, setMyNotifications] = useState([]);
     const [groupNotifications, setGroupNotifications] = useState([]);
@@ -53,7 +55,7 @@ const Notifications = () => {
                 setErrorPersonalNotifications(personalResult.error);
             }
         } catch (err) {
-            setErrorPersonalNotifications("Failed to fetch personal notifications. Please try again later.");
+            setErrorPersonalNotifications(t("Failed to fetch personal notifications Please try again later"));
         }
 
         try {
@@ -65,7 +67,7 @@ const Notifications = () => {
                 setErrorGroupNotifications(groupResult.error);
             }
         } catch (err) {
-            setErrorGroupNotifications("Failed to fetch group notifications. Please try again later.");
+            setErrorGroupNotifications(t("Failed to fetch group notifications Please try again later"));
         }
 
         setLoadingPersonalNotifications(false);
@@ -86,7 +88,7 @@ const Notifications = () => {
                 setErrorMyNotifications(result.error);
             }
         } catch (err) {
-            setErrorMyNotifications("Failed to fetch your notifications. Please try again later.");
+            setErrorMyNotifications(t("Failed to fetch your notifications Please try again later"));
         }
 
         setLoadingMyNotifications(false);
@@ -113,13 +115,14 @@ const Notifications = () => {
     const handleDeleteNotification = async (notification) => {
         try {
             const confirmation = await Swal.fire({
-                title: 'Are you sure?',
-                text: "This notification will be permanently deleted and cannot be recovered.",
+                title: t('Are you sure?'),
+                text: t("This notification will be permanently deleted and cannot be recovered"),
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
+                confirmButtonText: t('Delete'),
                 cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
+                cancelButtonText: t('Cancel')
             });
 
             if (confirmation.isConfirmed) {
@@ -144,7 +147,7 @@ const Notifications = () => {
                 }
             }
         } catch (err) {
-            toast('ERROR', 'An error occurred while deleting the notification. Please try again later.');
+            toast('ERROR', t('An error occurred while deleting the notification Please try again later'));
         }
     };
 
@@ -177,11 +180,11 @@ const Notifications = () => {
                                     {/* Type & From */}
                                     <Row className="mb-2">
                                         <Col md={5}>
-                                            Type: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
+                                            {t(Type)}: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
                                         </Col>
                                         {route !== '/my-notifications' && (
                                             <Col md={7}>
-                                                From: <span className="text-danger fw-bold">{notification.created_by}</span>
+                                                {t(From)}: <span className="text-danger fw-bold">{notification.created_by}</span>
                                             </Col>
                                         )}
                                     </Row>
@@ -189,15 +192,15 @@ const Notifications = () => {
                                     {/* Seen & Group Name or User */}
                                     <Row className="mb-2">
                                         <Col md={5}>
-                                            Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                            {t("Seen")}: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
                                         </Col>
                                         {route === '/my-notifications' && notification.group ? (
                                             <Col md={7}>
-                                                Group Name: <span className="text-danger fw-bold">{notification.group}</span>
+                                                {t("Group Name")}: <span className="text-danger fw-bold">{notification.group}</span>
                                             </Col>
                                         ) : route === '/my-notifications' && !notification.group ? (
                                             <Col md={7}>
-                                                User: <span className="text-danger fw-bold">{notification.user}</span>
+                                                {t("User")}: <span className="text-danger fw-bold">{notification.user}</span>
                                             </Col>
                                         ) : null}
                                     </Row>
@@ -208,7 +211,7 @@ const Notifications = () => {
                                             <Col md={12}>
                                                 <div className="mb-2">
                                                     <em className={`${styles.seenAtDate}`}>
-                                                        (Seen at {notification.updatedAt})
+                                                        ({t("Seen at")} {notification.updatedAt})
                                                     </em>
                                                 </div>
                                             </Col>
@@ -225,7 +228,7 @@ const Notifications = () => {
                                                             <div onClick={() => handleMarkAsSeen(notification)} className={styles.markAsSeenButton}>
                                                                 <FontAwesomeIcon icon={icons.faEye} className="me-2 text-info" />
                                                                 <em className={`text-info ${styles.markAsSeenButton}`}>
-                                                                    Mark as seen
+                                                                    {t("Mark as seen")}
                                                                 </em>
                                                             </div>
                                                         </div>
@@ -240,7 +243,7 @@ const Notifications = () => {
                                                         <div onClick={() => handleDeleteNotification(notification)}>
                                                             <FontAwesomeIcon icon={icons.faTrash} className="me-2 text-danger" />
                                                             <em className={`text-danger ${styles.markAsSeenButton}`}>
-                                                                Delete Notification
+                                                                {t("Delete Notification")}
                                                             </em>
                                                         </div>
                                                     </div>
@@ -257,7 +260,7 @@ const Notifications = () => {
                 {notifications.length >= 3 && (
                     <div className="d-flex justify-content-center mb-3">
                         <Button variant="link" onClick={() => router.push(`/notifications${route}`)}>
-                            View More
+                            {t("View More")}
                         </Button>
                     </div>
                 )}
@@ -320,7 +323,24 @@ const Notifications = () => {
             <ToastContainer />
         </>
     );
-
 };
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../public/locales/validation/${context.locale}.json`);
+    const formMessages = await import(`../../public/locales/form/${context.locale}.json`);
+    const responseMessages = await import(`../../public/locales/response/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+                ...validationMessages.default,
+                ...formMessages.default,
+                ...responseMessages.default,
+            },
+        },
+    };
+}
 
 export default Notifications;

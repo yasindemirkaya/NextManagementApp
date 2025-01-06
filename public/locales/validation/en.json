@@ -24,5 +24,14 @@
     "Group Type is required": "Group Type is required.",
     "Group members are required": "Group members are required.",
     "Create User Group Tooltip Message 1": "You may want to create the user group and leave it inactive. You can reactivate the group at any time.",
-    "Description must be at least 2 characters": "Description must be at least 2 characters"
+    "Description must be at least 2 characters": "Description must be at least 2 characters",
+    "Only letters, numbers, and spaces are allowed": "Only letters, numbers, and spaces are allowed",
+    "Title is required": "Title is required",
+    "Title must be at least 2 characters": "Title must be at least 2 characters",
+    "Description cannot exceed 255 characters": "Description cannot exceed 255 characters.",
+    "Notification Type": "Notification Type",
+    "Notification Type is required": "Notification Type is required.",
+    "Please select at least one user": "Please select at least one user.",
+    "Please select at least one group": "Please select at least one group.",
+    "Description is required": "Description is required."
 }

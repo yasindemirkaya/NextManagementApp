@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
 import styles from "./index.module.scss";
 import { useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
 
 const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
     const loggedInUser = useSelector(state => state.user.user);
+    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "en"; // Dil parametresini al
 
     const [activeMenuId, setActiveMenuId] = useState(null);
     const [activeSubMenuId, setActiveSubMenuId] = useState(null);
@@ -56,7 +56,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                 }}
             >
                 {/* Ana menü adı */}
-                {menu.name}
+                {lang === "tr" ? menu.nameTR : menu.name}
 
                 {/* Ana menünün alt menüsü varsa ok işareti ekle */}
                 {menu.subMenus && menu.subMenus.length > 0 && (
@@ -69,17 +69,6 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                         }}
                     />
                 )}
-                {/* <Button
-                    className="ms-3"
-                    variant="secondary"
-                    size="sm"
-                    onClick={(e) => {
-                        e.stopPropagation(); // Buton tıklamasının üst menüye yayılmasını engeller
-                        window.location.href = menu.link; // Yönlendirme işlemi
-                    }}
-                >
-                    <FontAwesomeIcon icon={icons.faChevronRight} />
-                </Button> */}
             </Nav.Link>
 
             {/* Alt menüler */}
@@ -106,7 +95,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                                         className="me-2"
                                     />
                                     {/* Alt menü adı */}
-                                    {subMenu.name}
+                                    {lang === "tr" ? subMenu.nameTR : subMenu.name}
 
                                     {/* Alt menü ok işareti */}
                                     {subMenu.subMenus && subMenu.subMenus.length > 0 && (
@@ -119,21 +108,6 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                                             }}
                                         />
                                     )}
-
-                                    {/* Alt menünün alt menüsü yoksa buton göster */}
-                                    {/* {subMenu.subMenus && (
-                                        <Button
-                                            className="ms-3"
-                                            variant="secondary"
-                                            size="sm"
-                                            onClick={(e) => {
-                                                e.stopPropagation(); // Buton tıklamasının üst menüye yayılmasını engeller
-                                                window.location.href = subMenu.link; // Yönlendirme işlemi
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={icons.faChevronRight} />
-                                        </Button>
-                                    )} */}
                                 </Nav.Link>
 
                                 {/* Alt menülerin alt menüleri */}
@@ -147,11 +121,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                                                         className={`${styles.subMenuItem}`}
                                                         as="button"
                                                         onClick={() => {
-                                                            if (!subSubMenu.subMenus || !subSubMenu.subMenus.length) {
-                                                                handleSubMenuClick(subSubMenu.id, subSubMenu.link);
-                                                            } else {
-                                                                setActiveSubMenuId(subSubMenu.id);
-                                                            }
+                                                            handleSubMenuClick(subSubMenu.id, subSubMenu.link);
                                                         }}
                                                     >
                                                         {/* Alt menülerin alt menüsü ikon */}
@@ -160,7 +130,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                                                             className="me-2"
                                                         />
                                                         {/* Alt menülerin alt menüsü adı */}
-                                                        {subSubMenu.name}
+                                                        {lang === "tr" ? subSubMenu.nameTR : subSubMenu.name}
                                                     </Nav.Link>
                                                 </div>
                                             ))}

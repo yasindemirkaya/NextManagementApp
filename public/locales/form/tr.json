@@ -61,5 +61,20 @@
     "Select group type": "Grup tipi seçin.",
     "Select group members": "Grup üyelerini seçin.",
     "Create User Group": "Kullanıcı Grubu Oluştur",
-    "Creating User Group": "Kullanıcı Grubu Oluşturuluyor..."
+    "Creating User Group": "Kullanıcı Grubu Oluşturuluyor...",
+    "Type Name": "Tip Adı",
+    "Enter group type name": "Grup Tipi Adı girin.",
+    "Title": "Başlık",
+    "Enter a title": "Başlık girin.",
+    "Notification Type": "Bildirim Türü",
+    "Select notification type": "Bildirim türü seçin.",
+    "Date": "Tarih",
+    "Users": "Kullanıcılar",
+    "Select user(s)": "Kullanıcı(lar) seçin.",
+    "User Groups": "Kullanıcı Grupları",
+    "Select group(s)": "Grup(lar) seçin.",
+    "Creating Notification": "Bildirim Oluşturuluyor...",
+    "Create Notification": "Bildirim Oluştur",
+    "User": "Kullanıcı",
+    "Enter a password for the user": "Kullanıcı için bir şifre girin."
 }

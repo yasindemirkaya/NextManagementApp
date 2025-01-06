@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Spinner, Alert, Badge } from 'react-bootstrap';
 import Table from "@/components/Common/Table";
 import { getGroupTypes } from "@/services/groupTypeApi";
+import { useTranslations } from "next-intl";
 
 const UserGroups = () => {
+    const t = useTranslations()
     const headers = ["Type Name", 'Created By', 'Updated By']
     const [groupTypeData, setGroupTypeData] = useState([])
     const [loading, setLoading] = useState(false)
@@ -62,7 +64,7 @@ const UserGroups = () => {
 
     if (error || !groupTypeData) {
         return (
-            <Alert variant="warning">Group type data is not available. Please try again later.</Alert>
+            <Alert variant="warning">{t("Group type data is not available Please try again later")}</Alert>
         )
     }
 
@@ -85,12 +87,14 @@ const UserGroups = () => {
 export async function getStaticProps(context) {
     const headerMessages = await import(`../../../public/locales/common/${context.locale}.json`);
     const formMessages = await import(`../../../public/locales/form/${context.locale}.json`);
+    const validationMessages = await import(`../../../public/locales/validation/${context.locale}.json`);
 
     return {
         props: {
             messages: {
                 ...headerMessages.default,
                 ...formMessages.default,
+                ...validationMessages.default,
             },
         },
     };

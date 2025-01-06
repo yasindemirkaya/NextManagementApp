@@ -61,7 +61,7 @@ const CreateUser = () => {
                                         <Form.Label>{t("Name")}</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder={t("Enter users name")}
+                                            placeholder={t("Enter user's name")}
                                             isInvalid={!!errors.lastName}
                                             {...register("firstName", {
                                                 required: t('Name is required'),

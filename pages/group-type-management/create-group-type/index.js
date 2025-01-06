@@ -6,8 +6,10 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { createGroupType } from '@/services/groupTypeApi';
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
+import { useTranslations } from 'next-intl';
 
 const CreateGroupType = () => {
+    const t = useTranslations()
     const { register, handleSubmit, setValue, reset, formState: { errors, isSubmitting } } = useForm({
         mode: 'onBlur',
     });
@@ -33,24 +35,24 @@ const CreateGroupType = () => {
             <Container>
                 <Card className={`${styles.createGroupContainer}`}>
                     <Card.Body>
-                        <h2>Create Group Type</h2>
+                        <h2>{t("Create Group Type")}</h2>
                         <Form onSubmit={handleSubmit(onSubmit)}>
                             <Row>
                                 <Col md={12}>
                                     <Form.Group controlId="typeName">
-                                        <Form.Label>Type Name</Form.Label>
+                                        <Form.Label>{t("Type Name")}</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Enter group's name"
+                                            placeholder={t("Enter group type name")}
                                             {...register("typeName", {
-                                                required: "Name is required",
-                                                minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                                required: t("Name is required"),
+                                                minLength: { value: 2, message: t("Name must be at least 2 characters") },
                                                 onBlur: (e) => {
                                                     const formattedValue = capitalizeFirstLetter(e.target.value);
                                                     setValue("typeName", formattedValue);
                                                 },
                                                 validate: (value) =>
-                                                    /^[a-zA-Z0-9\s]*$/.test(value) || "Only letters, numbers, and spaces are allowed",
+                                                    /^[a-zA-Z0-9\s]*$/.test(value) || t("Only letters, numbers, and spaces are allowed"),
                                             })}
                                             isInvalid={!!errors.typeName}
                                         />
@@ -63,7 +65,7 @@ const CreateGroupType = () => {
 
                             {/* Button */}
                             <Button variant="primary" type="submit" disabled={isSubmitting} className="mt-3">
-                                {isSubmitting ? 'Creating Group Type...' : 'Create Group Type'}
+                                {isSubmitting ? t('Creating Group Type') : t('Create Group Type')}
                             </Button>
                         </Form>
                     </Card.Body>
@@ -74,5 +76,21 @@ const CreateGroupType = () => {
 
     );
 };
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../../public/locales/validation/${context.locale}.json`);
+    const formMessages = await import(`../../../public/locales/form/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+                ...validationMessages.default,
+                ...formMessages.default,
+            },
+        },
+    };
+}
 
 export default CreateGroupType;

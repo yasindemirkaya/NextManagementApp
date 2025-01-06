@@ -10,18 +10,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
 import Cookies from 'js-cookie';
 import { getNotificationCount, getNotifications } from '@/services/notificationApi';
-import { useTranslations } from 'next-intl';
 
 const Header = ({ toggleSidebar }) => {
-    const t = useTranslations()
-    const router = useRouter()
-    const dispatch = useDispatch()
-    const loggedInUser = useSelector(state => state.user.user)
-    const token = Cookies.get('token')
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const loggedInUser = useSelector(state => state.user.user);
+    const token = Cookies.get('token');
 
-    const [notificationCount, setNotificationCount] = useState(0)
-    const [notifications, setNotifications] = useState([])
-    const [loading, setLoading] = useState(false)
+    const [notificationCount, setNotificationCount] = useState(0);
+    const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const savedTheme = localStorage.getItem("theme");
@@ -31,19 +29,18 @@ const Header = ({ toggleSidebar }) => {
     const toggleTheme = () => setIsDarkMode(prevMode => !prevMode);
 
     const changeLanguage = (lang) => {
-        localStorage.setItem("language", lang)
+        localStorage.setItem("language", lang);
         router.push(router.asPath, router.asPath, { locale: lang });
     };
 
+    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "en";
     let profileText = loggedInUser ? loggedInUser.email : "Profile";
 
     useEffect(() => {
         if (token) {
-            // İlk yüklemede veriyi alalım
             fetchNotificationCount();
             fetchNotifications();
 
-            // Call these endpoints for every 5 mins
             const interval = setInterval(() => {
                 fetchNotificationCount();
                 fetchNotifications();
@@ -58,7 +55,6 @@ const Header = ({ toggleSidebar }) => {
         localStorage.setItem("theme", isDarkMode ? "dark" : "light");
     }, [isDarkMode]);
 
-    // Get all notifications
     const fetchNotifications = async () => {
         setLoading(true);
         const result = await getNotifications({ type: 2, page: 1, limit: 3 });
@@ -68,7 +64,6 @@ const Header = ({ toggleSidebar }) => {
         }
     };
 
-    // Get Notification Count
     const fetchNotificationCount = async () => {
         const result = await getNotificationCount(token);
         if (result.success) {
@@ -76,14 +71,12 @@ const Header = ({ toggleSidebar }) => {
         }
     };
 
-    // Handle logout
     const handleLogout = () => {
-        Cookies.remove('token')
+        Cookies.remove('token');
         dispatch(clearUser());
         router.push('/login');
     };
 
-    // Login olmuş user yoksa, Header'ı render etme
     if (!loggedInUser || !token) {
         return null;
     }
@@ -95,7 +88,6 @@ const Header = ({ toggleSidebar }) => {
                     <FontAwesomeIcon icon={icons.faChevronRight} />
                 </Button>
                 <Container>
-                    {/* Brand */}
                     <Navbar.Brand as={Link} href="/">MyApp</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
@@ -105,14 +97,15 @@ const Header = ({ toggleSidebar }) => {
                             .filter(menu => menu.id <= 2)
                             .map(menu => (
                                 <Nav key={menu.id} className={styles.menuItem}>
-                                    <Nav.Link as={Link} href={menu.link}>{menu.name}</Nav.Link>
+                                    <Nav.Link as={Link} href={menu.link}>
+                                        {lang === "tr" ? menu.nameTR : menu.name}
+                                    </Nav.Link>
                                 </Nav>
                             ))
                         }
 
                         {/* Right Menu */}
                         <Nav className="ms-auto d-flex align-items-center">
-                            {/* Theme Toggle Button */}
                             <label className={styles.toggleSwitch}>
                                 <input
                                     type="checkbox"
@@ -125,7 +118,6 @@ const Header = ({ toggleSidebar }) => {
                                 </span>
                             </label>
 
-                            {/* Language Switch */}
                             <Button
                                 variant="link"
                                 onClick={() => changeLanguage(router.locale === 'en' ? 'tr' : 'en')}
@@ -138,27 +130,22 @@ const Header = ({ toggleSidebar }) => {
                                 .filter(menu => menu.id > 2)
                                 .map(menu => (
                                     <Nav key={menu.id} className={styles.menuItem}>
-                                        {/* Notifications */}
                                         {menu.name === "Notifications" ? (
                                             notificationCount > 0 ? (
                                                 <Dropdown>
                                                     <Dropdown.Toggle as={Nav.Link} className={styles.menuItem}>
                                                         <FontAwesomeIcon icon={icons[menu.icon]} />
-
-                                                        {/* Notification Count */}
                                                         {notificationCount > 0 && (
                                                             <Badge bg="danger" pill className={styles.notificationBadge}>
                                                                 {notificationCount}
                                                             </Badge>
                                                         )}
                                                     </Dropdown.Toggle>
-
                                                     <Dropdown.Menu>
                                                         {loading ? (
-                                                            <Dropdown.Item disabled>{t("Loading")}</Dropdown.Item>
+                                                            <Dropdown.Item disabled>Loading</Dropdown.Item>
                                                         ) : notifications.length > 0 ? (
                                                             <>
-                                                                {/* Show only first 3 */}
                                                                 {notifications.map((notification, index) => (
                                                                     <Dropdown.Item
                                                                         key={index}
@@ -168,14 +155,12 @@ const Header = ({ toggleSidebar }) => {
                                                                         {notification.title}
                                                                     </Dropdown.Item>
                                                                 ))}
-
-                                                                {/* "View More..." butonu */}
                                                                 <Dropdown.Item as={Link} href="/notifications" className={styles.viewMore}>
-                                                                    {t("View More")}
+                                                                    View More
                                                                 </Dropdown.Item>
                                                             </>
                                                         ) : (
-                                                            <Dropdown.Item>{t("No notifications")}</Dropdown.Item>
+                                                            <Dropdown.Item>No notifications</Dropdown.Item>
                                                         )}
                                                     </Dropdown.Menu>
                                                 </Dropdown>
@@ -186,14 +171,13 @@ const Header = ({ toggleSidebar }) => {
                                             )
                                         ) : (
                                             <Nav.Link as={Link} href={menu.link}>
-                                                <FontAwesomeIcon icon={icons[menu.icon]} />
+                                                {lang === "tr" ? menu.nameTR : menu.name}
                                             </Nav.Link>
                                         )}
                                     </Nav>
                                 ))
                             }
 
-                            {/* Profile / Log Out */}
                             {loggedInUser ? (
                                 <>
                                     <Nav.Link as={Link} href="/profile" className={styles.menuItem}>{profileText}</Nav.Link>
@@ -202,7 +186,7 @@ const Header = ({ toggleSidebar }) => {
                                     </Nav.Link>
                                 </>
                             ) : (
-                                <Nav.Link as={Link} href="/login">{t("Login")}</Nav.Link>
+                                <Nav.Link as={Link} href="/login">Login</Nav.Link>
                             )}
                         </Nav>
                     </Navbar.Collapse>

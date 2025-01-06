@@ -8,6 +8,7 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { getStyleForNotificationType } from '@/helpers/getStyleForNotificationType';
+import { useTranslations } from 'next-intl';
 
 const GroupNotifications = () => {
     const [notifications, setNotifications] = useState([]);
@@ -18,6 +19,7 @@ const GroupNotifications = () => {
     const [hasMore, setHasMore] = useState(true); // Diğer sayfa var mı kontrolü
 
     const router = useRouter();
+    const t = useTranslations();
 
     // Group bildirimleri çekme
     const fetchNotifications = async () => {
@@ -91,7 +93,7 @@ const GroupNotifications = () => {
             <Container>
                 <Row>
                     <Col md={8}>
-                        <h4>Group Notifications</h4>
+                        <h4>{t("Group Notifications")}</h4>
                         {loading ? (
                             <Spinner animation="border" />
                         ) : error ? (
@@ -122,19 +124,19 @@ const GroupNotifications = () => {
                                                     {/* Type & From */}
                                                     <Row className="mb-2">
                                                         <Col md={5}>
-                                                            Type: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
+                                                            {t("Type")}: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
                                                         </Col>
                                                         <Col md={7}>
-                                                            From: <span className="text-danger fw-bold">{notification.created_by}</span>
+                                                            {t("From")}: <span className="text-danger fw-bold">{notification.created_by}</span>
                                                         </Col>
                                                     </Row>
 
                                                     <Row className="mb-2">
                                                         <Col md={5}>
-                                                            Seen: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                                            {t("Seen")}: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
                                                         </Col>
                                                         <Col md={7}>
-                                                            Group Name: <span className="text-info fw-bold">{notification.group}</span>
+                                                            {t("Group Name")}: <span className="text-info fw-bold">{notification.group}</span>
                                                         </Col>
                                                     </Row>
 
@@ -147,7 +149,7 @@ const GroupNotifications = () => {
                                                                         <div onClick={() => handleMarkAsSeen(notification)} className={styles.markAsSeenButton}>
                                                                             <FontAwesomeIcon icon={icons.faEye} className="me-2 text-info" />
                                                                             <em className={`text-info ${styles.markAsSeenButton}`}>
-                                                                                Mark as seen
+                                                                                {t("Mark as seen")}
                                                                             </em>
                                                                         </div>
                                                                     </div>
@@ -155,7 +157,7 @@ const GroupNotifications = () => {
 
                                                                 {notification.is_seen && (
                                                                     <em className={`${styles.seenAtDate}`}>
-                                                                        (Seen at {notification.updatedAt})
+                                                                        ({t("Seen at")} {notification.updatedAt})
                                                                     </em>
                                                                 )}
 
@@ -164,7 +166,7 @@ const GroupNotifications = () => {
                                                                     placement="right"
                                                                     overlay={
                                                                         <Tooltip>
-                                                                            Notifications marked as seen will be removed from your page.
+                                                                            {t("Notifications marked as seen will be removed from your page")}
                                                                         </Tooltip>
                                                                     }
                                                                 >
@@ -182,11 +184,11 @@ const GroupNotifications = () => {
 
                                 <div className="d-flex justify-content-center mb-3">
                                     <Button variant="link" className="text-secondary" onClick={handleBack}>
-                                        Back
+                                        {t("Back")}
                                     </Button>
                                     {hasMore && (
                                         <Button variant="link" onClick={handleViewMore}>
-                                            View More
+                                            {t("View More")}
                                         </Button>
                                     )}
                                 </div>
@@ -199,5 +201,23 @@ const GroupNotifications = () => {
         </>
     );
 };
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../public/locales/common/${context.locale}.json`);
+    const validationMessages = await import(`../../../public/locales/validation/${context.locale}.json`);
+    const formMessages = await import(`../../../public/locales/form/${context.locale}.json`);
+    const responseMessages = await import(`../../../public/locales/response/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+                ...validationMessages.default,
+                ...formMessages.default,
+                ...responseMessages.default,
+            },
+        },
+    };
+}
 
 export default GroupNotifications;
