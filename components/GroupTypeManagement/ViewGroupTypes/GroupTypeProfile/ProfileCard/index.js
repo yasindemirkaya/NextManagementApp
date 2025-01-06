@@ -42,8 +42,8 @@ const ProfileCard = ({ groupType, loading, error, fetchGroupTypeById }) => {
                         <Card.Title>{t("Group Type Information")}</Card.Title>
                         <div className={styles.profileInfo}>
                             <p className='mt-3'><strong>{t("Type Name")}:</strong> {groupType.type_name}</p>
-                            <p className={styles.infoText}>*{t("This account is created by")} {groupType.created_by}</p>
-                            <p className={styles.infoText}>*{t("The last update for this account is made by")} {groupType.updated_by}</p>
+                            <p className={styles.infoText}>*{t("This account is created by")} <b>{groupType.created_by}</b></p>
+                            <p className={styles.infoText}>*{t("The last update for this account is made by")} <b>{groupType.updated_by}</b></p>
                         </div>
                         {editButtonDisplayer(loggedInUser) ? (<Button variant="primary" onClick={handleEditClick}>{t("Edit")}</Button>) : null}
                     </Card.Body>

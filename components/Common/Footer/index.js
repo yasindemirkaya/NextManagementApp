@@ -6,6 +6,7 @@ import footerMenu from '@/static/components/footer';
 
 const Footer = () => {
     const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "en"; // Dil parametresini al
+    const copyrightText = lang == "en" ? "Your Company. All rights reserved." : "Şirket İsmi. Her hakkı saklıdır."
 
     return (
         <footer className={styles.footer}>
@@ -13,7 +14,7 @@ const Footer = () => {
                 <Row className="align-items-center h-100">
                     <Col md={6} className="d-flex justify-content-center justify-content-md-start h-100">
                         <p className="mb-0">
-                            &copy; {new Date().getFullYear()} Your Company. All rights reserved.
+                            &copy; {new Date().getFullYear()} {copyrightText}
                         </p>
                     </Col>
 
