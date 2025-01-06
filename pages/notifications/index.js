@@ -180,7 +180,7 @@ const Notifications = () => {
                                     {/* Type & From */}
                                     <Row className="mb-2">
                                         <Col md={5}>
-                                            {t(Type)}: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
+                                            {t("Type")}: <span className={getStyleForNotificationType(notification.type)}>{notification.type}</span>
                                         </Col>
                                         {route !== '/my-notifications' && (
                                             <Col md={7}>
@@ -272,6 +272,14 @@ const Notifications = () => {
         <>
             <Container>
                 <Row>
+                    <Row>
+                        <Col md={12} className="d-flex justify-content-end">
+                            <Button variant="primary" type="submit" href='/notifications/create-notification' className="me-2">
+                                <FontAwesomeIcon icon={icons.faPlusCircle} className="me-2" />
+                                {t("Create New Notification")}
+                            </Button>
+                        </Col>
+                    </Row>
                     {(() => {
                         const columns = [
                             loggedInUser?.role !== 0 && myNotifications.length > 0 && {
