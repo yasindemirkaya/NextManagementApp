@@ -332,6 +332,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                     </tbody>
                 </table>
 
+                {/* Text */}
                 <div className={styles.pageInfo}>
                     {t("There are")} {totalData} {t("records in the table")}. {t("Page")} {currentPage} {t("of")} {totalPages} {t("is currently displayed")}.
                 </div>
