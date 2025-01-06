@@ -272,14 +272,18 @@ const Notifications = () => {
         <>
             <Container>
                 <Row>
-                    <Row>
-                        <Col md={12} className="d-flex justify-content-end">
-                            <Button variant="primary" type="submit" href='/notifications/create-notification' className="me-2">
-                                <FontAwesomeIcon icon={icons.faPlusCircle} className="me-2" />
-                                {t("Create New Notification")}
-                            </Button>
-                        </Col>
-                    </Row>
+                    {
+                        loggedInUser?.role !== 0 ? (
+                            <Row>
+                                <Col md={12} className="d-flex justify-content-end">
+                                    <Button variant="primary" type="submit" href='/notifications/create-notification' className="me-2">
+                                        <FontAwesomeIcon icon={icons.faPlusCircle} className="me-2" />
+                                        {t("Create New Notification")}
+                                    </Button>
+                                </Col>
+                            </Row>
+                        ) : null
+                    }
                     {(() => {
                         const columns = [
                             loggedInUser?.role !== 0 && myNotifications.length > 0 && {
