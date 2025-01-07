@@ -70,6 +70,7 @@ const SignUp = () => {
                             {...register("firstName", {
                                 required: t("Name is required"),
                                 minLength: { value: 2, message: t("Name must be at least 2 characters") },
+                                pattern: { value: /^[a-zA-Z\s]*$/, message: t("Name cannot contain numeric characters") },
                                 onBlur: (e) => {
                                     const formattedValue = capitalizeFirstLetter(e.target.value);
                                     setValue("firstName", formattedValue);
@@ -89,6 +90,7 @@ const SignUp = () => {
                             {...register("lastName", {
                                 required: t("Surname is required"),
                                 minLength: { value: 2, message: t("Surname must be at least 2 characters") },
+                                pattern: { value: /^[a-zA-Z\s]*$/, message: t("Surname cannot contain numeric characters") },
                                 onBlur: (e) => {
                                     const formattedValue = capitalizeFirstLetter(e.target.value);
                                     setValue("lastName", formattedValue);
