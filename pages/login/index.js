@@ -28,6 +28,12 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
+    // Change language
+    const changeLanguage = (lang) => {
+        localStorage.setItem("language", lang);
+        router.push(router.asPath, router.asPath, { locale: lang });
+    };
+
     // Geri dön butonu için redirect
     const handleBack = () => {
         router.back();
@@ -73,6 +79,17 @@ const Login = () => {
 
     return (
         <>
+            <Row>
+                <Col md={12} className="d-flex justify-content-center justify-content-md-end">
+                    <Button
+                        variant="link"
+                        onClick={() => changeLanguage(router.locale === 'en' ? 'tr' : 'en')}
+                        className={styles.languageSwitch}
+                    >
+                        {router.locale === 'en' ? 'EN' : 'TR'}
+                    </Button>
+                </Col>
+            </Row>
             <Container className={`mt-5 ${styles.loginContainer}`}>
                 <h2>{t('Login')}</h2>
                 <Form onSubmit={handleSubmit(onSubmit)}>

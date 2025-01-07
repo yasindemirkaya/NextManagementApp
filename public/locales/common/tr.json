@@ -54,5 +54,8 @@
     "Notifications marked as seen will be removed from your page": "Görüldü olarak işaretlenen bildirimler sayfanızdan kaldırılacak.",
     "My Notification": "Bildirimlerim",
     "Deleted notifications cannot be brought back": "Deleted notifications cannot be brought back",
-    "User Group Information": "Kullanıcı Grubu Bilgileri"
+    "User Group Information": "Kullanıcı Grubu Bilgileri",
+    "Welcome": "Hoşgeldiniz",
+    "Get Started": "Başlangıç",
+    "Please login or register to continue": "Devam etmek için lütfen giriş yapın veya kaydolun."
 }
