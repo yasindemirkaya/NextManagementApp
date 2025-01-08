@@ -20,6 +20,8 @@ axiosInterceptorInstance.interceptors.request.use(
             const parsedCookies = parse(cookies);
             const token = parsedCookies.token; // token cookie'de saklanmış token adı
 
+            const language = localStorage.getItem('language');
+
             // Eğer route public ise token kontrolü yapılmaz
             if (publicRoutes.some((route) => config.url.includes(route))) {
                 return config;
@@ -39,6 +41,11 @@ axiosInterceptorInstance.interceptors.request.use(
                 // Token yoksa login sayfasına yönlendirme yapılır
                 window.location.href = '/login';
                 throw new axios.Cancel('No token provided, redirecting to login.');
+            }
+
+            // Language header'ını ekle
+            if (language) {
+                config.headers['Accept-Language'] = language;
             }
         }
         return config;
