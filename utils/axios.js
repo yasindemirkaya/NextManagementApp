@@ -20,7 +20,12 @@ axiosInterceptorInstance.interceptors.request.use(
             const parsedCookies = parse(cookies);
             const token = parsedCookies.token; // token cookie'de saklanmış token adı
 
-            const language = localStorage.getItem('language');
+            const language = localStorage.getItem('language') || 'tr';
+
+            // Language header'ını ekle
+            if (language) {
+                config.headers['Accept-Language'] = language;
+            }
 
             // Eğer route public ise token kontrolü yapılmaz
             if (publicRoutes.some((route) => config.url.includes(route))) {
@@ -30,22 +35,14 @@ axiosInterceptorInstance.interceptors.request.use(
             // Private route ise token kontrolü yapılır
             if (token) {
                 try {
-                    // Authorization header'a ekle
                     config.headers.Authorization = `Bearer ${token}`;
                 } catch (err) {
-                    // Cookie'de geçersiz bir token varsa yönlendirme yapılır
                     window.location.href = '/login';
                     throw new axios.Cancel('Invalid token, redirecting to login.');
                 }
             } else {
-                // Token yoksa login sayfasına yönlendirme yapılır
                 window.location.href = '/login';
                 throw new axios.Cancel('No token provided, redirecting to login.');
-            }
-
-            // Language header'ını ekle
-            if (language) {
-                config.headers['Accept-Language'] = language;
             }
         }
         return config;
@@ -54,6 +51,7 @@ axiosInterceptorInstance.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
 
 /* Response interceptor */
 axiosInterceptorInstance.interceptors.response.use(

@@ -11,9 +11,13 @@ import { sign } from 'jsonwebtoken';
 import { compare } from 'bcrypt';
 import { serialize } from 'cookie';
 import publicMiddleware from "@/middleware/public/index";
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
     try {
+        // İsteğin yapıldığı dil
+        const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
         if (req.method === 'POST') {
             const { email, password } = req.body;
 
@@ -27,11 +31,11 @@ const handler = async (req, res) => {
                 if (isPasswordValid) {
                     // Başarılı giriş, JWT oluştur
                     const token = sign({
-                        id: user._id, // MongoDB'de _id kullanılır
+                        id: user._id,
                         email: user.email,
                         role: user.role,
                     }, process.env.JWT_SECRET, {
-                        expiresIn: '1h' // Token süresi
+                        expiresIn: '1h'
                     });
 
                     // Token'ı cookie'ye set et
@@ -43,11 +47,12 @@ const handler = async (req, res) => {
                         path: '/', // Tüm yollar için geçerli
                     }));
 
+                    // SUCCESS
                     return res.status(200).json({
-                        message: 'Success',
+                        message: responseMessages.login[lang].success,
                         code: 1,
                         user: {
-                            id: user._id,  // MongoDB'nin _id'si
+                            id: user._id,
                             email: user.email,
                             firstName: user.first_name,
                             lastName: user.last_name,
@@ -56,23 +61,25 @@ const handler = async (req, res) => {
                         token: token
                     });
                 } else {
-                    // Şifre yanlış
+                    // INVALID CREDENTIALS
                     return res.status(200).json({
-                        message: 'Invalid credentials. Please check your email or password.',
+                        message: responseMessages.login[lang].invalidCredentials,
                         code: 0
                     });
                 }
             } else {
-                // Kullanıcı bulunamadı
+                // USER NOT FOUND
                 return res.status(200).json({
-                    message: 'User not found',
+                    message: responseMessages.login[lang].userNotFound,
                     code: 0,
                 });
             }
         } else {
             // Sadece POST isteğine izin ver
             res.setHeader('Allow', ['POST']);
-            return res.status(405).end(`Method ${req.method} Not Allowed`);
+            return res.status(405).json({
+                message: responseMessages.login[lang].methodNotAllowed
+            });
         }
     } catch (error) {
         res.status(503).json({

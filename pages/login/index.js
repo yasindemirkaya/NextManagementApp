@@ -52,10 +52,10 @@ const Login = () => {
             // API'ye giriş isteği gönder
             const response = await login(data.email, data.password)
 
-            if (response.message === 'Success') {
+            if (response.code === 1) {
                 setLoading(false);
                 reset();
-                toast('SUCCESS', 'Welcome. Redirecting to Dashboard...');
+                toast('SUCCESS', response.message);
 
                 dispatch(setUser({
                     id: response.user.id,
