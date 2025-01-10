@@ -10,8 +10,11 @@
 import User from '@/models/User';
 import hashPassword from '@/helpers/hash';
 import publicMiddleware from "@/middleware/public/index";
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'POST') {
         const { firstName, lastName, email, password, mobile, userGroups } = req.body;
 
@@ -26,10 +29,16 @@ const handler = async (req, res) => {
             const existingMobile = await User.findOne({ mobile });
 
             if (existingUser) {
-                return res.status(409).json({ message: 'Email already in use' });
+                return res.status(409).json({
+                    code: 0,
+                    message: responseMessages.register[lang].emailAlreadyInUse
+                });
             }
             if (existingMobile) {
-                return res.status(409).json({ message: 'Mobile number already in use' });
+                return res.status(409).json({
+                    code: 0,
+                    message: responseMessages.register[lang].mobileAlreadyInUse
+                });
             }
 
             // Şifreyi hash'le
@@ -59,16 +68,20 @@ const handler = async (req, res) => {
 
             // Kayıt başarılı olduğunda, HTTP yanıtını döndür
             res.status(200).json({
-                result: true,
-                message: 'User registered successfully',
+                code: 1,
+                message: responseMessages.register[lang].success,
                 user: email
             });
         } catch (error) {
-            console.error('Error in registration:', error);
-            res.status(500).json({ message: 'An error occurred during registration', error: error.message });
+            res.status(500).json({
+                message: responseMessages.register[lang].errorOccurred,
+                error: error.message
+            });
         }
     } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        res.status(405).json({
+            message: responseMessages.register[lang].methodNotAllowed
+        });
     }
 }
 

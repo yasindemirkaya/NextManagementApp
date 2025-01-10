@@ -47,7 +47,7 @@ const SignUp = () => {
             // Register API isteği gönderiliyor
             const response = await signUp({ firstName, lastName, email, password, mobile });
 
-            if (response.result) {
+            if (response.code === 1) {
                 toast('SUCCESS', response.message);
                 reset();
 
