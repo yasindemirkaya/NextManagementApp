@@ -11,6 +11,7 @@ import bcrypt from 'bcrypt';
 import hashPassword from '@/helpers/hash';
 import User from '@/models/User';
 import privateMiddleware from '@/middleware/private/index';
+import responseMessages from '@/static/responseMessages/messages';
 
 // ID'si gönderilen kullanıcının şifresini getir
 const getUserById = async (userId) => {
@@ -26,6 +27,9 @@ const updateUserPasswordById = async (userId, newPassword) => {
 };
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'PATCH') {
         try {
             const token = req.headers.authorization?.split(' ')[1];
@@ -38,7 +42,7 @@ const handler = async (req, res) => {
             // Şifre değişikliği için gerekli alanların kontrolü
             if (!userId || !newPassword || !confirmPassword) {
                 return res.status(200).json({
-                    message: 'Please provide all required fields.',
+                    message: responseMessages.user.changePassword[lang].provideAllFields,
                     code: 0
                 });
             }
@@ -46,7 +50,7 @@ const handler = async (req, res) => {
             // Yeni şifre ve doğrulama şifresinin eşleşip eşleşmediğini kontrol et
             if (newPassword !== confirmPassword) {
                 return res.status(200).json({
-                    message: 'New password and confirm password do not match.',
+                    message: responseMessages.user.changePassword[lang].passwordsDoNotMatch,
                     code: 0
                 });
             }
@@ -56,7 +60,7 @@ const handler = async (req, res) => {
 
             if (!userToChange) {
                 return res.status(200).json({
-                    message: 'User not found.',
+                    message: responseMessages.user.changePassword[lang].userNotFound,
                     code: 0
                 });
             }
@@ -64,21 +68,21 @@ const handler = async (req, res) => {
             // Yetki kontrolleri
             if (loggedInUserRole === 0) {
                 return res.status(403).json({
-                    message: 'You are not authorized to change passwords.',
+                    message: responseMessages.user.changePassword[lang].noPermission,
                     code: 0
                 });
             }
 
             if (loggedInUserRole === 1 && (userToChange.role === 1 || userToChange.role === 2)) {
                 return res.status(403).json({
-                    message: 'You are not authorized to change passwords of other admins or super admins.',
+                    message: responseMessages.user.changePassword[lang].notAuthorized,
                     code: 0
                 });
             }
 
             if (loggedInUserRole === 2 && userToChange.role === 2) {
                 return res.status(403).json({
-                    message: 'You are not authorized to change another super admin’s password.',
+                    message: responseMessages.user.changePassword[lang].notAuthorized2,
                     code: 0
                 });
             }
@@ -89,7 +93,7 @@ const handler = async (req, res) => {
 
             if (isMatch) {
                 return res.status(200).json({
-                    message: 'New password cannot be the same as the current password.',
+                    message: responseMessages.user.changePassword[lang].cannotBeSame,
                     code: 0
                 });
             }
@@ -99,20 +103,27 @@ const handler = async (req, res) => {
             const result = await updateUserPasswordById(userId, hashedPassword);
 
             if (result.modifiedCount === 0) {
-                return res.status(200).json({ message: 'Failed to update password.', code: 0 });
+                return res.status(200).json({
+                    message: responseMessages.user.changePassword[lang].failedToUpdate,
+                    code: 0
+                });
             }
 
             return res.status(200).json({
-                message: 'Password successfully changed.',
+                message: responseMessages.user.changePassword[lang].success,
                 code: 1
             });
         } catch (error) {
-            console.error('Error changing password:', error);
-            return res.status(500).json({ message: 'An error occurred', error: error.message });
+            return res.status(500).json({
+                message: responseMessages.common[lang].errorOccured,
+                error: error.message
+            });
         }
     } else {
         res.setHeader('Allow', ['PATCH']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

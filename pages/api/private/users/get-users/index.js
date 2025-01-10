@@ -16,8 +16,12 @@
 import User from '@/models/User';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from "@/middleware/private/index";
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'GET') {
         // Token'ı decode et ve kullanıcı rolünü al
         let userRole;
@@ -26,16 +30,17 @@ const handler = async (req, res) => {
             const decoded = verify(token, process.env.JWT_SECRET);
             userRole = decoded?.role;
         } catch (error) {
+            // INVALID TOKEN
             return res.status(200).json({
-                message: 'Invalid token, please log in again.',
+                message: responseMessages.common[lang].invalidToken,
                 code: 0
             });
         }
 
-        // Role kontrolü: Eğer userRole 0 ise, veri döndürme
+        // Role kontrolü: Eğer userRole 0 ise, veri döndürme 
         if (userRole === 0) {
             return res.status(403).json({
-                message: 'You do not have permission to access this resource.',
+                message: responseMessages.common[lang].noPermission,
                 code: 0
             });
         }
@@ -127,7 +132,7 @@ const handler = async (req, res) => {
 
             res.status(200).json({
                 code: 1,
-                message: 'Users successfully fetched.',
+                message: responseMessages.users[lang].success,
                 users: formattedUsers,
                 pagination: {
                     totalData: totalUsers,
@@ -137,12 +142,15 @@ const handler = async (req, res) => {
                 }
             });
         } catch (error) {
-            console.error('Error fetching users:', error);
-            res.status(500).json({ error: 'Failed to fetch users from the database' });
+            res.status(500).json({
+                error: responseMessages.users[lang].failedToFetch
+            });
         }
     } else {
         res.setHeader('Allow', ['GET']);
-        res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

@@ -80,7 +80,7 @@ const handler = async (req, res) => {
         }
     } else {
         res.status(405).json({
-            message: responseMessages.register[lang].methodNotAllowed
+            message: responseMessages.common[lang].methodNotAllowed
         });
     }
 }

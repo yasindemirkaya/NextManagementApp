@@ -11,6 +11,7 @@ import bcrypt from 'bcrypt';
 import hashPassword from '@/helpers/hash';
 import User from '@/models/User';
 import privateMiddleware from "@/middleware/private/index"
+import responseMessages from '@/static/responseMessages/messages';
 
 const getUserPasswordById = async (userId) => {
     const user = await User.findById(userId);
@@ -26,6 +27,9 @@ const updateUserPasswordById = async (userId, newPassword) => {
 };
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'PATCH') {
         try {
             const token = req.headers.authorization?.split(' ')[1];
@@ -36,7 +40,7 @@ const handler = async (req, res) => {
 
             if (!currentPassword || !newPassword || !confirmPassword) {
                 return res.status(200).json({
-                    message: 'Please provide all required fields.',
+                    message: responseMessages.user.changePassword[lang].allFieldsRequired,
                     code: 0
                 });
             }
@@ -44,7 +48,7 @@ const handler = async (req, res) => {
             // Yeni şifre ve Şifreyi onayla alanları eşleşmelidir.
             if (newPassword !== confirmPassword) {
                 return res.status(200).json({
-                    message: 'New password and confirm password do not match.',
+                    message: responseMessages.user.changePassword[lang].passwordsDoNotMatch,
                     code: 0
                 });
             }
@@ -53,7 +57,7 @@ const handler = async (req, res) => {
             const existingPassword = await getUserPasswordById(userId);
             if (!existingPassword) {
                 return res.status(200).json({
-                    message: 'User not found.',
+                    message: responseMessages.user.changePassword[lang].userNotFound,
                     code: 0
                 });
             }
@@ -62,7 +66,7 @@ const handler = async (req, res) => {
             const isMatch = await bcrypt.compare(currentPassword, existingPassword);
             if (!isMatch) {
                 return res.status(200).json({
-                    message: 'Current password is incorrect.',
+                    message: responseMessages.user.changePassword[lang].currentIncorrect,
                     code: 0
                 });
             }
@@ -70,7 +74,7 @@ const handler = async (req, res) => {
             // Yeni şifre mevcut şifreyle aynı olamaz
             if (newPassword === currentPassword) {
                 return res.status(200).json({
-                    message: 'New password cannot be the same as the current password.',
+                    message: responseMessages.user.changePassword[lang].cannotBeSame,
                     code: 0
                 });
             }
@@ -79,20 +83,26 @@ const handler = async (req, res) => {
             const result = await updateUserPasswordById(userId, hashedPassword);
 
             if (result.modifiedCount === 0) {
-                return res.status(200).json({ message: 'Failed to update password.' });
+                return res.status(200).json({
+                    message: responseMessages.user.changePassword[lang].failedToUpdate,
+                });
             }
 
             return res.status(200).json({
-                message: 'Password successfully changed.',
+                message: responseMessages.user.changePassword[lang].success,
                 code: 1
             });
         } catch (error) {
-            console.error('Error changing password:', error);
-            return res.status(500).json({ message: 'An error occurred', error: error.message });
+            return res.status(500).json({
+                message: responseMessages.common[lang].errorOccured,
+                error: error.message
+            });
         }
     } else {
         res.setHeader('Allow', ['PATCH']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 }
 

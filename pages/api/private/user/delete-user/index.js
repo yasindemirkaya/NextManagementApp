@@ -9,6 +9,7 @@
 import { verify } from 'jsonwebtoken';
 import User from '@/models/User';
 import privateMiddleware from "@/middleware/private/index"
+import responseMessages from '@/static/responseMessages/messages';
 
 const deleteUserById = async (userId) => {
     // Kullanıcıyı veritabanından sil
@@ -17,6 +18,9 @@ const deleteUserById = async (userId) => {
 };
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'DELETE') {
         try {
             // Token'ı decode et ve kullanıcı id'sini al
@@ -30,24 +34,28 @@ const handler = async (req, res) => {
             // Silinen belge sayısını kontrol et
             if (result.deletedCount === 0) {
                 return res.status(200).json({
-                    message: 'User not found or already deleted',
+                    message: responseMessages.user.deleteUser[lang].notFound,
                     code: 0
                 });
             }
 
             // Başarılı silme yanıtı
             return res.status(200).json({
-                message: 'Your account has been successfully deleted',
+                message: responseMessages.user.deleteUser[lang].success,
                 code: 1
             });
         } catch (error) {
-            console.error('Error deleting user account:', error);
-            return res.status(500).json({ message: 'An error occurred', error: error.message });
+            return res.status(500).json({
+                message: responseMessages.common[lang].errorOccurred,
+                error: error.message
+            });
         }
     } else {
         // Sadece DELETE isteği kabul edilir
         res.setHeader('Allow', ['DELETE']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 }
 

@@ -8,12 +8,15 @@
 
 import privateMiddleware from '@/middleware/private/index';
 import User from '@/models/User';
+import responseMessages from '@/static/responseMessages/messages';
 
 const findUserById = async (id) => {
     return await User.findById(id).lean();
 };
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
     if (req.method === 'GET') {
         try {
             const requestedUserId = req.query.id
@@ -23,7 +26,7 @@ const handler = async (req, res) => {
 
             if (!user) {
                 return res.status(200).json({
-                    message: 'User not found',
+                    message: responseMessages.user.getUser[lang].notFound,
                     code: 0,
                 });
             }
@@ -36,7 +39,7 @@ const handler = async (req, res) => {
 
             // Kullanıcı bilgilerini döndür
             return res.status(200).json({
-                message: 'User fetched successfully',
+                message: responseMessages.user.getUser[lang].success,
                 code: 1,
                 user: {
                     id: user._id,
@@ -52,16 +55,17 @@ const handler = async (req, res) => {
                 },
             });
         } catch (error) {
-            console.error('Error fetching profile:', error);
             return res.status(500).json({
-                message: 'An error occurred',
+                message: responseMessages.common[lang].errorOccured,
                 error: error.message,
             });
         }
     } else {
         // Sadece GET isteği kabul edilir
         res.setHeader('Allow', ['GET']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

@@ -9,7 +9,8 @@
 
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from "@/middleware/private/index"
-import User from '@/models/User'; // User modelini import ediyoruz
+import User from '@/models/User';
+import responseMessages from '@/static/responseMessages/messages';
 
 // Update methodu
 const updateUserById = async (id, userData) => {
@@ -34,6 +35,9 @@ const updateUserById = async (id, userData) => {
 };
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'PUT') {
         try {
             // Token'ı decode et ve kullanıcı id'sini al
@@ -47,7 +51,7 @@ const handler = async (req, res) => {
             // Kullanıcı bulunamazsa
             if (!user) {
                 return res.status(200).json({
-                    message: 'User not found',
+                    message: responseMessages.common[lang].notFound,
                     code: 0
                 });
             }
@@ -61,7 +65,7 @@ const handler = async (req, res) => {
 
             if ((emailExists && emailExists.id !== userId) || (mobileExists && mobileExists.id !== userId)) {
                 return res.status(200).json({
-                    message: 'Email or mobile number already in use.',
+                    message: responseMessages.user.updateUser[lang].alreadyExist,
                     code: 0
                 });
             }
@@ -80,28 +84,29 @@ const handler = async (req, res) => {
             // Eğer kullanıcı güncellenemediyse
             if (!result.user) {
                 return res.status(200).json({
-                    message: 'No changes were made.',
+                    message: responseMessages.common[lang].noChanges,
                     code: 0
                 });
             }
 
             // Başarılı güncelleme yanıtı
             return res.status(200).json({
-                message: 'User data successfully updated',
+                message: responseMessages.user.updateUser[lang].success,
                 code: 1
             });
         } catch (error) {
             // Hata mesajı
-            console.error('Error updating user data:', error);
             return res.status(500).json({
-                message: 'An error occurred',
+                message: responseMessages.common[lang].errorOccured,
                 error: error.message
             });
         }
     } else {
         // Sadece PUT isteği kabul edilir
         res.setHeader('Allow', ['PUT']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 }
 

@@ -78,7 +78,7 @@ const handler = async (req, res) => {
             // Sadece POST isteğine izin ver
             res.setHeader('Allow', ['POST']);
             return res.status(405).json({
-                message: responseMessages.login[lang].methodNotAllowed
+                message: responseMessages.common[lang].methodNotAllowed
             });
         }
     } catch (error) {

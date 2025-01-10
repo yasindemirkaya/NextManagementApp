@@ -9,6 +9,7 @@
 import { verify } from 'jsonwebtoken';
 import User from '@/models/User';
 import privateMiddleware from "@/middleware/private/index";
+import responseMessages from '@/static/responseMessages/messages';
 
 // Delete user by ID method
 const deleteUserById = async (userId) => {
@@ -18,6 +19,9 @@ const deleteUserById = async (userId) => {
 };
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'DELETE') {
         try {
             // Authorization başlığındaki token'ı al ve çöz
@@ -32,7 +36,7 @@ const handler = async (req, res) => {
 
             if (!targetUserId) {
                 return res.status(200).json({
-                    message: 'Target user ID is required',
+                    message: responseMessages.user.deleteUserById[lang].userIdRequired,
                     code: 0
                 });
             }
@@ -42,12 +46,12 @@ const handler = async (req, res) => {
                 const result = await deleteUserById(targetUserId);
                 if (result.deletedCount === 0) {
                     return res.status(200).json({
-                        message: 'User not found or already deleted',
+                        message: responseMessages.user.deleteUserById[lang].notFound,
                         code: 0
                     });
                 }
                 return res.status(200).json({
-                    message: 'User account has been deleted successfully.',
+                    message: responseMessages.user.deleteUserById[lang].success,
                     code: 1
                 });
             }
@@ -58,7 +62,7 @@ const handler = async (req, res) => {
 
                 if (!targetUser) {
                     return res.status(200).json({
-                        message: 'User not found',
+                        message: responseMessages.user.deleteUserById[lang].notFound,
                         code: 0
                     });
                 }
@@ -66,31 +70,35 @@ const handler = async (req, res) => {
                 const targetUserRole = targetUser.role;
                 if (targetUserRole !== 0) {
                     return res.status(200).json({
-                        message: 'Admins can only delete standard user accounts',
+                        message: responseMessages.user.deleteUserById[lang].adminPermission,
                         code: 0
                     });
                 }
 
                 const result = await deleteUserById(targetUserId);
                 return res.status(200).json({
-                    message: 'User account has been deleted successfully',
+                    message: responseMessages.user.deleteUserById[lang].success,
                     code: 1
                 });
             }
 
             // Standart kullanıcı (role: 0) bu endpointi kullanamaz
             return res.status(200).json({
-                message: 'You are not authorized to perform this action',
+                message: responseMessages.common[lang].noPermission,
                 code: 0
             });
         } catch (error) {
-            console.error('Error deleting user by ID:', error);
-            return res.status(500).json({ message: 'An error occurred', error: error.message });
+            return res.status(500).json({
+                message: responseMessages.common[lang].errorOccured,
+                error: error.message
+            });
         }
     } else {
         // Sadece DELETE isteği kabul edilir
         res.setHeader('Allow', ['DELETE']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

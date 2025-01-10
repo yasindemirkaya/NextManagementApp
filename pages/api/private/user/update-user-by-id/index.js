@@ -10,6 +10,7 @@
 import User from '@/models/User';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index'
+import responseMessages from '@/static/responseMessages/messages';
 
 // Kullanıcıyı ID'ye göre veritabanında bul
 const findUserById = async (id) => {
@@ -23,6 +24,9 @@ const updateUserById = async (id, updateData) => {
 };
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'PUT') {
         try {
             // Token decode et ve kullanıcı bilgilerini al
@@ -33,7 +37,7 @@ const handler = async (req, res) => {
             // Standard User'lar (role: 0) bu servisi kullanamaz
             if (loggedInUserRole === 0) {
                 return res.status(403).json({
-                    message: 'You are not authorized to access this service.',
+                    message: responseMessages.common[lang].noPermission,
                     code: 0
                 });
             }
@@ -43,7 +47,7 @@ const handler = async (req, res) => {
 
             if (!requestedUserId) {
                 return res.status(400).json({
-                    message: 'User ID is required.',
+                    message: responseMessages.user.updateUserById[lang].userIdRequired,
                     code: 0
                 });
             }
@@ -52,7 +56,7 @@ const handler = async (req, res) => {
             const requestedUser = await findUserById(requestedUserId);
             if (!requestedUser) {
                 return res.status(404).json({
-                    message: 'User not found.',
+                    message: responseMessages.login[lang].userNotFound,
                     code: 0
                 });
             }
@@ -62,7 +66,7 @@ const handler = async (req, res) => {
                 // Admin, sadece Standard User'ları (role: 0) güncelleyebilir
                 if (requestedUser.role !== 0) {
                     return res.status(403).json({
-                        message: 'You are not authorized to update this user.',
+                        message: responseMessages.user.updateUserById[lang].notAuthorized,
                         code: 0
                     });
                 }
@@ -70,7 +74,7 @@ const handler = async (req, res) => {
                 // Super Admin, kendisi gibi Super Adminler hariç herkesi güncelleyebilir.
                 if (requestedUser.role === 2) {
                     return res.status(403).json({
-                        message: 'You are not authorized to update this user.',
+                        message: responseMessages.user.updateUserById[lang].notAuthorized,
                         code: 0
                     });
                 }
@@ -84,26 +88,26 @@ const handler = async (req, res) => {
 
             if (!isUpdated) {
                 return res.status(500).json({
-                    message: 'Failed to update user.',
+                    message: responseMessages.user.updateUserById[lang].failedToUpdate,
                     code: 0
                 });
             }
 
             return res.status(200).json({
-                message: 'User updated successfully.',
+                message: responseMessages.user.updateUserById[lang].success,
                 code: 1
             });
         } catch (error) {
             // Mongoose hatası kontrolü
             if (error.name === 'MongoError' && error.code === 11000) {
                 return res.status(400).json({
-                    message: 'Email or mobile number already in use.',
+                    message: responseMessages.user.updateUser[lang].alreadyExist,
                     code: 0
                 });
             }
 
             return res.status(500).json({
-                message: 'An error occurred.',
+                message: responseMessages.common[lang].errorOccurred,
                 error: error.message,
                 code: 0
             });
@@ -111,7 +115,9 @@ const handler = async (req, res) => {
     } else {
         // Sadece PUT metodu kabul edilir
         res.setHeader('Allow', ['PUT']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 
