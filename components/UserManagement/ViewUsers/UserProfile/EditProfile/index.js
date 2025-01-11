@@ -75,7 +75,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 toast('ERROR', response.message)
             }
         } catch (error) {
-            toast('ERROR', 'User could not be updated.')
+            toast('ERROR', error.message)
         }
     };
 
@@ -112,7 +112,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                 toast('ERROR', response.message)
             }
         } catch (error) {
-            toast('SUCCESS', 'User could not be updated.')
+            toast('SUCCESS', error.message)
         }
     };
 
@@ -173,7 +173,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     toast('ERROR', response.message || t('User Account could not be deleted Please try again'))
                 }
             } catch (error) {
-                toast('ERROR', t('An error occurred while deleting the user Please try again later'))
+                toast('ERROR', error.message || t('An error occurred while deleting the user Please try again later'))
 
             }
         }

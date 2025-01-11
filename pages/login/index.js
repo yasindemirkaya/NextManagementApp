@@ -72,8 +72,7 @@ const Login = () => {
             }
         } catch (error) {
             setLoading(false);
-            console.error('Login failed: ', error);
-            toast('ERROR', 'An error occurred. Please try again.');
+            toast('ERROR', error.message);
         }
     };
 

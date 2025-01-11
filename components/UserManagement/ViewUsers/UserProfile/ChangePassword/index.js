@@ -60,7 +60,7 @@ const ChangePassword = ({ show, onHide, isSelf, userId }) => {
                 toast('ERROR', response.message)
             }
         } catch (error) {
-            toast('ERROR', 'An error occurred. Please try again.')
+            toast('ERROR', error.message || t('An error occurred Please try again'))
         }
     };
 

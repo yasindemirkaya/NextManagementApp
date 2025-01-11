@@ -94,7 +94,7 @@ const CreateUserGroup = () => {
                 toast('ERROR', result.error);
             }
         } catch (error) {
-            toast('ERROR', 'An error occurred when creating a new user group. Please try again later.');
+            toast('ERROR', error.message);
         }
     };
 

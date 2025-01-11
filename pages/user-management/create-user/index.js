@@ -43,7 +43,7 @@ const CreateUser = () => {
                 toast('ERROR', response.message)
             }
         } catch (error) {
-            toast('ERROR', 'An error occurred when creating a new user. Please try again later.')
+            toast('ERROR', error.message)
         }
     };
 

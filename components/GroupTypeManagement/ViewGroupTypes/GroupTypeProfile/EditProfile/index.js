@@ -34,7 +34,7 @@ const EditProfileCard = ({ groupTypeData, onCancel }) => {
                 toast('ERROR', response.message)
             }
         } catch (error) {
-            toast('ERROR', 'Group Type could not be updated.')
+            toast('ERROR', error.message)
         }
     };
 
@@ -56,7 +56,7 @@ const EditProfileCard = ({ groupTypeData, onCancel }) => {
                 const response = await deleteGroupType(groupTypeId);
 
                 if (response.code === 1) {
-                    toast('SUCCESS', 'The user account has been deleted successfully.')
+                    toast('SUCCESS', response.message)
                     setTimeout(() => {
                         router.push('/group-type-management/view-group-types');
                     }, 1000);
@@ -64,7 +64,7 @@ const EditProfileCard = ({ groupTypeData, onCancel }) => {
                     toast('ERROR', response.message || t('Group type could not be deleted Please try again'))
                 }
             } catch (error) {
-                toast('ERROR', t('An error occurred while deleting the group type Please try again later'))
+                toast('ERROR', error.message || t('An error occurred while deleting the group type Please try again later'))
             }
         }
     };

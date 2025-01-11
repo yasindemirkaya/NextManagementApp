@@ -131,7 +131,7 @@ const CreateNotification = () => {
                 toast('ERROR', result.error);
             }
         } catch (error) {
-            toast('ERROR', 'An error occurred when creating a new notification Please try again later');
+            toast('ERROR', error.message);
         }
     };
 

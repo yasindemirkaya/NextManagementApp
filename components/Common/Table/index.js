@@ -166,7 +166,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
         }
 
         if (userRole == 2 && loggedInUser.id !== id) {
-            toast('ERROR', 'You are not allowed to update this data.');
+            toast('ERROR', t('You are not allowed to update this data'));
         } else {
             let dynamicPath = "";
 

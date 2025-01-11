@@ -35,7 +35,7 @@ const GetServiceLogs = () => {
             }
         } catch (error) {
             setLogs(null);
-            toast('ERROR', 'An error occurred while fetching the logs. Please try again later.');
+            toast('ERROR', error.message);
         }
     };
 
@@ -53,7 +53,7 @@ const GetServiceLogs = () => {
             }
         } catch (error) {
             setLogs(null);
-            toast('ERROR', 'An error occurred while fetching the logs. Please try again later.');
+            toast('ERROR', error.message);
         }
     };
 

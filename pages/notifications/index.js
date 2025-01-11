@@ -147,7 +147,7 @@ const Notifications = () => {
                 }
             }
         } catch (err) {
-            toast('ERROR', t('An error occurred while deleting the notification Please try again later'));
+            toast('ERROR', error.message || t('An error occurred while deleting the notification Please try again later'));
         }
     };
 

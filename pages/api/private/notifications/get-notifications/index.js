@@ -101,7 +101,7 @@ const handler = async (req, res) => {
             if (paginatedNotifications.length === 0) {
                 return res.status(200).json({
                     code: 0,
-                    message: responseMessages.notifications[lang].notFound
+                    message: responseMessages.notifications.get[lang].notFound
                 });
             }
 

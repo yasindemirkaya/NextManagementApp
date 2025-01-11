@@ -105,12 +105,14 @@ const ViewUsers = () => {
 export async function getStaticProps(context) {
     const headerMessages = await import(`../../../public/locales/common/${context.locale}.json`);
     const formMessages = await import(`../../../public/locales/form/${context.locale}.json`);
+    const responseMessages = await import(`../../../public/locales/response/${context.locale}.json`);
 
     return {
         props: {
             messages: {
                 ...headerMessages.default,
                 ...formMessages.default,
+                ...responseMessages.default,
             },
         },
     };
