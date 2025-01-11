@@ -23,8 +23,8 @@ const handler = async (req, res) => {
             const decoded = verify(token, process.env.JWT_SECRET);
             const { role } = decoded;
 
-            // Sadece Super admin (2) erişebilir.
-            if (role != 2) {
+            // Standart kullanıcı erişemez
+            if (role == 0) {
                 return res.status(403).json({
                     message: responseMessages.common[lang].noPermission,
                     code: 0,

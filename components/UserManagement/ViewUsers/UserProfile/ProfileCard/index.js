@@ -68,8 +68,8 @@ const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) =>
                             <p><strong>{t("Account Status")}:</strong> {formatAccountStatus(user.is_active)}</p>
                             <p><strong>{t("Verification Status")}:</strong> {formatAccountVerification(user.is_verified)}</p>
                             <p><strong>{t("Account Role")}:</strong> {formatAccountRole(user.role)}</p>
-                            <p className={styles.infoText}>*{t("This account is created by")} <b>{user.created_by}</b></p>
-                            <p className={styles.infoText}>*{t("The last update for this account is made by")} <b>{user.updated_by}</b></p>
+                            <p className={styles.infoText}>*{t("This account is created by")} <b>{' ' + user.created_by}</b></p>
+                            {user.updated_by && <p className={styles.infoText}>*{t("The last update for this account is made by")} <b>{user.updated_by}</b></p>}
                         </div>
                         {editButtonDisplayer(loggedInUser, token, user.id, from) ? (<Button variant="primary" onClick={handleEditClick}>{t("Edit")}</Button>) : null}
                     </Card.Body>

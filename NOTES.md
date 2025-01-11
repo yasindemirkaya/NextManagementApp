@@ -75,3 +75,11 @@
 * Her servisin response kısmında "guid" bulunur.
 * Her bir guid bir servis logunu temsil eder.
 * Settings/Service Logs kısmından response'tan kopyalanan guid yapıştırılıp log tablosundaki detaylar çekilebilir
+
+
+
+<!-- * STATISTICS * -->
+* Hangi kullanıcı tipinin hangi istatistik türünü görüp göremeyeceği sidebar.js'teki permission değeri ile aynıdır.
+* Super Adminler tüm istatistiklere erişebilir
+* Adminler servis loglarını göremez. 
+* Standart kullanıcılar group types ve service loglarını göremez
