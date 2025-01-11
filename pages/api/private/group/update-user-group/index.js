@@ -11,6 +11,7 @@ import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index';
 import UserGroup from '@/models/UserGroup';
 import User from '@/models/User';
+import responseMessages from '@/static/responseMessages/messages';
 
 // UserGroup'u ID'ye göre veritabanında bul
 const findUserGroupById = async (id) => {
@@ -51,6 +52,9 @@ const updateUserGroupById = async (id, updateData) => {
 };
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'PUT') {
         try {
             // Token decode et ve kullanıcı bilgilerini al
@@ -61,7 +65,7 @@ const handler = async (req, res) => {
             // Standard User'lar (role: 0) bu servisi kullanamaz
             if (loggedInUserRole === 0) {
                 return res.status(403).json({
-                    message: 'You are not authorized to access this service.',
+                    message: responseMessages.common[lang].noPermission,
                     code: 0
                 });
             }
@@ -71,7 +75,7 @@ const handler = async (req, res) => {
 
             if (!requestedGroupId) {
                 return res.status(200).json({
-                    message: 'Group ID is required.',
+                    message: responseMessages.group.update[lang].idRequired,
                     code: 0
                 });
             }
@@ -80,7 +84,7 @@ const handler = async (req, res) => {
             const requestedGroup = await findUserGroupById(requestedGroupId);
             if (!requestedGroup) {
                 return res.status(200).json({
-                    message: 'Group not found.',
+                    message: responseMessages.group.update[lang].notFound,
                     code: 0
                 });
             }
@@ -89,7 +93,7 @@ const handler = async (req, res) => {
             const creatorUser = await findUserById(requestedGroup.created_by);
             if (!creatorUser) {
                 return res.status(200).json({
-                    message: 'Creator user not found.',
+                    message: responseMessages.group.update[lang].creatorNotFound,
                     code: 0
                 });
             }
@@ -99,14 +103,14 @@ const handler = async (req, res) => {
                 // Bir Admin, bir Super Admin tarafından oluşturulan bir grubu güncelleyemez.
                 if (loggedInUserRole === 1 && creatorUser.role === 2) {
                     return res.status(200).json({
-                        message: 'You are not authorized to update this group as it was created by a Super Admin.',
+                        message: responseMessages.group.update[lang].superAdminPermission,
                         code: 0
                     });
                 }
                 // Eğer loggedInUser bir Super Admin değilse, işlem engellenir
                 if (loggedInUserId !== String(requestedGroup.created_by)) {
                     return res.status(200).json({
-                        message: 'You are not authorized to update this group.',
+                        message: responseMessages.common[lang].noPermission,
                         code: 0
                     });
                 }
@@ -115,7 +119,7 @@ const handler = async (req, res) => {
             // Bir Admin sadece kendi yarattığı grubu düzenleyebilir.
             if (loggedInUserRole === 1 && loggedInUserId !== String(requestedGroup.created_by)) {
                 return res.status(200).json({
-                    message: 'You are not authorized to update this group as it was not created by you.',
+                    message: responseMessages.group.update[lang].selfPermission,
                     code: 0
                 });
             }
@@ -125,7 +129,7 @@ const handler = async (req, res) => {
 
             if (noChanges) {
                 return res.status(200).json({
-                    message: 'No changes were made.',
+                    message: responseMessages.common[lang].noChanges,
                     code: 0
                 });
             }
@@ -138,18 +142,18 @@ const handler = async (req, res) => {
 
             if (!updatedGroup) {
                 return res.status(200).json({
-                    message: 'No changes were made.',
+                    message: responseMessages.common[lang].noChanges,
                     code: 0
                 });
             }
 
             return res.status(200).json({
-                message: 'Group updated successfully.',
+                message: responseMessages.group.update[lang].success,
                 code: 1
             });
         } catch (error) {
             return res.status(200).json({
-                message: 'An error occurred.',
+                message: responseMessages.common[lang].errorOccurred,
                 error: error.message,
                 code: 0
             });
@@ -157,7 +161,9 @@ const handler = async (req, res) => {
     } else {
         // Sadece PUT metodu kabul edilir
         res.setHeader('Allow', ['PUT']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 }
 

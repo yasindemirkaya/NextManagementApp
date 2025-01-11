@@ -58,20 +58,18 @@ const responseMessages = {
     // USER
     user: {
         // GET USER
-        getUser: {
+        get: {
             en: {
-                success: '',
+                success: 'User data successfully fetched.',
                 notFound: 'User not found.',
-                failedToFetch: '',
             },
             tr: {
-                success: '',
+                success: 'Kullanıcı verisi başarıyla getirildi.',
                 notFound: 'Kullanıcı bulunamadı.',
-                failedToFetch: '',
             }
         },
         // UPDATE USER
-        updateUser: {
+        update: {
             en: {
                 success: 'User data successfully updated',
                 alreadyExist: 'Email or mobile number already in use.'
@@ -82,7 +80,7 @@ const responseMessages = {
             }
         },
         // UPDATE USER BY ID
-        updateUserById: {
+        updateById: {
             en: {
                 success: 'User updated successfully.',
                 userIdRequired: 'User ID is required.',
@@ -97,7 +95,7 @@ const responseMessages = {
             }
         },
         // DELETE USER
-        deleteUser: {
+        delete: {
             en: {
                 success: 'User deleted successfully.',
                 userIdRequired: 'User ID is required.',
@@ -114,7 +112,7 @@ const responseMessages = {
             }
         },
         // DELETE USER BY ID
-        deleteUserById: {
+        deleteById: {
             en: {
                 success: 'User account deleted successfully.',
                 userIdRequired: 'User ID is required.',
@@ -263,6 +261,71 @@ const responseMessages = {
             success: 'Gruplar başarıyla getirildi.',
             failedToFetch: 'Gruplar veritabanından getirilemedi.',
             notAllowed: '"group_leader" veya "created_by" parametrelerini kullanma yetkiniz yok.',
+        }
+    },
+    // GROUP
+    group: {
+        // GET GROUP
+        get: {
+            en: {
+                success: 'Group successfully fetched.',
+                notFound: 'Group not found.',
+            },
+            tr: {
+                success: 'Grup başarıyla getirildi.',
+                notFound: 'Grup bulunamadı.',
+            }
+        },
+        // UPDATE GROUP
+        update: {
+            en: {
+                success: 'Group updated successfully.',
+                idRequired: 'Group ID is required.',
+                notFound: 'Group not found.',
+                creatorNotFound: 'Creator user not found.',
+                superAdminPermission: 'You are not authorized to update this group as it was created by a Super Admin.',
+                selfPermission: 'You are not authorized to update this group as it was not created by you.'
+            },
+            tr: {
+                success: 'Grup başarıyla güncellendi.',
+                idRequired: 'Grup ID gereklidir.',
+                notFound: 'Grup bulunamadı.',
+                creatorNotFound: 'Oluşturan kullanıcı bulunamadı.',
+                superAdminPermission: 'Bir Süper Admin tarafından oluşturulan bir grubu güncellemek için yetkiniz yok.',
+                selfPermission: 'Bu grubu güncellemek için yetkiniz yok çünkü siz oluşturmadınız.'
+            }
+        },
+        // CREATE GROUP
+        create: {
+            en: {
+                success: 'Group successfully created.',
+                requiredParams: 'Group name, type, group leader, and active status are required.',
+                minMembers: 'A group must have at least 2 members.'
+            },
+            tr: {
+                success: 'Grup başarıyla oluşturuldu.',
+                requiredParams: 'Grup adı, tipi, grup lideri ve aktif durumu gereklidir.',
+                minMembers: 'Bir grupta en az 2 üye olmalıdır.'
+            }
+        },
+        // DELETE GROUP
+        delete: {
+            en: {
+                success: 'Group deleted successfully.',
+                groupIdRequired: 'Group ID is required.',
+                notAuthorized: 'You are not authorized to delete this group.',
+                failedToDelete: 'Failed to delete group.',
+                notFound: 'Group not found or already deleted.',
+                adminPermission: 'Admins can only delete groups they created.'
+            },
+            tr: {
+                success: 'Grup başarıyla silindi.',
+                groupIdRequired: 'Grup ID gereklidir.',
+                notAuthorized: 'Bu grubu silme yetkiniz yok.',
+                failedToDelete: 'Grup silinemedi.',
+                notFound: 'Grup bulunamadı veya zaten silinmiş.',
+                adminPermission: 'Yöneticiler sadece kendi oluşturdukları grupları silebilir.'
+            }
         }
     }
 }

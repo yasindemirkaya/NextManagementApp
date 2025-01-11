@@ -36,7 +36,7 @@ const handler = async (req, res) => {
 
             if (!targetUserId) {
                 return res.status(200).json({
-                    message: responseMessages.user.deleteUserById[lang].userIdRequired,
+                    message: responseMessages.user.deleteById[lang].userIdRequired,
                     code: 0
                 });
             }
@@ -46,12 +46,12 @@ const handler = async (req, res) => {
                 const result = await deleteUserById(targetUserId);
                 if (result.deletedCount === 0) {
                     return res.status(200).json({
-                        message: responseMessages.user.deleteUserById[lang].notFound,
+                        message: responseMessages.user.deleteById[lang].notFound,
                         code: 0
                     });
                 }
                 return res.status(200).json({
-                    message: responseMessages.user.deleteUserById[lang].success,
+                    message: responseMessages.user.deleteById[lang].success,
                     code: 1
                 });
             }
@@ -62,7 +62,7 @@ const handler = async (req, res) => {
 
                 if (!targetUser) {
                     return res.status(200).json({
-                        message: responseMessages.user.deleteUserById[lang].notFound,
+                        message: responseMessages.user.deleteById[lang].notFound,
                         code: 0
                     });
                 }
@@ -70,14 +70,14 @@ const handler = async (req, res) => {
                 const targetUserRole = targetUser.role;
                 if (targetUserRole !== 0) {
                     return res.status(200).json({
-                        message: responseMessages.user.deleteUserById[lang].adminPermission,
+                        message: responseMessages.user.deleteById[lang].adminPermission,
                         code: 0
                     });
                 }
 
                 const result = await deleteUserById(targetUserId);
                 return res.status(200).json({
-                    message: responseMessages.user.deleteUserById[lang].success,
+                    message: responseMessages.user.deleteById[lang].success,
                     code: 1
                 });
             }

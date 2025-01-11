@@ -26,7 +26,7 @@ const handler = async (req, res) => {
 
             if (!user) {
                 return res.status(200).json({
-                    message: responseMessages.user.getUser[lang].notFound,
+                    message: responseMessages.user.get[lang].notFound,
                     code: 0,
                 });
             }
@@ -39,7 +39,7 @@ const handler = async (req, res) => {
 
             // Kullanıcı bilgilerini döndür
             return res.status(200).json({
-                message: responseMessages.user.getUser[lang].success,
+                message: responseMessages.user.get[lang].success,
                 code: 1,
                 user: {
                     id: user._id,

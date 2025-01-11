@@ -9,8 +9,12 @@
 import privateMiddleware from '@/middleware/private/index';
 import UserGroup from '@/models/UserGroup';
 import User from '@/models/User';
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'GET') {
         try {
             const groupId = req.query.id;
@@ -20,7 +24,7 @@ const handler = async (req, res) => {
 
             if (!group) {
                 return res.status(200).json({
-                    message: 'User group not found',
+                    message: responseMessages.group[lang].notFound,
                     code: 0,
                 });
             }
@@ -53,21 +57,22 @@ const handler = async (req, res) => {
             };
 
             return res.status(200).json({
-                message: 'User group fetched successfully',
+                message: responseMessages.group[lang].success,
                 code: 1,
                 group: formattedGroup,
             });
         } catch (error) {
-            console.error('Error fetching user group by ID:', error);
             return res.status(500).json({
-                message: 'An error occurred',
+                message: responseMessages.common[lang].errorOccured,
                 error: error.message,
             });
         }
     } else {
         // Sadece GET isteği kabul edilir
         res.setHeader('Allow', ['GET']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

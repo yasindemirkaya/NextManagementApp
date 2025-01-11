@@ -65,7 +65,7 @@ const handler = async (req, res) => {
 
             if ((emailExists && emailExists.id !== userId) || (mobileExists && mobileExists.id !== userId)) {
                 return res.status(200).json({
-                    message: responseMessages.user.updateUser[lang].alreadyExist,
+                    message: responseMessages.user.update[lang].alreadyExist,
                     code: 0
                 });
             }
@@ -91,7 +91,7 @@ const handler = async (req, res) => {
 
             // Başarılı güncelleme yanıtı
             return res.status(200).json({
-                message: responseMessages.user.updateUser[lang].success,
+                message: responseMessages.user.update[lang].success,
                 code: 1
             });
         } catch (error) {

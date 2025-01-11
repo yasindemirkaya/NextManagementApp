@@ -27,7 +27,7 @@ const handler = async (req, res) => {
             // Kullanıcı admin (1) veya super admin (2) değilse işlem reddedilir
             if (role !== 1 && role !== 2) {
                 return res.status(403).json({
-                    message: responseMessages.user.createUser[lang].noPermission,
+                    message: responseMessages.user.create[lang].noPermission,
                     code: 0,
                 });
             }
@@ -46,7 +46,7 @@ const handler = async (req, res) => {
 
             if (!firstName || !lastName || !email || !password || !mobile || isActive === undefined || isVerified === undefined || userRole === undefined) {
                 return res.status(200).json({
-                    message: responseMessages.user.createUser[lang].allFieldsRequired,
+                    message: responseMessages.user.create[lang].allFieldsRequired,
                     code: 0
                 });
             }
@@ -71,7 +71,7 @@ const handler = async (req, res) => {
                 await newUser.save();
 
                 return res.status(200).json({
-                    message: responseMessages.user.createUser[lang].success,
+                    message: responseMessages.user.create[lang].success,
                     code: 1,
                     user: email
                 });
@@ -79,7 +79,7 @@ const handler = async (req, res) => {
                 // MongoDB Unique constraint hatası
                 if (error.code === 11000) {
                     return res.status(200).json({
-                        message: responseMessages.user.createUser[lang].emailOrMobileInUse,
+                        message: responseMessages.user.create[lang].emailOrMobileInUse,
                         code: 0,
                     });
                 }

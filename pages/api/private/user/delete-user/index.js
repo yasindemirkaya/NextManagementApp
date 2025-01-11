@@ -34,14 +34,14 @@ const handler = async (req, res) => {
             // Silinen belge sayısını kontrol et
             if (result.deletedCount === 0) {
                 return res.status(200).json({
-                    message: responseMessages.user.deleteUser[lang].notFound,
+                    message: responseMessages.user.delete[lang].notFound,
                     code: 0
                 });
             }
 
             // Başarılı silme yanıtı
             return res.status(200).json({
-                message: responseMessages.user.deleteUser[lang].success,
+                message: responseMessages.user.delete[lang].success,
                 code: 1
             });
         } catch (error) {

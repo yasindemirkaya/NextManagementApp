@@ -47,7 +47,7 @@ const handler = async (req, res) => {
 
             if (!requestedUserId) {
                 return res.status(400).json({
-                    message: responseMessages.user.updateUserById[lang].userIdRequired,
+                    message: responseMessages.user.updateById[lang].userIdRequired,
                     code: 0
                 });
             }
@@ -66,7 +66,7 @@ const handler = async (req, res) => {
                 // Admin, sadece Standard User'ları (role: 0) güncelleyebilir
                 if (requestedUser.role !== 0) {
                     return res.status(403).json({
-                        message: responseMessages.user.updateUserById[lang].notAuthorized,
+                        message: responseMessages.user.updateById[lang].notAuthorized,
                         code: 0
                     });
                 }
@@ -74,7 +74,7 @@ const handler = async (req, res) => {
                 // Super Admin, kendisi gibi Super Adminler hariç herkesi güncelleyebilir.
                 if (requestedUser.role === 2) {
                     return res.status(403).json({
-                        message: responseMessages.user.updateUserById[lang].notAuthorized,
+                        message: responseMessages.user.updateById[lang].notAuthorized,
                         code: 0
                     });
                 }
@@ -88,20 +88,20 @@ const handler = async (req, res) => {
 
             if (!isUpdated) {
                 return res.status(500).json({
-                    message: responseMessages.user.updateUserById[lang].failedToUpdate,
+                    message: responseMessages.user.updateById[lang].failedToUpdate,
                     code: 0
                 });
             }
 
             return res.status(200).json({
-                message: responseMessages.user.updateUserById[lang].success,
+                message: responseMessages.user.updateById[lang].success,
                 code: 1
             });
         } catch (error) {
             // Mongoose hatası kontrolü
             if (error.name === 'MongoError' && error.code === 11000) {
                 return res.status(400).json({
-                    message: responseMessages.user.updateUser[lang].alreadyExist,
+                    message: responseMessages.user.update[lang].alreadyExist,
                     code: 0
                 });
             }

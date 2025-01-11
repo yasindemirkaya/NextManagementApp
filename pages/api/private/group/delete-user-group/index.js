@@ -9,6 +9,7 @@
 import { verify } from 'jsonwebtoken';
 import UserGroup from '@/models/UserGroup';
 import privateMiddleware from "@/middleware/private/index";
+import responseMessages from '@/static/responseMessages/messages';
 
 // Delete user group by ID method
 const deleteUserGroupById = async (groupId) => {
@@ -18,6 +19,9 @@ const deleteUserGroupById = async (groupId) => {
 };
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'DELETE') {
         try {
             // Authorization başlığındaki token'ı al ve çöz
@@ -33,7 +37,7 @@ const handler = async (req, res) => {
 
             if (!targetGroupId) {
                 return res.status(200).json({
-                    message: 'Target group ID is required',
+                    message: responseMessages.group.delete[lang].groupIdRequired,
                     code: 0
                 });
             }
@@ -43,12 +47,12 @@ const handler = async (req, res) => {
                 const result = await deleteUserGroupById(targetGroupId);
                 if (!result) {
                     return res.status(404).json({
-                        message: 'Group not found or already deleted',
+                        message: responseMessages.group.delete[lang].notFound,
                         code: 0
                     });
                 }
                 return res.status(200).json({
-                    message: 'User group has been deleted successfully.',
+                    message: responseMessages.group.delete[lang].success,
                     code: 1
                 });
             }
@@ -59,14 +63,14 @@ const handler = async (req, res) => {
                 const group = await UserGroup.findById(targetGroupId).select('created_by');
                 if (!group) {
                     return res.status(404).json({
-                        message: 'Group not found',
+                        message: responseMessages.group.delete[lang].notFound,
                         code: 0
                     });
                 }
 
                 if (group.created_by.toString() !== requestingUserId) {
                     return res.status(403).json({
-                        message: 'Admins can only delete groups they created',
+                        message: responseMessages.group.delete[lang].adminPermission,
                         code: 0
                     });
                 }
@@ -74,26 +78,25 @@ const handler = async (req, res) => {
                 const result = await deleteUserGroupById(targetGroupId);
                 if (!result) {
                     return res.status(404).json({
-                        message: 'Group not found or already deleted',
+                        message: responseMessages.group.delete[lang].notFound,
                         code: 0
                     });
                 }
 
                 return res.status(200).json({
-                    message: 'User group has been deleted successfully',
+                    message: responseMessages.group.delete[lang].success,
                     code: 1
                 });
             }
 
             // Standart kullanıcı (role: 0) bu endpointi kullanamaz
             return res.status(403).json({
-                message: 'You are not authorized to perform this action',
+                message: responseMessages.common[lang].noPermission,
                 code: 0
             });
         } catch (error) {
-            console.error('Error deleting user group by ID:', error);
             return res.status(500).json({
-                message: 'An error occurred',
+                message: responseMessages.common[lang].errorOccured,
                 error: error.message,
                 code: 0
             });
@@ -101,7 +104,9 @@ const handler = async (req, res) => {
     } else {
         // Sadece DELETE isteği kabul edilir
         res.setHeader('Allow', ['DELETE']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 
