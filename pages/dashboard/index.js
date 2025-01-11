@@ -1,6 +1,10 @@
+import Statistics from "@/components/Dashboard/Statistics";
+
 const Dashboard = () => {
     return (
-        <>Dashboard</>
+        <>
+            <Statistics />
+        </>
     )
 }
 

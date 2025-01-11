@@ -30,6 +30,9 @@ html[data-bs-theme="light"] {
     --table-border-color: #DDDDDD;
     --table-no-data-font-color: #777777;
     --table-active-sort-font-color: #18BC9C;
+
+    // Stats variables
+    --stat-title-hover-color: #18BC9C;
 }
 
 // DARK THEME COLOR CODES
@@ -62,4 +65,7 @@ html[data-bs-theme="dark"] {
     --table-border-color: #121518;
     --table-no-data-font-color: #777777;
     --table-active-sort-font-color: #18BC9C;
+
+    // Stats variables
+    --stat-title-hover-color: #18BC9C;
 }

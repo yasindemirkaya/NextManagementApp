@@ -1,4 +1,4 @@
-import { faMoon, faSun, faFileInvoice, faPlus, faTrash, faFileExcel, faBell, faRightFromBracket, faSearch, faUser, faUsers, faUserPlus, faInfoCircle, faChevronDown, faChevronUp, faChevronCircleUp, faChevronLeft, faChevronRight, faEye, faEyeSlash, faPlusCircle, faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faMoon, faSun, faFileInvoice, faPlus, faTrash, faFileExcel, faBell, faRightFromBracket, faSearch, faUser, faUsers, faUserPlus, faInfoCircle, faChevronDown, faChevronUp, faChevronCircleUp, faChevronLeft, faChevronRight, faEye, faEyeSlash, faPlusCircle, faDeleteLeft } from '@fortawesome/free-solid-svg-icons';
 
 export const icons = {
     faUser,
@@ -22,5 +22,6 @@ export const icons = {
     faPlus,
     faFileInvoice,
     faSun,
-    faMoon
+    faMoon,
+    faTimes
 };
