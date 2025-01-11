@@ -16,8 +16,12 @@ import { verify } from 'jsonwebtoken';
 import privateMiddleware from "@/middleware/private/index";
 import UserGroup from '@/models/UserGroup';
 import User from '@/models/User';
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'GET') {
         // Token'ı decode et ve kullanıcı rolünü al
         let userRole;
@@ -27,7 +31,7 @@ const handler = async (req, res) => {
             userRole = decoded?.role;
         } catch (error) {
             return res.status(200).json({
-                message: 'Invalid token, please log in again.',
+                message: responseMessages.common[lang].invalidToken,
                 code: 0
             });
         }
@@ -35,7 +39,7 @@ const handler = async (req, res) => {
         // Role kontrolü: Eğer userRole 0 ise, veri döndürme
         if (userRole === 0) {
             return res.status(403).json({
-                message: 'You do not have permission to access this resource.',
+                message: responseMessages.common[lang].noPermission,
                 code: 0
             });
         }
@@ -47,7 +51,7 @@ const handler = async (req, res) => {
             // Rol 1 (admin) ise, group_leader ve created_by parametrelerini kullanamaz
             if (group_leader || created_by) {
                 return res.status(200).json({
-                    message: 'You are not allowed to use "group_leader" or "created_by" parameters.',
+                    message: responseMessages.groups[lang].noPermission,
                     code: 0
                 });
             }
@@ -138,7 +142,7 @@ const handler = async (req, res) => {
 
             res.status(200).json({
                 code: 1,
-                message: 'User groups successfully fetched.',
+                message: responseMessages.groups[lang].success,
                 groups: formattedGroups,
                 pagination: {
                     totalData: totalGroups,
@@ -148,12 +152,15 @@ const handler = async (req, res) => {
                 }
             });
         } catch (error) {
-            console.error('Error fetching user groups:', error);
-            res.status(500).json({ error: 'Failed to fetch user groups from the database' });
+            res.status(500).json({
+                error: responseMessages.groups[lang].failedToFetch,
+            });
         }
     } else {
         res.setHeader('Allow', ['GET']);
-        res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

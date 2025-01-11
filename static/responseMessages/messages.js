@@ -251,6 +251,19 @@ const responseMessages = {
                 userNotFound: 'Kullanıcı bulunamadı.'
             }
         }
+    },
+    // GROUPS
+    groups: {
+        en: {
+            success: 'Groups successfully fetched.',
+            failedToFetch: 'Failed to fetch groups from the database.',
+            notAllowed: 'You are not allowed to use "group_leader" or "created_by" parameters.',
+        },
+        tr: {
+            success: 'Gruplar başarıyla getirildi.',
+            failedToFetch: 'Gruplar veritabanından getirilemedi.',
+            notAllowed: '"group_leader" veya "created_by" parametrelerini kullanma yetkiniz yok.',
+        }
     }
 }
 
