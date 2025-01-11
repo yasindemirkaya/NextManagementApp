@@ -1,11 +1,11 @@
 const headerMenu = [
-    {
-        id: 1,
-        name: "Home",
-        nameTR: "Ana Sayfa",
-        link: "/",
-        icon: "",
-    },
+    // {
+    //     id: 1,
+    //     name: "Home",
+    //     nameTR: "Ana Sayfa",
+    //     link: "/",
+    //     icon: "",
+    // },
     {
         id: 2,
         name: "Dashboard",
