@@ -6,8 +6,8 @@
     {
         _id: id
         title: 'Users',
-        icon: 'faUsers',
         link: '/user-management'
+        icon: 'faUsers',
         icon_color: "#ffffff"
         bg_color: "#ffffff" 
     }
