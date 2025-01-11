@@ -11,8 +11,12 @@ import { verify } from 'jsonwebtoken';
 import UserGroupType from '@/models/UserGroupType';
 import User from '@/models/User';
 import privateMiddleware from "@/middleware/private/index"
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'POST') {
         try {
             // Token'ı decode et ve kullanıcı rolünü al
@@ -23,7 +27,7 @@ const handler = async (req, res) => {
             // Super admin (2) değilse işlem reddedilir
             if (role !== 2) {
                 return res.status(403).json({
-                    message: "You do not have permission to create a user group type.",
+                    message: responseMessages.userGroupTypes.create[lang].noPermission,
                     code: 0,
                 });
             }
@@ -33,7 +37,7 @@ const handler = async (req, res) => {
 
             if (!typeName) {
                 return res.status(200).json({
-                    message: "Type name is required.",
+                    message: responseMessages.userGroupTypes.create[lang].nameRequired,
                     code: 0
                 });
             }
@@ -42,7 +46,7 @@ const handler = async (req, res) => {
             const existingGroupType = await UserGroupType.findOne({ type_name: typeName });
             if (existingGroupType) {
                 return res.status(200).json({
-                    message: `A group type with the name "${typeName}" already exists.`,
+                    message: responseMessages.userGroupTypes.create[lang].alreadyExist,
                     code: 0
                 });
             }
@@ -51,7 +55,7 @@ const handler = async (req, res) => {
             const createdByUser = await User.findById(adminId);
             if (!createdByUser) {
                 return res.status(404).json({
-                    message: "Created by user not found.",
+                    message: responseMessages.userGroupTypes.create[lang].createdByNotFound,
                     code: 0
                 });
             }
@@ -67,22 +71,23 @@ const handler = async (req, res) => {
             await newUserGroupType.save();
 
             return res.status(200).json({
-                message: "User group type successfully created.",
+                message: responseMessages.userGroupTypes.create[lang].success,
                 code: 1,
                 group_type: typeName,
                 _id: newUserGroupType._id,
             });
         } catch (error) {
-            console.error('Error creating user group type:', error);
             return res.status(500).json({
-                message: "An error occurred.",
+                message: responseMessages.common[lang].errorOccured,
                 error: error.message,
                 code: 0
             });
         }
     } else {
         res.setHeader('Allow', ['POST']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 }
 

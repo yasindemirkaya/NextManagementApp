@@ -11,8 +11,12 @@ import { verify } from 'jsonwebtoken';
 import UserGroupType from '@/models/UserGroupType';
 import User from '@/models/User';
 import privateMiddleware from "@/middleware/private/index";
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'PUT') {
         try {
             // Token'ı decode et ve kullanıcının ID'sini ve rolünü al
@@ -23,7 +27,7 @@ const handler = async (req, res) => {
             // Super admin (2) değilse işlem reddedilir
             if (role !== 2) {
                 return res.status(403).json({
-                    message: "You do not have permission to update a user group type.",
+                    message: responseMessages.common[lang].noPermission,
                     code: 0,
                 });
             }
@@ -33,7 +37,7 @@ const handler = async (req, res) => {
 
             if (!groupTypeId || !newTypeName) {
                 return res.status(400).json({
-                    message: "Group type ID and new type name are required.",
+                    message: responseMessages.userGroupTypes.update[lang].idRequired,
                     code: 0,
                 });
             }
@@ -42,7 +46,7 @@ const handler = async (req, res) => {
             const groupType = await UserGroupType.findById(groupTypeId);
             if (!groupType) {
                 return res.status(404).json({
-                    message: "User group type not found.",
+                    message: responseMessages.userGroupTypes.update[lang].groupNotFound,
                     code: 0,
                 });
             }
@@ -51,7 +55,7 @@ const handler = async (req, res) => {
             const updatingUser = await User.findById(userId);
             if (!updatingUser) {
                 return res.status(404).json({
-                    message: "User not found.",
+                    message: responseMessages.common[lang].userNotFound,
                     code: 0,
                 });
             }
@@ -64,7 +68,7 @@ const handler = async (req, res) => {
             await groupType.save();
 
             return res.status(200).json({
-                message: "User group type successfully updated.",
+                message: responseMessages.userGroupTypes.update[lang].success,
                 code: 1,
                 updated_group_type: {
                     _id: groupType._id,
@@ -74,16 +78,17 @@ const handler = async (req, res) => {
                 },
             });
         } catch (error) {
-            console.error('Error updating user group type:', error);
             return res.status(500).json({
-                message: "An error occurred while updating the user group type.",
+                message: responseMessages.common[lang].errorOccurred,
                 error: error.message,
                 code: 0,
             });
         }
     } else {
         res.setHeader('Allow', ['PUT']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

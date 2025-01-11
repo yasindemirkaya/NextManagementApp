@@ -10,8 +10,12 @@
 import { verify } from 'jsonwebtoken';
 import UserGroupType from '@/models/UserGroupType';
 import privateMiddleware from "@/middleware/private/index";
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'DELETE') {
         try {
             // Token'ı decode et ve kullanıcı rolünü al
@@ -22,7 +26,7 @@ const handler = async (req, res) => {
             // Super admin (2) değilse işlem reddedilir
             if (role !== 2) {
                 return res.status(403).json({
-                    message: "You do not have permission to delete a user group type.",
+                    message: responseMessages.common[lang].noPermission,
                     code: 0,
                 });
             }
@@ -32,7 +36,7 @@ const handler = async (req, res) => {
 
             if (!groupTypeId) {
                 return res.status(400).json({
-                    message: "Group type ID is required.",
+                    message: responseMessages.userGroupTypes.delete[lang].groupTypeIdRequired,
                     code: 0
                 });
             }
@@ -42,27 +46,28 @@ const handler = async (req, res) => {
 
             if (!deletedGroupType) {
                 return res.status(404).json({
-                    message: "User group type not found.",
+                    message: responseMessages.userGroupTypes.delete[lang].groupTypeNotFound,
                     code: 0,
                 });
             }
 
             return res.status(200).json({
-                message: "User group type successfully deleted.",
+                message: responseMessages.userGroupTypes.delete[lang].success,
                 code: 1,
                 deleted_group_type: deletedGroupType,
             });
         } catch (error) {
-            console.error('Error deleting user group type:', error);
             return res.status(500).json({
-                message: "An error occurred while deleting the user group type.",
+                message: responseMessages.common[lang].errorOccured,
                 error: error.message,
                 code: 0
             });
         }
     } else {
         res.setHeader('Allow', ['DELETE']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

@@ -7,13 +7,17 @@
 // ------------------------------
 
 import privateMiddleware from '@/middleware/private/index';
-import UserGroupType from '@/models/UserGroupType'; // userGroupTypes koleksiyonunu temsil eden model
+import UserGroupType from '@/models/UserGroupType';
+import responseMessages from '@/static/responseMessages/messages';
 
 const findUserGroupTypeById = async (id) => {
     return await UserGroupType.findById(id).lean();
 };
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'GET') {
         try {
             const requestedGroupTypeId = req.query.id; // ID parametresini al
@@ -23,14 +27,14 @@ const handler = async (req, res) => {
 
             if (!groupType) {
                 return res.status(200).json({
-                    message: 'Group Type not found',
+                    message: responseMessages.userGroupTypes.getById[lang].notFound,
                     code: 0,
                 });
             }
 
             // Group Type bilgilerini döndür
             return res.status(200).json({
-                message: 'Group Type fetched successfully',
+                message: responseMessages.userGroupTypes.getById[lang].success,
                 code: 1,
                 groupType: {
                     id: groupType._id,
@@ -40,16 +44,17 @@ const handler = async (req, res) => {
                 },
             });
         } catch (error) {
-            console.error('Error fetching group type:', error);
             return res.status(500).json({
-                message: 'An error occurred',
+                message: responseMessages.common[lang].errorOccured,
                 error: error.message,
             });
         }
     } else {
         // Sadece GET isteği kabul edilir
         res.setHeader('Allow', ['GET']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

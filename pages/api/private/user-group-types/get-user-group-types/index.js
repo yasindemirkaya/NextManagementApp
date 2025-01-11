@@ -10,8 +10,12 @@
 import { verify } from 'jsonwebtoken';
 import UserGroupType from '@/models/UserGroupType';
 import privateMiddleware from "@/middleware/private/index";
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'GET') {
         try {
             // Token'ı decode et ve kullanıcı rolünü al
@@ -22,7 +26,7 @@ const handler = async (req, res) => {
             // Sadece Super admin (2) erişebilir.
             if (role != 2) {
                 return res.status(403).json({
-                    message: "You do not have permission to access the user group types.",
+                    message: responseMessages.common[lang].noPermission,
                     code: 0,
                 });
             }
@@ -49,7 +53,7 @@ const handler = async (req, res) => {
             const totalPages = Math.ceil(totalUsers / limit); // Toplam sayfa sayısı
 
             return res.status(200).json({
-                message: "User group types successfully retrieved.",
+                message: responseMessages.userGroupTypes.get[lang].success,
                 code: 1,
                 user_group_types: userGroupTypes,
                 pagination: {
@@ -60,16 +64,17 @@ const handler = async (req, res) => {
                 }
             });
         } catch (error) {
-            console.error('Error retrieving user group types:', error);
             return res.status(500).json({
-                message: "An error occurred while retrieving user group types.",
+                message: responseMessages.common[lang].errorOccured,
                 error: error.message,
                 code: 0
             });
         }
     } else {
         res.setHeader('Allow', ['GET']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 
