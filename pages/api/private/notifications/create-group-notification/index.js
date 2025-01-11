@@ -10,8 +10,12 @@
 import { verify } from 'jsonwebtoken';
 import GroupNotification from '@/models/GroupNotification';
 import UserGroup from '@/models/UserGroup';
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'POST') {
         const { title, description, type, groups, date } = req.body;
 
@@ -25,7 +29,7 @@ const handler = async (req, res) => {
             loggedInUserId = decoded?.id;
         } catch (error) {
             return res.status(200).json({
-                message: 'Invalid token, please log in again.',
+                message: responseMessages.common[lang].invalidToken,
                 code: 0
             });
         }
@@ -33,7 +37,7 @@ const handler = async (req, res) => {
         // Role kontrolü: Admin veya Super Admin olmalı
         if (![1, 2].includes(loggedInUserRole)) {
             return res.status(200).json({
-                message: 'You do not have permission to access this resource.',
+                message: responseMessages.common[lang].noPermission,
                 code: 0
             });
         }
@@ -42,7 +46,7 @@ const handler = async (req, res) => {
         if (!title || !description || !type || !groups || groups.length === 0) {
             return res.status(200).json({
                 code: 0,
-                message: 'All fields are required'
+                message: responseMessages.notifications.createGroup[lang].allFieldsRequired,
             });
         }
 
@@ -53,7 +57,7 @@ const handler = async (req, res) => {
             // Eğer geçersiz bir user group ID'si varsa, hata döndür
             if (validGroups.length !== groups.length) {
                 return res.status(200).json({
-                    message: 'One or more user group IDs are invalid',
+                    message: responseMessages.notifications.createGroup[lang].invalidGroup,
                     code: 0,
                 });
             }
@@ -74,15 +78,19 @@ const handler = async (req, res) => {
             // Başarılı yanıt döndür
             res.status(200).json({
                 code: 1,
-                message: 'Group notification(s) created successfully',
+                message: responseMessages.notifications.createGroup[lang].success,
                 notifications: savedNotifications,
             });
         } catch (error) {
-            console.error('Error while creating notification:', error);
-            res.status(500).json({ message: 'An error occurred while creating the notification', error: error.message });
+            res.status(500).json({
+                message: responseMessages.common[lang].errorOccured,
+                error: error.message
+            });
         }
     } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

@@ -10,8 +10,12 @@ import { verify } from 'jsonwebtoken';
 import PersonalNotification from '@/models/PersonalNotification';
 import GroupNotification from '@/models/GroupNotification';
 import UserGroup from '@/models/UserGroup';
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'GET') {
         // Token'dan kullanıcı bilgilerini al
         let userId;
@@ -21,7 +25,7 @@ const handler = async (req, res) => {
             userId = decoded?.id; // İstek yapan kullanıcının ID'si
         } catch (error) {
             return res.status(200).json({
-                message: 'Invalid token, please log in again.',
+                message: responseMessages.common[lang].invalidToken,
                 code: 0
             });
         }
@@ -49,15 +53,19 @@ const handler = async (req, res) => {
             // Yanıt döndür
             res.status(200).json({
                 code: 1,
-                message: 'Notification count retrieved successfully',
+                message: responseMessages.notifications.getCount[lang].success,
                 totalNotificationCount
             });
         } catch (error) {
-            console.error('Error while fetching notification count:', error);
-            res.status(500).json({ message: 'An error occurred while fetching the notification count', error: error.message });
+            res.status(500).json({
+                message: responseMessages.common[lang].errorOccured,
+                error: error.message
+            });
         }
     } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

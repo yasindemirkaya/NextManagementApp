@@ -10,8 +10,12 @@
 import { verify } from 'jsonwebtoken';
 import PersonalNotification from '@/models/PersonalNotification';
 import User from '@/models/User';
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'POST') {
         const { title, description, type, users, date } = req.body;
 
@@ -25,7 +29,7 @@ const handler = async (req, res) => {
             loggedInUserId = decoded?.id;  // Bu, isteği yapan kullanıcının ID'si
         } catch (error) {
             return res.status(200).json({
-                message: 'Invalid token, please log in again.',
+                message: responseMessages.common[lang].invalidToken,
                 code: 0
             });
         }
@@ -33,7 +37,7 @@ const handler = async (req, res) => {
         // Role kontrolü: Admin veya Super Admin olmalı
         if (![1, 2].includes(loggedInUserRole)) {
             return res.status(200).json({
-                message: 'You do not have permission to access this resource.',
+                message: responseMessages.common[lang].noPermission,
                 code: 0
             });
         }
@@ -42,7 +46,7 @@ const handler = async (req, res) => {
         if (!title || !description || !type || !users || users.length === 0) {
             return res.status(200).json({
                 code: 0,
-                message: 'All fields are required'
+                message: responseMessages.notifications.createPersonal[lang].allFieldsRequired
             });
         }
 
@@ -53,7 +57,7 @@ const handler = async (req, res) => {
             // Eğer geçersiz bir user ID'si varsa, hata döndür
             if (validUsers.length !== users.length) {
                 return res.status(200).json({
-                    message: 'One or more user IDs are invalid',
+                    message: responseMessages.notifications.createPersonal[lang].allFieldsRequired,
                     code: 0,
                 });
             }
@@ -63,7 +67,7 @@ const handler = async (req, res) => {
                 title,
                 description,
                 type,
-                created_by: loggedInUserId,  // Burada her bir bildirimde kullanıcıyı işaret ediyoruz
+                created_by: loggedInUserId,
                 user: userId,
                 date: date || new Date(),
             }));
@@ -74,15 +78,19 @@ const handler = async (req, res) => {
             // Başarılı yanıt döndür
             res.status(200).json({
                 code: 1,
-                message: 'Personal notification(s) created successfully',
+                message: responseMessages.notifications.createPersonal[lang].success,
                 notifications: savedNotifications,
             });
         } catch (error) {
-            console.error('Error while creating notification:', error);
-            res.status(500).json({ message: 'An error occurred while creating the notification', error: error.message });
+            res.status(500).json({
+                message: responseMessages.common[lang].errorOccured,
+                error: error.message
+            });
         }
     } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

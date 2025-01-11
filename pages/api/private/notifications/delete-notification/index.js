@@ -10,15 +10,19 @@
 import PersonalNotification from '@/models/PersonalNotification';
 import GroupNotification from '@/models/GroupNotification';
 import { verify } from 'jsonwebtoken';
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'DELETE') {
         const { notificationId } = req.body;
 
         if (!notificationId) {
             return res.status(400).json({
                 code: 0,
-                message: 'Notification ID is required.'
+                message: responseMessages.notifications.delete[lang].idRequired
             });
         }
 
@@ -32,7 +36,7 @@ const handler = async (req, res) => {
             if (!notification) {
                 return res.status(200).json({
                     code: 0,
-                    message: 'Notification not found.'
+                    message: responseMessages.notifications.delete[lang].notFound
                 });
             }
 
@@ -44,7 +48,7 @@ const handler = async (req, res) => {
                 userRole = decoded?.role;
             } catch (error) {
                 return res.status(401).json({
-                    message: 'Invalid token, please log in again.',
+                    message: responseMessages.common[lang].invalidToken,
                     code: 0
                 });
             }
@@ -52,7 +56,7 @@ const handler = async (req, res) => {
             // Role kontrolü: Eğer userRole 0 ise, veri döndürme (kullanıcı yetkisi yok)
             if (userRole === 0) {
                 return res.status(200).json({
-                    message: 'You do not have permission to access this resource.',
+                    message: responseMessages.common[lang].noPermission,
                     code: 0
                 });
             }
@@ -65,7 +69,7 @@ const handler = async (req, res) => {
             if (notification.created_by.toString() !== userId) {
                 return res.status(200).json({
                     code: 0,
-                    message: 'You can only delete your own notification.'
+                    message: responseMessages.notifications.delete[lang].notAuthorized
                 });
             }
 
@@ -78,15 +82,19 @@ const handler = async (req, res) => {
 
             return res.status(200).json({
                 code: 1,
-                message: 'Notification deleted successfully.'
+                message: responseMessages.notifications.delete[lang].success
             });
 
         } catch (error) {
-            console.error('Error in deleting notification:', error);
-            return res.status(500).json({ message: 'An error occurred while deleting the notification', error: error.message });
+            return res.status(500).json({
+                message: responseMessages.common[lang].errorOccurred,
+                error: error.message
+            });
         }
     } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 }
 

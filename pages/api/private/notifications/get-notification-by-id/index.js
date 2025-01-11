@@ -13,8 +13,12 @@ import GroupNotification from '@/models/GroupNotification';
 import UserGroup from '@/models/UserGroup';
 import User from '@/models/User';
 import { formatDate } from '@/helpers/dateFormatter';
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'GET') {
         const { id } = req.query;
 
@@ -26,7 +30,7 @@ const handler = async (req, res) => {
             userId = decoded?.id;
         } catch (error) {
             return res.status(200).json({
-                message: 'Invalid token, please log in again.',
+                message: responseMessages.common[lang].invalidToken,
                 code: 0
             });
         }
@@ -47,7 +51,7 @@ const handler = async (req, res) => {
             if (!notification) {
                 return res.status(200).json({
                     code: 0,
-                    message: 'Notification not found or you do not have permission to view it.'
+                    message: responseMessages.notifications.getById[lang].notFound
                 });
             }
 
@@ -58,7 +62,7 @@ const handler = async (req, res) => {
             if (!user) {
                 return res.status(200).json({
                     code: 0,
-                    message: 'User information not found for created_by.'
+                    message: responseMessages.notifications.getById[lang].createdByNotFound
                 });
             }
 
@@ -72,7 +76,7 @@ const handler = async (req, res) => {
             // Yanıtı döndür
             res.status(200).json({
                 code: 1,
-                message: 'Notification retrieved successfully',
+                message: responseMessages.notifications.getById[lang].success,
                 notification: {
                     ...notification.toObject(),
                     created_by: createdBy,
@@ -81,11 +85,15 @@ const handler = async (req, res) => {
                 }
             });
         } catch (error) {
-            console.error('Error while fetching notification:', error);
-            res.status(500).json({ message: 'An error occurred while fetching notification', error: error.message });
+            res.status(500).json({
+                message: responseMessages.common[lang].errorOccured,
+                error: error.message
+            });
         }
     } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

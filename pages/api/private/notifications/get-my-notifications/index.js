@@ -10,11 +10,15 @@
 import { verify } from 'jsonwebtoken';
 import PersonalNotification from '@/models/PersonalNotification';
 import GroupNotification from '@/models/GroupNotification';
-import User from '@/models/User'; // Kullanıcı modeli
-import UserGroup from '@/models/UserGroup'; // Kullanıcı grubu modeli
+import User from '@/models/User';
+import UserGroup from '@/models/UserGroup';
 import { formatDate } from '@/helpers/dateFormatter';
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'GET') {
         const { type, limit, page } = req.query;
 
@@ -26,7 +30,7 @@ const handler = async (req, res) => {
             userId = decoded?.id; // İstek yapan kullanıcının ID'si
         } catch (error) {
             return res.status(200).json({
-                message: 'Invalid token, please log in again.',
+                message: responseMessages.common[lang].invalidToken,
                 code: 0
             });
         }
@@ -94,14 +98,14 @@ const handler = async (req, res) => {
             if (paginatedNotifications.length === 0) {
                 return res.status(200).json({
                     code: 0,
-                    message: 'No notifications found'
+                    message: responseMessages.notifications.getMy[lang].notFound
                 });
             }
 
             // Pagination bilgisi ekleyerek yanıt dön
             res.status(200).json({
                 code: 1,
-                message: 'Notifications retrieved successfully',
+                message: responseMessages.notifications.getMy[lang].success,
                 notifications: paginatedNotifications,
                 pagination: {
                     totalData: totalNotifications,
@@ -111,11 +115,15 @@ const handler = async (req, res) => {
                 }
             });
         } catch (error) {
-            console.error('Error while fetching my notifications:', error);
-            res.status(500).json({ message: 'An error occurred while fetching notifications', error: error.message });
+            res.status(500).json({
+                message: responseMessages.common[lang].errorOccured,
+                error: error.message
+            });
         }
     } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 

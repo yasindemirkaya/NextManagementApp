@@ -328,6 +328,115 @@ const responseMessages = {
             }
         }
     },
+    // NOTIFICATIONS
+    notifications: {
+        // GET NOTIFICATIONS
+        get: {
+            en: {
+                success: 'Notifications successfully fetched.',
+                notFound: 'No notifications found.',
+            },
+            tr: {
+                success: 'Bildirimler başarıyla getirildi.',
+                notFound: 'Hiçbir bildirim bulunamadı.',
+            }
+        },
+        // GET NOTIFICATION BY ID
+        getById: {
+            en: {
+                success: 'Notification successfully fetched.',
+                notFound: 'Notification not found.',
+                createdByNotFound: 'Created by user not found.'
+            },
+            tr: {
+                success: 'Bildirim başarıyla getirildi.',
+                notFound: 'Bildirim bulunamadı.',
+                createdByNotFound: 'Oluşturan kullanıcı bulunamadı.'
+            }
+        },
+        // GET NOTIFICATION COUNT
+        getCount: {
+            en: {
+                success: 'Notification count successfully fetched.',
+            },
+            tr: {
+                success: 'Bildirim sayısı başarıyla getirildi.',
+            }
+        },
+        // GET MY NOTIFICATIONS
+        getMy: {
+            en: {
+                success: 'Notifications retrieved successfully',
+                notFound: 'No notifications found.'
+            },
+            tr: {
+                success: 'Bildirimler başarıyla getirildi.',
+                notFound: 'Hiçbir bildirim bulunamadı.'
+            }
+        },
+        // CREATE PERSONAL NOTIFICATION
+        createPersonal: {
+            en: {
+                success: 'Personal notification(s) successfully created.',
+                allFieldsRequired: 'All fields are required.',
+                invalidId: 'One or more user IDs are invalid.'
+            },
+            tr: {
+                success: 'Kişisel bildirim(ler) başarıyla oluşturuldu.',
+                allFieldsRequired: 'Tüm alanlar gereklidir.',
+                invalidId: 'Bir veya daha fazla kullanıcı ID\'si geçersiz.'
+            }
+        },
+        // CREATE GROUP NOTIFICATION
+        createGroup: {
+            en: {
+                success: 'Group notification(s) successfully created.',
+                allFieldsRequired: 'All fields are required.',
+                invalidId: 'One or more group IDs are invalid.'
+            },
+            tr: {
+                success: 'Grup bildirim(ler) başarıyla oluşturuldu.',
+                allFieldsRequired: 'Tüm alanlar gereklidir.',
+                invalidId: 'Bir veya daha fazla grup ID\'si geçersiz.'
+            }
+        },
+        // UPDATE NOTIFICATION
+        update: {
+            en: {
+                success: 'Notification updated successfully.',
+                seenSuccess: 'Notification marked as seen successfully.',
+                idRequired: 'Notification ID and Type is required.',
+                notFound: 'Notification not found.',
+                groupNotFound: 'Group not found.',
+                noPermission: 'You do not have permission to update this notification. Only your group leader can update this notification.',
+                invalidType: 'Invalid type value.'
+            },
+            tr: {
+                success: 'Bildirim başarıyla güncellendi.',
+                seenSuccess: 'Bildirim başarıyla görüldü olarak işaretlendi.',
+                idRequired: 'Bildirim ID ve Tür gereklidir.',
+                notFound: 'Bildirim bulunamadı.',
+                groupNotFound: 'Grup bulunamadı.',
+                noPermission: 'Bu bildirimi güncelleme yetkiniz yok. Sadece grubunuzun lideri bu bildirimi güncelleyebilir.',
+                invalidType: 'Geçersiz tür değeri.'
+            }
+        },
+        // DELETE NOTIFICATION
+        delete: {
+            en: {
+                success: 'Notification deleted successfully.',
+                idRequired: 'Notification ID is required.',
+                notFound: 'Notification not found.',
+                notAuthorized: 'You can only delete your own notification.'
+            },
+            tr: {
+                success: 'Bildirim başarıyla silindi.',
+                idRequired: 'Bildirim ID gereklidir.',
+                notFound: 'Bildirim bulunamadı.',
+                notAuthorized: 'Sadece kendi bildiriminizi silebilirsiniz.'
+            }
+        }
+    },
     // SERVICE LOGS
     serviceLogs: {
         en: {
