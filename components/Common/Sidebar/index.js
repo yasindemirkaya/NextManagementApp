@@ -5,10 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
 import styles from "./index.module.scss";
 import { useSelector } from 'react-redux';
+import { useRouter } from "next/router";
 
 const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
     const loggedInUser = useSelector(state => state.user.user);
-    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "en"; // Dil parametresini al
+    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "tr";
+    const router = useRouter();
 
     const [activeMenuId, setActiveMenuId] = useState(null);
     const [activeSubMenuId, setActiveSubMenuId] = useState(null);
@@ -31,14 +33,15 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
         const menu = sidebarMenu.find(menu => menu.id === menuId);
         if (menu && (!menu.subMenus || !menu.subMenus.length)) {
             toggleSidebar();
-            window.location.href = link;
+            router.push(`/${router.locale}${link}`);
         }
     };
 
     // Alt menu click
     const handleSubMenuClick = (subMenuId, link) => {
         setActiveSubMenuId(prevActiveId => (prevActiveId === subMenuId ? null : subMenuId));
-        window.location.href = link;
+        toggleSidebar();
+        router.push(`/${router.locale}${link}`);
     };
 
     const renderMenu = (menu, level = 0) => (
