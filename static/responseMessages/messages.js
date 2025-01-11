@@ -327,6 +327,23 @@ const responseMessages = {
                 adminPermission: 'Yöneticiler sadece kendi oluşturdukları grupları silebilir.'
             }
         }
+    },
+    // SERVICE LOGS
+    serviceLogs: {
+        en: {
+            success: 'Service logs successfully fetched.',
+            guidRequired: 'GUID is required.',
+            notFound: 'No log found with the provided GUID.',
+            dateFormat: 'Both startDate and endDate are required in yyyy-mm-dd format.',
+            noLogs: 'No logs found with the provided data.',
+        },
+        tr: {
+            success: 'Servis logları başarıyla getirildi.',
+            guidRequired: 'GUID gereklidir.',
+            notFound: 'Sağlanan GUID ile hiçbir log bulunamadı.',
+            dateFormat: 'Başlangıç ve bitiş tarihleri yyyy-mm-dd formatında olmalıdır.',
+            noLogs: 'Sağlanan veriler ile hiçbir log bulunamadı.',
+        }
     }
 }
 

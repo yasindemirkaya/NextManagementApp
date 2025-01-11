@@ -11,8 +11,12 @@
 import { verify } from 'jsonwebtoken';
 import Log from '@/models/Log';
 import privateMiddleware from "@/middleware/private/index";
+import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // İsteğin yapıldığı dil
+    const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
+
     if (req.method === 'GET') {
         try {
             // Token'ı decode et ve kullanıcı rolünü al
@@ -23,7 +27,7 @@ const handler = async (req, res) => {
             // Super admin (2) değilse işlem reddedilir
             if (role !== 2) {
                 return res.status(200).json({
-                    message: "You do not have permission to access the logs.",
+                    message: responseMessages.common[lang].noPermission,
                     code: 0,
                 });
             }
@@ -34,7 +38,7 @@ const handler = async (req, res) => {
             if (!guid) {
                 return res.status(200).json({
                     code: 0,
-                    message: "GUID is required.",
+                    message: responseMessages.serviceLogs[lang].guidRequired,
                 });
             }
 
@@ -44,27 +48,28 @@ const handler = async (req, res) => {
             if (logs.length === 0) {
                 return res.status(200).json({
                     code: 0,
-                    message: `No log found with the provided GUID: ${guid}.`,
+                    message: `${responseMessages.serviceLogs[lang].notFound} ${guid}.`,
                 });
             }
 
             return res.status(200).json({
                 code: 1,
-                message: "Log successfully retrieved.",
+                message: responseMessages.serviceLogs[lang].success,
                 logs,
             });
 
         } catch (error) {
-            console.error('Error fetching logs:', error);
             return res.status(500).json({
-                message: "An error occurred while fetching the log.",
+                message: responseMessages.common[lang].errorOccured,
                 error: error.message,
                 code: 0,
             });
         }
     } else {
         res.setHeader('Allow', ['GET']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).json({
+            message: responseMessages.common[lang].methodNotAllowed
+        });
     }
 };
 
