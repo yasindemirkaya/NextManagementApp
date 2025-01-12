@@ -1,7 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "./storage";
+
 import userReducer from "./userSlice";
+import statReducer from "./statSlice";
 
 // Persist config
 const persistConfig = {
@@ -9,11 +11,13 @@ const persistConfig = {
     storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, userReducer);
+const persistedUserReducer = persistReducer(persistConfig, userReducer);
+const persistedStatReducer = persistReducer(persistConfig, statReducer);
 
 const store = configureStore({
     reducer: {
-        user: persistedReducer,
+        user: persistedUserReducer,
+        stats: persistedStatReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

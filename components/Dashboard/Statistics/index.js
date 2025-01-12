@@ -5,12 +5,17 @@ import styles from './index.module.scss';
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setStats } from '@/redux/statSlice';
+
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import 'react-resizable/css/styles.css';
 
 const Statistics = ({ stats, statsData }) => {
     const router = useRouter();
-    const [visibleStats, setVisibleStats] = useState(stats);
+    const dispatch = useDispatch();
+    const reduxStats = useSelector((state) => state.stats.dashboard.stats);
+    const [visibleStats, setVisibleStats] = useState(reduxStats);
 
     useEffect(() => {
         const updatedStats = stats.map(stat => {
@@ -33,13 +38,21 @@ const Statistics = ({ stats, statsData }) => {
 
             return { ...stat, value: value || 0 };
         });
-        setVisibleStats(updatedStats);
-    }, [stats, statsData]);
+
+        // Eğer redux'dan gelen stats yoksa, yeni veriyi güncelle
+        if (reduxStats.length === 0) {
+            setVisibleStats(updatedStats);
+            dispatch(setStats(updatedStats));
+        } else {
+            setVisibleStats(reduxStats);
+        }
+    }, [stats, statsData, dispatch, reduxStats]);
 
     // Remove stats
     const removeStat = (index) => {
         const updatedStats = visibleStats.filter((_, i) => i !== index);
         setVisibleStats(updatedStats);
+        dispatch(setStats(updatedStats));
     };
 
     // Page redirection
@@ -59,6 +72,7 @@ const Statistics = ({ stats, statsData }) => {
         reorderedStats.splice(destination.index, 0, movedStat);
 
         setVisibleStats(reorderedStats);
+        dispatch(setStats(reorderedStats));
     };
 
     // Ekrandaki kart sayısına göre sütun boyutunu belirleme
