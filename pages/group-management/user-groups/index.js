@@ -3,14 +3,16 @@ import Link from "next/link";
 import { Card, Button, Row, Col } from "react-bootstrap";
 import sidebarMenu from "@/static/components/sidebar";
 import styles from './index.module.scss'
+import { useTranslations } from "next-intl";
 
 const UserGroups = () => {
+    const t = useTranslations();
     // User Management menüsünü ve alt menülerini bul
     const UserGroupsMenu = sidebarMenu.flatMap(menu => menu.subMenus || []).find(subMenu => subMenu.name === "User Groups");
 
     return (
         <div className="container mt-5">
-            <h1 className="mb-4">User Groups</h1>
+            <h1 className="mb-4">{t("User Groups")}</h1>
             <Row>
                 {UserGroupsMenu?.subMenus.map(subMenu => (
                     <Col key={subMenu.id} md={4} className="mb-3">
@@ -31,5 +33,17 @@ const UserGroups = () => {
         </div>
     );
 };
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../public/locales/common/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+            },
+        },
+    };
+}
 
 export default UserGroups;
