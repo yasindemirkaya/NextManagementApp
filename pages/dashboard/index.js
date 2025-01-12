@@ -32,7 +32,10 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <Statistics stats={dashboardStatistics} statsData={stats} />
+        <>
+            <Statistics stats={dashboardStatistics} statsData={stats} />
+        </>
+
     );
 };
 
