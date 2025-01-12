@@ -2,20 +2,37 @@ import { Row, Col, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
 import styles from './index.module.scss';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 
-const stats = [
-    { title: "Users", value: 25, icon: icons.faUser, link: '/user-management' },
-    { title: "Groups", value: 6, icon: icons.faUsers, link: '/group-management' },
-    { title: "Group Types", value: 2, icon: icons.faUser, link: '/group-type-management' },
-    { title: "Notifications", value: 0, icon: icons.faUsers, link: '/notifications' },
-];
-
-const Statistics = () => {
+const Statistics = ({ stats, statsData }) => {
     const router = useRouter();
 
     const [visibleStats, setVisibleStats] = useState(stats);
+
+    useEffect(() => {
+        const updatedStats = stats.map(stat => {
+            let value;
+
+            // Stat Title değerine göre statsData'dan ilgili değerleri al
+            switch (stat.title) {
+                case "Users":
+                    value = statsData.userCount;
+                    break;
+                case "Groups":
+                    value = statsData.userGroupCount;
+                    break;
+                case "Group Types":
+                    value = statsData.userGroupTypeCount;
+                    break;
+                default:
+                    value = 0;
+            }
+
+            return { ...stat, value: value || 0 };
+        });
+        setVisibleStats(updatedStats);
+    }, [stats, statsData]);
 
     // Remove stats
     const removeStat = (index) => {
@@ -31,7 +48,7 @@ const Statistics = () => {
     return (
         <Row>
             {visibleStats.map((stat, index) => (
-                <Col key={index} xs={12} sm={6} md={3} className="mb-3">
+                <Col key={index} xs={12} sm={12} md={4} className="mb-3">
                     <Card className="d-flex">
                         <Card.Body className={styles.statsBody}>
                             <div>

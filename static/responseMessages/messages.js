@@ -453,6 +453,19 @@ const responseMessages = {
             dateFormat: 'Başlangıç ve bitiş tarihleri yyyy-mm-dd formatında olmalıdır.',
             noLogs: 'Sağlanan veriler ile hiçbir log bulunamadı.',
         }
+    },
+    // STATISTICS
+    statistics: {
+        dashboard: {
+            en: {
+                success: 'Statistics successfully fetched.',
+                failedToFetch: 'Failed to fetch statistics from the database.'
+            },
+            tr: {
+                success: 'İstatistikler başarıyla getirildi.',
+                failedToFetch: 'İstatistikler veritabanından getirilemedi.'
+            }
+        }
     }
 }
 
