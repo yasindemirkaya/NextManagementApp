@@ -184,7 +184,7 @@ const Notifications = () => {
                                         </Col>
                                         {route !== '/my-notifications' && (
                                             <Col md={7}>
-                                                {t(From)}: <span className="text-danger fw-bold">{notification.created_by}</span>
+                                                {t('From')}: <span className="text-danger fw-bold">{notification.created_by}</span>
                                             </Col>
                                         )}
                                     </Row>
@@ -192,7 +192,7 @@ const Notifications = () => {
                                     {/* Seen & Group Name or User */}
                                     <Row className="mb-2">
                                         <Col md={5}>
-                                            {t("Seen")}: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                            {t("Seen")}: <span className={notification.is_seen ? 'text-success fw-bold' : 'text-danger fw-bold'}>{notification.is_seen ? t('Yes') : t('No')}</span>
                                         </Col>
                                         {route === '/my-notifications' && notification.group ? (
                                             <Col md={7}>
@@ -288,7 +288,7 @@ const Notifications = () => {
                         const columns = [
                             loggedInUser?.role !== 0 && myNotifications.length > 0 && {
                                 key: "my-notifications",
-                                title: "My Notifications",
+                                title: t("My Notifications"),
                                 loading: loadingMyNotifications,
                                 error: errorMyNotifications,
                                 notifications: myNotifications,
@@ -296,7 +296,7 @@ const Notifications = () => {
                             },
                             personalNotifications.length > 0 && {
                                 key: "personal-notifications",
-                                title: "Personal Notifications",
+                                title: t("Personal Notifications"),
                                 loading: loadingPersonalNotifications,
                                 error: errorPersonalNotifications,
                                 notifications: personalNotifications,
@@ -304,7 +304,7 @@ const Notifications = () => {
                             },
                             groupNotifications.length > 0 && {
                                 key: "group-notifications",
-                                title: "Group Notifications",
+                                title: t("Group Notifications"),
                                 loading: loadingGroupNotifications,
                                 error: errorGroupNotifications,
                                 notifications: groupNotifications,

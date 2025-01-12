@@ -137,7 +137,7 @@ const PersonalNotifications = () => {
                                                     <Row>
                                                         <Col md={12}>
                                                             <div>
-                                                                {t("Seen")}: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                                                {t("Seen")}: <span className={notification.is_seen ? 'text-success fw-bold' : 'text-danger fw-bold'}>{notification.is_seen ? t('Yes') : t('No')}</span>
                                                             </div>
                                                         </Col>
                                                     </Row>

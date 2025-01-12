@@ -205,7 +205,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                     'Role': item.Role?.props?.children || '',
                     'Is Active': item['Is Active']?.props?.children || '',
                     'Is Verified': item['Is Verified']?.props?.children || '',
-                    // isSelf: item.isSelf ? 'Yes' : 'No',
+                    // isSelf: item.isSelf ? t('Yes') : t('No'),
                     // userRole: item.userRole,
                 }));
 

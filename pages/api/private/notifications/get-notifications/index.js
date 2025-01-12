@@ -108,7 +108,7 @@ const handler = async (req, res) => {
             // Pagination bilgisi ekleyin
             return res.status(200).json({
                 code: 1,
-                message: responseMessages.notifications[lang].success,
+                message: responseMessages.notifications.get[lang].success,
                 notifications: paginatedNotifications,
                 pagination: {
                     totalData: sortedNotifications.length,

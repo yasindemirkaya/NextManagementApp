@@ -133,7 +133,7 @@ const GroupNotifications = () => {
 
                                                     <Row className="mb-2">
                                                         <Col md={5}>
-                                                            {t("Seen")}: <span className={notification.is_seen ? 'text-success' : 'text-danger' + ' fw-bold'}>{notification.is_seen ? 'Yes' : 'No'}</span>
+                                                            {t("Seen")}: <span className={notification.is_seen ? 'text-success fw-bold' : 'text-danger fw-bold'}>{notification.is_seen ? t('Yes') : t('No')}</span>
                                                         </Col>
                                                         <Col md={7}>
                                                             {t("Group Name")}: <span className="text-info fw-bold">{notification.group}</span>
