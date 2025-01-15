@@ -4,26 +4,26 @@ import { icons } from '@/static/icons';
 import styles from './index.module.scss';
 import { useEffect } from "react";
 import { useRouter } from 'next/router';
-import { useTranslations } from "next-intl";
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setStats } from '@/redux/statSlice';
+import { setStats, setIsInitialized } from '@/redux/statSlice';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import 'react-resizable/css/styles.css';
 
 const Statistics = ({ stats }) => {
-    const t = useTranslations();
     const router = useRouter();
     const dispatch = useDispatch();
 
     // Get statistics from redux
     const statistics = useSelector(state => state.stats.dashboardStats);
+    const isInitialized = useSelector(state => state.stats.isInitialized);
 
     // Set statistics if there is none
     useEffect(() => {
-        if (statistics.length === 0) {
+        if (statistics.length === 0 && !isInitialized) {
             dispatch(setStats(stats));
+            dispatch(setIsInitialized(true))
         }
     }, [stats, statistics, dispatch]);
 
@@ -64,14 +64,6 @@ const Statistics = ({ stats }) => {
 
     if (!statistics) {
         return null;
-    }
-
-    if (statistics.length === 0) {
-        return (
-            <Alert variant="warning" className="text-center">
-                {t("Statistics not available Please try again later")}
-            </Alert>
-        );
     }
 
     return (
