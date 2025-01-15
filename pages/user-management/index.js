@@ -6,6 +6,7 @@ import styles from './index.module.scss'
 import { useTranslations } from "next-intl";
 
 const UserManagement = () => {
+    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "tr";
     const t = useTranslations();
     // User Management menüsünü ve alt menülerini bul
     const userManagementMenu = sidebarMenu.find(menu => menu.name === "User Management");
@@ -19,7 +20,7 @@ const UserManagement = () => {
                         <Card className="h-100">
                             <Card.Body className="d-flex flex-column justify-content-between">
                                 <Card.Title>{subMenu.name}</Card.Title>
-                                <Card.Text>{subMenu.description}</Card.Text>
+                                <Card.Text>{lang == 'tr' ? subMenu.descriptionTR : subMenu.description}</Card.Text>
                                 <Link href={subMenu.link} passHref>
                                     <Button variant="primary" className="mt-auto">
                                         Go to {subMenu.name}
