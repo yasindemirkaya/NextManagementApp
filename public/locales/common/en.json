@@ -64,5 +64,9 @@
     "Group Management": "Group Management",
     "Group Type Management": "Group Type Management",
     "User Groups": "User Groups",
-    "Statistics not available Please try again later": "Statistics not available. Please try again later."
+    "Statistics not available Please try again later": "Statistics not available. Please try again later.",
+    "Widgets": "Widgets",
+    "Statistics Settings": "Statistics Settings",
+    "Show & Hide Statistics": "Show & Hide Statistics",
+    "Reset Statistics": "Reset Statistics"
 }

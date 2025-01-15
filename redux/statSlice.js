@@ -2,24 +2,35 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     dashboardStats: [],
-    isInitialized: false,
+    isDashboardStatsInitialized: false,
+    showDashboardStats: true
 };
 
 const statSlice = createSlice({
     name: 'stats',
     initialState,
     reducers: {
-        // SET STATS
-        setStats: (state, action) => {
+        // SET DASHBOARD STATS
+        setDashboardStats: (state, action) => {
             state.dashboardStats = action.payload;
         },
-        // SET IS INITIALIZED
-        setIsInitialized: (state, action) => {
-            state.isInitialized = action.payload;
+        // SET IS DASHBOARD INITIALIZED
+        setIsDashboardStatsInitialized: (state, action) => {
+            state.isDashboardStatsInitialized = action.payload;
         },
+        // SET SHOW DASHBOARD STATS
+        setShowDashboardStats: (state, action) => {
+            state.showDashboardStats = action.payload
+        },
+        // RESET DASHBOARD STATS
+        resetDashboardStats: (state) => {
+            state.dashboardStats = []
+            state.isDashboardStatsInitialized = false
+            state.showDashboardStats = true
+        }
     },
 });
 
-export const { setStats, setIsInitialized } = statSlice.actions;
+export const { setDashboardStats, setIsDashboardStatsInitialized, setShowDashboardStats, resetDashboardStats } = statSlice.actions;
 
 export default statSlice.reducer;

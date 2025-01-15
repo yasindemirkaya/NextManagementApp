@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useRouter } from 'next/router';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setStats, setIsInitialized } from '@/redux/statSlice';
+import { setDashboardStats, setIsDashboardStatsInitialized } from '@/redux/statSlice';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import 'react-resizable/css/styles.css';
@@ -17,20 +17,21 @@ const Statistics = ({ stats }) => {
 
     // Get statistics from redux
     const statistics = useSelector(state => state.stats.dashboardStats);
-    const isInitialized = useSelector(state => state.stats.isInitialized);
+    const isDashboardStatsInitialized = useSelector(state => state.stats.isDashboardStatsInitialized);
+    const showDashboardStats = useSelector(state => state.stats.showDashboardStats)
 
     // Set statistics if there is none
     useEffect(() => {
-        if (statistics.length === 0 && !isInitialized) {
-            dispatch(setStats(stats));
-            dispatch(setIsInitialized(true))
+        if (stats.length > 0 && statistics.length === 0 && !isDashboardStatsInitialized) {
+            dispatch(setDashboardStats(stats));
+            dispatch(setIsDashboardStatsInitialized(true));
         }
-    }, [stats, statistics, dispatch]);
+    }, [stats, statistics, dispatch, isDashboardStatsInitialized]);
 
     // Remove stats from screen
     const removeStat = (index) => {
         const updatedStats = statistics.filter((_, i) => i !== index);
-        dispatch(setStats(updatedStats));
+        dispatch(setDashboardStats(updatedStats));
     };
 
     // Page redirect on stat click
@@ -48,7 +49,7 @@ const Statistics = ({ stats }) => {
         const reorderedStats = Array.from(statistics);
         const [movedStat] = reorderedStats.splice(source.index, 1);
         reorderedStats.splice(destination.index, 0, movedStat);
-        dispatch(setStats(reorderedStats));
+        dispatch(setDashboardStats(reorderedStats));
     };
 
     // Get column size based on number of stats
@@ -62,50 +63,56 @@ const Statistics = ({ stats }) => {
         return { xs: 12, sm: 12, md: 12 };
     };
 
-    if (!statistics) {
+    if (!statistics || !showDashboardStats) {
         return null;
     }
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable" direction="horizontal">
-                {(provided) => (
-                    <Row ref={provided.innerRef} {...provided.droppableProps}>
-                        {statistics.map((stat, index) => (
-                            <Draggable key={index} draggableId={String(index)} index={index}>
-                                {(provided) => (
-                                    <Col
-                                        xs={getColumnSize(statistics.length).xs}
-                                        sm={getColumnSize(statistics.length).sm}
-                                        md={getColumnSize(statistics.length).md}
-                                        className="mb-3"
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                    >
-                                        <Card className="d-flex">
-                                            <Card.Body className={styles.statsBody}>
-                                                <div>
-                                                    <Card.Title className={styles.statTitle} onClick={() => handleStatClick(stat.link)}>{stat.title}</Card.Title>
-                                                    <Card.Text className={styles.statValue}>{stat.value}</Card.Text>
-                                                </div>
-                                                <div className={styles.iconFrame}>
-                                                    <FontAwesomeIcon icon={stat.icon} className={styles.icon} />
-                                                </div>
-                                                <div className={styles.removeButton} onClick={() => removeStat(index)}>
-                                                    <FontAwesomeIcon icon={icons.faTimes} className={styles.removeIcon} />
-                                                </div>
-                                            </Card.Body>
-                                        </Card>
-                                    </Col>
-                                )}
-                            </Draggable>
-                        ))}
-                        {provided.placeholder}
-                    </Row>
-                )}
-            </Droppable>
-        </DragDropContext>
+        <>
+            {showDashboardStats ?
+                < DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="droppable" direction="horizontal">
+                        {(provided) => (
+                            <Row ref={provided.innerRef} {...provided.droppableProps}>
+                                {statistics.map((stat, index) => (
+                                    <Draggable key={index} draggableId={String(index)} index={index}>
+                                        {(provided) => (
+                                            <Col
+                                                xs={getColumnSize(statistics.length).xs}
+                                                sm={getColumnSize(statistics.length).sm}
+                                                md={getColumnSize(statistics.length).md}
+                                                className="mb-3"
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                            >
+                                                <Card className="d-flex">
+                                                    <Card.Body className={styles.statsBody}>
+                                                        <div>
+                                                            <Card.Title className={styles.statTitle} onClick={() => handleStatClick(stat.link)}>{stat.title}</Card.Title>
+                                                            <Card.Text className={styles.statValue}>{stat.value}</Card.Text>
+                                                        </div>
+                                                        <div className={styles.iconFrame}>
+                                                            <FontAwesomeIcon icon={stat.icon} className={styles.icon} />
+                                                        </div>
+                                                        <div className={styles.removeButton} onClick={() => removeStat(index)}>
+                                                            <FontAwesomeIcon icon={icons.faTimes} className={styles.removeIcon} />
+                                                        </div>
+                                                    </Card.Body>
+                                                </Card>
+                                            </Col>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </Row>
+                        )}
+                    </Droppable>
+                </DragDropContext >
+                : null
+            }
+        </>
+
     );
 };
 

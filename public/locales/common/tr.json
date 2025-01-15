@@ -64,5 +64,9 @@
     "Group Management": "Grup Yönetimi",
     "Group Type Management": "Grup Tipi Yönetimi",
     "User Groups": "Kullanıcı Grupları",
-    "Statistics not available Please try again later": "İstatistik verisine ulaşılamadı. Lütfen daha sonra yeniden deneyin."
+    "Statistics not available Please try again later": "İstatistik verisine ulaşılamadı. Lütfen daha sonra yeniden deneyin.",
+    "Widgets": "Aygıtlar",
+    "Statistics Settings": "İstatistik Ayarları",
+    "Show & Hide Statistics": "İstatistikleri Göster & Gizle",
+    "Reset Statistics": "İstatistikleri Sıfırla"
 }

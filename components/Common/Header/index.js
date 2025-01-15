@@ -133,7 +133,7 @@ const Header = ({ toggleSidebar }) => {
                                         {menu.name === "Notifications" ? (
                                             notificationCount > 0 ? (
                                                 <Dropdown>
-                                                    <Dropdown.Toggle as={Nav.Link} className={styles.menuItem}>
+                                                    <Dropdown.Toggle as={Nav.Link}>
                                                         <FontAwesomeIcon icon={icons[menu.icon]} />
                                                         {notificationCount > 0 && (
                                                             <Badge bg="danger" pill className={styles.notificationBadge}>

@@ -6,7 +6,7 @@ import Statistics from "@/components/Dashboard/Statistics";
 import Widgets from "@/components/Dashboard/Widgets"
 
 const Dashboard = () => {
-    const [stats, setStats] = useState([]);
+    const [stats, setDashboardStats] = useState([]);
 
     // Get dashboard statistics
     const fetchDashboardStatistics = async () => {
@@ -14,9 +14,9 @@ const Dashboard = () => {
 
         if (result.success) {
             const formattedStats = formatDashboardStatistics(dashboardStatistics, result.data);
-            setStats(formattedStats);
+            setDashboardStats(formattedStats);
         } else {
-            setStats([]);
+            setDashboardStats([]);
         }
     };
 
