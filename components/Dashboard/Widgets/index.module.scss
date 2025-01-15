@@ -1,0 +1,54 @@
+.widgetButton {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    z-index: 9999;
+    background-color: var(--widgets-button-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20%;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.widgetButton:hover {
+    background-color: var(--widgets-button-hover-color);
+}
+
+.widgetPanel {
+    position: fixed;
+    bottom: 120px;
+    right: 20px;
+    width: 300px;
+    background-color: var(--widgets-panel-bg-color);
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    z-index: 9998;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.panelHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #18BC9C;
+    color: white;
+    padding-left: 1rem;
+    border-radius: 10px 10px 0 0;
+}
+
+.panelBody {
+    padding: 15px;
+}
+
+.closeButton {
+    color: white;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+}
+
+.closeButton:hover {
+    color: #ccc;
+}

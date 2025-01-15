@@ -33,6 +33,11 @@ html[data-bs-theme="light"] {
 
     // Stats variables
     --stat-title-hover-color: #18BC9C;
+
+    // Widgets variables
+    --widgets-button-color: #18BC9C;
+    --widgets-button-hover-color: #16A085;
+    --widgets-panel-bg-color: #FFFFFF;
 }
 
 // DARK THEME COLOR CODES
@@ -68,4 +73,9 @@ html[data-bs-theme="dark"] {
 
     // Stats variables
     --stat-title-hover-color: #18BC9C;
+
+    // Widgets variables
+    --widgets-button-color: #18BC9C;
+    --widgets-button-hover-color: #16A085;
+    --widgets-panel-bg-color: #121518;
 }

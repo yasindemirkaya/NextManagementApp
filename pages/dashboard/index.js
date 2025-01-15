@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import Statistics from "@/components/Dashboard/Statistics";
 import { getDashboardStatistics } from '@/services/statisticsApi';
 import { dashboardStatistics } from "@/static/components/statistics";
+
+import Statistics from "@/components/Dashboard/Statistics";
+import Widgets from "@/components/Dashboard/Widgets"
 
 const Dashboard = () => {
     const [stats, setStats] = useState([]);
@@ -47,7 +49,10 @@ const Dashboard = () => {
 
     return (
         <>
+            {/* STATISTICS */}
             <Statistics stats={stats} />
+            {/* WIDGETS */}
+            <Widgets statsData={stats} />
         </>
 
     );
