@@ -1,9 +1,10 @@
-import { Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card, Alert } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
 import styles from './index.module.scss';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from 'next/router';
+import { useTranslations } from "next-intl";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setStats } from '@/redux/statSlice';
@@ -11,71 +12,46 @@ import { setStats } from '@/redux/statSlice';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import 'react-resizable/css/styles.css';
 
-const Statistics = ({ stats, statsData }) => {
+const Statistics = ({ stats }) => {
+    const t = useTranslations();
     const router = useRouter();
     const dispatch = useDispatch();
-    const reduxStats = useSelector((state) => state.stats.dashboard.stats);
-    const [visibleStats, setVisibleStats] = useState(reduxStats);
 
+    // Get statistics from redux
+    const statistics = useSelector(state => state.stats.dashboardStats);
+
+    // Set statistics if there is none
     useEffect(() => {
-        const updatedStats = stats.map(stat => {
-            let value;
-
-            // Stat Title değerine göre statsData'dan ilgili değerleri al
-            switch (stat.title) {
-                case "Users":
-                    value = statsData.userCount;
-                    break;
-                case "Groups":
-                    value = statsData.userGroupCount;
-                    break;
-                case "Group Types":
-                    value = statsData.userGroupTypeCount;
-                    break;
-                default:
-                    value = 0;
-            }
-
-            return { ...stat, value: value || 0 };
-        });
-
-        // Eğer redux'dan gelen stats yoksa, yeni veriyi güncelle
-        if (reduxStats.length === 0) {
-            setVisibleStats(updatedStats);
-            dispatch(setStats(updatedStats));
-        } else {
-            setVisibleStats(reduxStats);
+        if (statistics.length === 0) {
+            dispatch(setStats(stats));
         }
-    }, [stats, statsData, dispatch, reduxStats]);
+    }, [stats, statistics, dispatch]);
 
-    // Remove stats
+    // Remove stats from screen
     const removeStat = (index) => {
-        const updatedStats = visibleStats.filter((_, i) => i !== index);
-        setVisibleStats(updatedStats);
+        const updatedStats = statistics.filter((_, i) => i !== index);
         dispatch(setStats(updatedStats));
     };
 
-    // Page redirection
+    // Page redirect on stat click
     const handleStatClick = (link) => {
         router.push(`/${router.locale}${link}`);
     };
 
-    // Dragging işlemi tamamlandığında sıralamayı güncelleme
+    // Update stats when dragging ends
     const onDragEnd = (result) => {
         const { destination, source } = result;
         if (!destination) return;
 
         if (destination.index === source.index) return;
 
-        const reorderedStats = Array.from(visibleStats);
+        const reorderedStats = Array.from(statistics);
         const [movedStat] = reorderedStats.splice(source.index, 1);
         reorderedStats.splice(destination.index, 0, movedStat);
-
-        setVisibleStats(reorderedStats);
         dispatch(setStats(reorderedStats));
     };
 
-    // Ekrandaki kart sayısına göre sütun boyutunu belirleme
+    // Get column size based on number of stats
     const getColumnSize = (statCount) => {
         if (statCount === 3) {
             return { xs: 12, sm: 12, md: 4 };
@@ -86,18 +62,30 @@ const Statistics = ({ stats, statsData }) => {
         return { xs: 12, sm: 12, md: 12 };
     };
 
+    if (!statistics) {
+        return null;
+    }
+
+    if (statistics.length === 0) {
+        return (
+            <Alert variant="warning" className="text-center">
+                {t("Statistics not available Please try again later")}
+            </Alert>
+        );
+    }
+
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable" direction="horizontal">
                 {(provided) => (
                     <Row ref={provided.innerRef} {...provided.droppableProps}>
-                        {visibleStats.map((stat, index) => (
+                        {statistics.map((stat, index) => (
                             <Draggable key={index} draggableId={String(index)} index={index}>
                                 {(provided) => (
                                     <Col
-                                        xs={getColumnSize(visibleStats.length).xs}
-                                        sm={getColumnSize(visibleStats.length).sm}
-                                        md={getColumnSize(visibleStats.length).md}
+                                        xs={getColumnSize(statistics.length).xs}
+                                        sm={getColumnSize(statistics.length).sm}
+                                        md={getColumnSize(statistics.length).md}
                                         className="mb-3"
                                         ref={provided.innerRef}
                                         {...provided.draggableProps}

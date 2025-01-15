@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    dashboard: {
-        stats: [],
-    }
+    dashboardStats: []
 };
 
 const statSlice = createSlice({
@@ -11,8 +9,7 @@ const statSlice = createSlice({
     initialState,
     reducers: {
         setStats: (state, action) => {
-            console.log('ACTION:', action)
-            state.dashboard.stats = action.payload;
+            state.dashboardStats = action.payload;
         },
     },
 });
