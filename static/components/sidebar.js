@@ -205,9 +205,21 @@ const sidebarMenu = [
         iconSecondary: "faChevronCircleUp",
         permission: 0,
         subMenus: [
-            // SERVICE LOGS
+            // GENERAL SETTINGS
             {
                 id: 51,
+                name: "General Settings",
+                nameTR: "Genel Ayarlar",
+                link: "/settings",
+                description: "From here you can edit the application's settings.",
+                descriptionTR: "Buradan uygulamanın ayarlarını düzenleyebilirsiniz.",
+                iconPrimary: "faCog",
+                iconSecondary: "",
+                permission: 2,
+            },
+            // SERVICE LOGS
+            {
+                id: 52,
                 name: "Service Logs",
                 nameTR: "Servis Kayıtları",
                 link: "/settings/service-logs",

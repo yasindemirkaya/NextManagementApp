@@ -12,6 +12,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import 'react-resizable/css/styles.css';
 
 const Statistics = ({ stats }) => {
+    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "tr";
     const router = useRouter();
     const dispatch = useDispatch();
 
@@ -75,7 +76,7 @@ const Statistics = ({ stats }) => {
                         {(provided) => (
                             <Row ref={provided.innerRef} {...provided.droppableProps}>
                                 {statistics.map((stat, index) => (
-                                    <Draggable key={index} draggableId={String(index)} index={index}>
+                                    < Draggable key={index} draggableId={String(index)} index={index} >
                                         {(provided) => (
                                             <Col
                                                 xs={getColumnSize(statistics.length).xs}
@@ -89,7 +90,7 @@ const Statistics = ({ stats }) => {
                                                 <Card className="d-flex">
                                                     <Card.Body className={styles.statsBody}>
                                                         <div>
-                                                            <Card.Title className={styles.statTitle} onClick={() => handleStatClick(stat.link)}>{stat.title}</Card.Title>
+                                                            <Card.Title className={styles.statTitle} onClick={() => handleStatClick(stat.link)}>{lang == 'tr' ? stat.titleTR : stat.title}</Card.Title>
                                                             <Card.Text className={styles.statValue}>{stat.value}</Card.Text>
                                                         </div>
                                                         <div className={styles.iconFrame}>

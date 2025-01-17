@@ -1,6 +1,4 @@
-import { icons } from '@/static/icons';
-
-// DASHBOARD STATISTICS
+// GENERAL SETTINGS
 export const dashboardStatistics = [
     { title: "Users", titleTR: 'Kullanıcılar', icon: icons.faUserGroup, link: '/user-management' },
     { title: "Groups", titleTR: 'Gruplar', icon: icons.faUsers, link: '/group-management' },
