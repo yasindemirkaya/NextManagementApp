@@ -82,3 +82,9 @@
 * Super Adminler tüm istatistiklere erişebilir
 * Adminler servis loglarını göremez. 
 * Standart kullanıcılar group types ve service loglarını göremez
+
+
+<!-- SETTINGS -->
+* Tüm kullanıcılar için açıktır.
+* Kullanıcılar login olduklarında hangi dil ve hangi tema ile sistemin açılması gerektiğini buradan seçebilirler.
+* Sonrasında başka özellikler de eklenecektir.

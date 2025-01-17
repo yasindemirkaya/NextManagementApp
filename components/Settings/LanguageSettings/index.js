@@ -59,7 +59,7 @@ const LanguageSettings = () => {
                     />
 
                     <span className={`${styles.infoText} text-danger`} onClick={handleLogout}>
-                        <em>Değişikliklerin geçerli olması için yeniden giriş yapmanız gereklidir.</em>
+                        <em>{t("Değişikliklerin geçerli olması için yeniden giriş yapmanız gereklidir")}</em>
                     </span>
                 </Col>
             </Row>

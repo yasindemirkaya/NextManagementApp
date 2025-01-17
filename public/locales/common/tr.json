@@ -77,5 +77,6 @@
     "English": "İngilizce",
     "Light Theme": "Aydınlık Tema",
     "Dark Theme": "Karanlık Tema",
-    "Here you can choose the default theme that will be opened every time you log in to the system": "Sisteme her giriş yaptığınızda kullanılacak olan varsayılan temayı buradan seçebilirsiniz."
+    "Here you can choose the default theme that will be opened every time you log in to the system": "Sisteme her giriş yaptığınızda kullanılacak olan varsayılan temayı buradan seçebilirsiniz.",
+    "Değişikliklerin geçerli olması için yeniden giriş yapmanız gereklidir": "Değişikliklerin geçerli olması için yeniden giriş yapmanız gereklidir."
 }
