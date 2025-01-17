@@ -63,7 +63,7 @@ const handler = async (req, res) => {
                 } else {
                     // INVALID CREDENTIALS
                     return res.status(200).json({
-                        message: responseMessages.login[lang].invalidCredentials,
+                        message: responseMessages.common[lang].invalidCredentials,
                         code: 0
                     });
                 }

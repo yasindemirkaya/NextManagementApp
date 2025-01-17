@@ -38,6 +38,11 @@ html[data-bs-theme="light"] {
     --widgets-button-color: #18BC9C;
     --widgets-button-hover-color: #16A085;
     --widgets-panel-bg-color: #FFFFFF;
+
+    // Settings variables
+    --tab-hover-color: rgba(0, 0, 0, 0.1);
+    --active-tab-bg-color: #E9ECEF;
+    --active-tab-font-color: #212529;
 }
 
 // DARK THEME COLOR CODES
@@ -78,4 +83,9 @@ html[data-bs-theme="dark"] {
     --widgets-button-color: #18BC9C;
     --widgets-button-hover-color: #16A085;
     --widgets-panel-bg-color: #121518;
+
+    // Settings variables
+    --tab-hover-color: rgba(255, 255, 255, 0.1);
+    --active-tab-bg-color: #495057;
+    --active-tab-font-color: #FFFFFF;
 }

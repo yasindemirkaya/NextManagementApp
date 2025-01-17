@@ -68,5 +68,14 @@
     "Widgets": "Widgets",
     "Statistics Settings": "Statistics Settings",
     "Show & Hide Statistics": "Show & Hide Statistics",
-    "Reset Statistics": "Reset Statistics"
+    "Reset Statistics": "Reset Statistics",
+    "Language Settings": "Language Settings",
+    "Theme Settings": "Theme Settings",
+    "Select a setting from the menu": "Select a setting from the menu.",
+    "Here you can choose the default language that will be opened every time you log in to the system": "Here you can choose the default language that will be used every time you log in to the system.",
+    "Turkish": "Turkish",
+    "English": "English",
+    "Light Theme": "Light Theme",
+    "Dark Theme": "Dark Theme",
+    "Here you can choose the default theme that will be opened every time you log in to the system": "Here you can choose the default theme that will be opened every time you log in to the system."
 }

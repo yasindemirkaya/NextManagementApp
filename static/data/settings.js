@@ -1,6 +1,17 @@
+import { icons } from '@/static/icons';
+
 // GENERAL SETTINGS
-export const dashboardStatistics = [
-    { title: "Users", titleTR: 'Kullanıcılar', icon: icons.faUserGroup, link: '/user-management' },
-    { title: "Groups", titleTR: 'Gruplar', icon: icons.faUsers, link: '/group-management' },
-    { title: "Group Types", titleTR: 'Grup Türleri', icon: icons.faList, link: '/group-type-management' },
+export const generalSettings = [
+    {
+        id: 0,
+        title: "Language Settings",
+        icon: icons.faLanguage,
+        permission: 0
+    },
+    {
+        id: 1,
+        title: "Theme Settings",
+        icon: icons.faObjectGroup,
+        permission: 0
+    },
 ]

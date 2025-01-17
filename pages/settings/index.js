@@ -1,30 +1,27 @@
-import { useState } from "react";
-import { Container, Row, Col, ListGroup, Card } from "react-bootstrap";
+import React, { useState, Suspense, lazy } from "react";
+import { Container, Row, Col, ListGroup, Card, Alert } from "react-bootstrap";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import styles from './index.module.scss';
 import { useTranslations } from "next-intl";
+import { generalSettings } from "@/static/data/settings";
+
+// Dynamic component import
+const LanguageSettings = lazy(() => import('@/components/Settings/LanguageSettings'));
+const ThemeSettings = lazy(() => import('@/components/Settings/ThemeSettings'));
 
 const Settings = () => {
-    const t = useTranslations()
-    const [activeTab, setActiveTab] = useState("language");
+    const t = useTranslations();
+    const [activeTab, setActiveTab] = useState(generalSettings[0].id);
 
     const renderContent = () => {
         switch (activeTab) {
-            case "language":
-                return (
-                    <>
-                        <Card.Title>{t("Language Settings")}</Card.Title>
-                        <Card.Text>Here you can configure language-related options.</Card.Text>
-                    </>
-                );
-            case "theme":
-                return (
-                    <>
-                        <Card.Title>{t("Theme Settings")}</Card.Title>
-                        <Card.Text>Here you can configure theme-related options.</Card.Text>
-                    </>
-                );
+            case 0:
+                return <LanguageSettings />;
+            case 1:
+                return <ThemeSettings />;
             default:
-                return null;
+                return <Alert variant="danger">{t('Select a setting from the menu')}</Alert>;
         }
     };
 
@@ -34,20 +31,18 @@ const Settings = () => {
                 {/* Left Menu */}
                 <Col md={3}>
                     <ListGroup className={styles.settingsMenu}>
-                        <ListGroup.Item
-                            action
-                            active={activeTab === "language"}
-                            onClick={() => setActiveTab("language")}
-                        >
-                            {t("Language Settings")}
-                        </ListGroup.Item>
-                        <ListGroup.Item
-                            action
-                            active={activeTab === "theme"}
-                            onClick={() => setActiveTab("theme")}
-                        >
-                            {t("Theme Settings")}
-                        </ListGroup.Item>
+                        {generalSettings.map((setting) => (
+                            <ListGroup.Item
+                                key={setting.id}
+                                action
+                                active={activeTab === setting.id}
+                                onClick={() => setActiveTab(setting.id)}
+                                className={styles.menuItem}
+                            >
+                                <FontAwesomeIcon icon={setting.icon} className={`${styles.menuIcon} me-2`} />
+                                {t(setting.title)}
+                            </ListGroup.Item>
+                        ))}
                     </ListGroup>
                 </Col>
 
@@ -55,7 +50,9 @@ const Settings = () => {
                 <Col md={9}>
                     <Card className={styles.settingsContent}>
                         <Card.Body>
-                            {renderContent()}
+                            <Suspense fallback={<div>Loading...</div>}>
+                                {renderContent()}
+                            </Suspense>
                         </Card.Body>
                     </Card>
                 </Col>

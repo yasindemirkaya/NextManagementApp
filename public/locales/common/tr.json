@@ -68,5 +68,14 @@
     "Widgets": "Aygıtlar",
     "Statistics Settings": "İstatistik Ayarları",
     "Show & Hide Statistics": "İstatistikleri Göster & Gizle",
-    "Reset Statistics": "İstatistikleri Sıfırla"
+    "Reset Statistics": "İstatistikleri Sıfırla",
+    "Language Settings": "Dil Ayarları",
+    "Theme Settings": "Tema Ayarları",
+    "Select a setting from the menu": "Lütfen menüden bir ayar seçin.",
+    "Here you can choose the default language that will be opened every time you log in to the system": "Sisteme her giriş yaptığınızda kullanılacak olan varsayılan dili buradan seçebilirsiniz.",
+    "Turkish": "Türkçe",
+    "English": "İngilizce",
+    "Light Theme": "Aydınlık Tema",
+    "Dark Theme": "Karanlık Tema",
+    "Here you can choose the default theme that will be opened every time you log in to the system": "Sisteme her giriş yaptığınızda kullanılacak olan varsayılan temayı buradan seçebilirsiniz."
 }
