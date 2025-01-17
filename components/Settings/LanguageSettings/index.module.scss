@@ -1,3 +1,8 @@
+.colContainer {
+    height: 400px;
+    position: relative;
+}
+
 .formControl {
     width: 35%;
 
@@ -8,4 +13,18 @@
     @media (max-width: 576px) {
         width: 100%;
     }
+}
+
+.infoText {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    font-size: .9rem;
+}
+
+.infoText:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }

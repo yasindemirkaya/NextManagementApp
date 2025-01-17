@@ -4,7 +4,14 @@ import { Container, Row, Col } from "react-bootstrap";
 import Select from "react-select";
 import styles from './index.module.scss';
 
+import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
+import { clearUser } from '@/redux/userSlice';
+import Cookies from 'js-cookie';
+
 const LanguageSettings = () => {
+    const router = useRouter();
+    const dispatch = useDispatch();
     const t = useTranslations();
     const [language, setLanguage] = useState(localStorage.getItem("language") || "tr");
 
@@ -19,10 +26,16 @@ const LanguageSettings = () => {
         localStorage.setItem("language", selectedLanguage);
     };
 
+    const handleLogout = () => {
+        Cookies.remove('token');
+        dispatch(clearUser());
+        router.push('/login');
+    };
+
     return (
         <Container>
             <Row>
-                <Col md={12}>
+                <Col md={12} className={styles.colContainer}>
                     <h5>{t("Language Settings")}</h5>
                     <p>{t("Here you can choose the default language that will be opened every time you log in to the system")}</p>
 
@@ -44,6 +57,10 @@ const LanguageSettings = () => {
                             },
                         })}
                     />
+
+                    <span className={`${styles.infoText} text-danger`} onClick={handleLogout}>
+                        <em>Değişikliklerin geçerli olması için yeniden giriş yapmanız gereklidir.</em>
+                    </span>
                 </Col>
             </Row>
         </Container>
