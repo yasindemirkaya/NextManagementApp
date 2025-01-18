@@ -1,7 +1,7 @@
 import { icons } from '@/static/icons';
 
-// GENERAL SETTINGS
-export const generalSettings = [
+// USER SETTINGS
+export const userSettings = [
     {
         id: 0,
         title: "Language Settings",

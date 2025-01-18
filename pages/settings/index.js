@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import styles from './index.module.scss';
 import { useTranslations } from "next-intl";
-import { generalSettings } from "@/static/data/settings";
+import { userSettings } from "@/static/data/settings";
 
 // Dynamic component import
 const LanguageSettings = lazy(() => import('@/components/Settings/LanguageSettings'));
@@ -12,7 +12,7 @@ const ThemeSettings = lazy(() => import('@/components/Settings/ThemeSettings'));
 
 const Settings = () => {
     const t = useTranslations();
-    const [activeTab, setActiveTab] = useState(generalSettings[0].id);
+    const [activeTab, setActiveTab] = useState(userSettings[0].id);
 
     const renderContent = () => {
         switch (activeTab) {
@@ -31,7 +31,7 @@ const Settings = () => {
                 {/* Left Menu */}
                 <Col md={3}>
                     <ListGroup className={styles.settingsMenu}>
-                        {generalSettings.map((setting) => (
+                        {userSettings.map((setting) => (
                             <ListGroup.Item
                                 key={setting.id}
                                 action

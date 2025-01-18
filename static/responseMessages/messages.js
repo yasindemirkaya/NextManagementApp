@@ -466,6 +466,32 @@ const responseMessages = {
                 failedToFetch: 'İstatistikler veritabanından getirilemedi.'
             }
         }
+    },
+    // USER SETTINGS
+    userSettings: {
+        // GET USER SETTINGS
+        get: {
+            en: {
+                success: 'User settings fetched successfully.',
+                notFound: 'User settings could not be found.'
+            },
+            tr: {
+                success: 'Kullanıcı ayarları başarıyla getirildi.',
+                notFound: "Kullanıcı ayarları bulunamadı."
+            }
+        },
+        // CREATE OR UPDATE USER SETTINGS
+        create: {
+            en: {
+                success: 'User settings created/updated successfully.',
+                missingFields: "Language or Theme is required."
+            },
+            tr: {
+                success: 'Kullanıcı ayarları başarıyla oluşturuldu/güncellendi',
+                notFound: "Kullanıcı ayarları bulunamadı.",
+                missingFields: "Language ya da Theme parametrelerinden biri zorunludur."
+            }
+        }
     }
 }
 

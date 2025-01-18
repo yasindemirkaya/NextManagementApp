@@ -2,20 +2,18 @@ import axios from '@/utils/axios';
 
 // ***************************
 // |
-// | GET SERVICE LOGS BY GUID
+// | GET USER SETTINGS
 // |
 // ***************************
 
-export const getServiceLogsByGUID = async (guid) => {
+export const getUserSettings = async () => {
     try {
-        const response = await axios.get(`/private/settings/service-logs/get-service-logs-by-guid`, {
-            params: { guid }
-        });
+        const response = await axios.get('/private/settings/user-settings/get-user-settings');
 
         if (response.code === 1) {
             return {
                 success: true,
-                data: response.logs,
+                data: response.settings,
                 message: response.message
             };
         } else {
@@ -33,35 +31,35 @@ export const getServiceLogsByGUID = async (guid) => {
 };
 
 
-
 // ***************************
 // |
-// | GET SERVICE LOGS BY DATE
+// | CREATE USER SETTINGS
 // |
 // ***************************
 
-export const getServiceLogsByDate = async (startDate, endDate, userEmail = null, userId = null) => {
+export const createUserSettings = async (language, theme) => {
     try {
-        const response = await axios.get('/private/settings/service-logs/get-service-logs-by-date', {
-            params: { startDate, endDate, userEmail, userId },
+        const response = await axios.post('/private/settings/user-settings/create-user-setting', {
+            language,
+            theme
         });
 
         if (response.code === 1) {
             return {
                 success: true,
-                data: response.logs,
-                message: response.message,
+                data: response.settings,
+                message: response.message
             };
         } else {
             return {
                 success: false,
-                error: response.message,
+                error: response.message
             };
         }
     } catch (error) {
         return {
             success: false,
-            error: error.message,
+            error: error.message
         };
     }
 };

@@ -205,14 +205,14 @@ const sidebarMenu = [
         iconSecondary: "faChevronCircleUp",
         permission: 0,
         subMenus: [
-            // GENERAL SETTINGS
+            // USER SETTINGS
             {
                 id: 51,
-                name: "General Settings",
-                nameTR: "Genel Ayarlar",
+                name: "User Settings",
+                nameTR: "Kullanıcı Ayarları",
                 link: "/settings",
-                description: "From here you can edit the application's settings.",
-                descriptionTR: "Buradan uygulamanın ayarlarını düzenleyebilirsiniz.",
+                description: "From here you can edit the application's settings for your account.",
+                descriptionTR: "Buradan uygulamanın ayarlarını hesabınız için düzenleyebilirsiniz.",
                 iconPrimary: "faCog",
                 iconSecondary: "",
                 permission: 2,

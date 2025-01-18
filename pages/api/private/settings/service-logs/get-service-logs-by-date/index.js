@@ -1,12 +1,11 @@
 // --------------------------------
 // |
 // | Service Name: Get Service Logs
-// | Description: Service that brings logs of requests made by users
-// | Parameters: guid
-// | Endpoint: /api/private/service-logs/get-service-logs-by-guid
+// | Description: Service that fetches logs of requests made by users based on certain date ranges
+// | Parameters: startDate, endDate, userEmail, userId
+// | Endpoint: /api/private/settings/service-logs/get-service-logs-by-date
 // |
 // ------------------------------
-
 
 import { verify } from 'jsonwebtoken';
 import Log from '@/models/Log';
@@ -32,23 +31,50 @@ const handler = async (req, res) => {
                 });
             }
 
-            // Query parametresinden gelen guid al
-            const { guid } = req.query;
+            // Query parametresinden gelen startDate, endDate, userEmail ve userId al
+            const { startDate, endDate, userEmail, userId } = req.query;
 
-            if (!guid) {
+            if (!startDate || !endDate) {
                 return res.status(200).json({
                     code: 0,
-                    message: responseMessages.serviceLogs[lang].guidRequired,
+                    message: responseMessages.serviceLogs[lang].dateFormat,
                 });
             }
 
-            // logs koleksiyonunda, guid ile eşleşen kayıtları sorgula
-            const logs = await Log.find({ guid });
+            // Tarih formatlarını kontrol et
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                return res.status(200).json({
+                    code: 0,
+                    message: responseMessages.serviceLogs[lang].dateFormat,
+                });
+            }
+
+            // Sorgu filtreleri oluştur
+            const filters = {
+                createdAt: {
+                    $gte: start,
+                    $lte: end,
+                },
+            };
+
+            if (userEmail) {
+                filters.userEmail = userEmail;
+            }
+
+            if (userId) {
+                filters.userId = userId;
+            }
+
+            // logs koleksiyonunda filtrelere uyan kayıtları sorgula
+            const logs = await Log.find(filters);
 
             if (logs.length === 0) {
                 return res.status(200).json({
                     code: 0,
-                    message: `${responseMessages.serviceLogs[lang].notFound} ${guid}.`,
+                    message: responseMessages.serviceLogs[lang].noLogs,
                 });
             }
 
