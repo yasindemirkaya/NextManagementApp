@@ -10,8 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
 import Cookies from 'js-cookie';
 import { getNotificationCount, getNotifications } from '@/services/notificationApi';
+import { useTranslations } from 'next-intl';
 
 const Header = ({ toggleSidebar }) => {
+    const t = useTranslations();
     const router = useRouter();
     const dispatch = useDispatch();
     const loggedInUser = useSelector(state => state.user.user);
@@ -33,7 +35,6 @@ const Header = ({ toggleSidebar }) => {
         router.push(router.asPath, router.asPath, { locale: lang });
     };
 
-    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "en";
     let profileText = loggedInUser ? loggedInUser.email : "Profile";
 
     useEffect(() => {
@@ -98,7 +99,7 @@ const Header = ({ toggleSidebar }) => {
                             .map(menu => (
                                 <Nav key={menu.id} className={styles.menuItem}>
                                     <Nav.Link as={Link} href={menu.link}>
-                                        {lang === "tr" ? menu.nameTR : menu.name}
+                                        {t(menu.name)}
                                     </Nav.Link>
                                 </Nav>
                             ))
@@ -171,7 +172,7 @@ const Header = ({ toggleSidebar }) => {
                                             )
                                         ) : (
                                             <Nav.Link as={Link} href={menu.link}>
-                                                {lang === "tr" ? menu.nameTR : menu.name}
+                                                {t(menu.name)}
                                             </Nav.Link>
                                         )}
                                     </Nav>

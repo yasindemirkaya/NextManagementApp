@@ -8,11 +8,11 @@ const userSettingSchema = new mongoose.Schema({
     },
     language: {
         type: String,
-        required: true,
+        required: false,
     },
     theme: {
         type: String,
-        required: true,
+        required: false,
     },
 }, {
     timestamps: true,

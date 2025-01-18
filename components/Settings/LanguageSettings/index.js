@@ -1,31 +1,52 @@
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import Select from "react-select";
 import styles from './index.module.scss';
+import toast from '@/utils/toastify';
+import { ToastContainer } from 'react-toastify';
 
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
+import { setUserSettings } from "@/redux/settingsSlice";
 import Cookies from 'js-cookie';
+
+import { createUserSettings } from '@/services/userSettingsApi';
 
 const LanguageSettings = () => {
     const router = useRouter();
     const dispatch = useDispatch();
     const t = useTranslations();
-    const [language, setLanguage] = useState(localStorage.getItem("language") || "tr");
+
+    const language = useSelector(state => state.settings.userSettings.language);
 
     const languageOptions = [
-        { value: "0", label: t("Turkish") },
-        { value: "1", label: t("English") }
+        { value: "tr", label: t("Turkish") },
+        { value: "en", label: t("English") }
     ];
 
-    const handleLanguageChange = (selectedOption) => {
-        const selectedLanguage = selectedOption.value;
-        setLanguage(selectedLanguage);
-        localStorage.setItem("language", selectedLanguage);
+    // Create or Update User Settings (Language)
+    const updateUserSettings = async (selectedLanguage) => {
+        const result = await createUserSettings({ language: selectedLanguage });
+
+        if (result.success) {
+            toast('SUCCESS', result.message)
+        } else {
+            toast('SUCCESS', result.error)
+        }
     };
 
+    // On language change
+    const handleLanguageChange = (selectedOption) => {
+        const selectedLanguage = selectedOption.value;
+        dispatch(setUserSettings({
+            language: selectedLanguage,
+        }));
+
+        updateUserSettings(selectedLanguage);
+    };
+
+    // Handle logout
     const handleLogout = () => {
         Cookies.remove('token');
         dispatch(clearUser());
@@ -59,10 +80,11 @@ const LanguageSettings = () => {
                     />
 
                     <span className={`${styles.infoText} text-danger`} onClick={handleLogout}>
-                        <em>{t("Değişikliklerin geçerli olması için yeniden giriş yapmanız gereklidir")}</em>
+                        <em>{t("You must log in again for the changes to take effect")}</em>
                     </span>
                 </Col>
             </Row>
+            <ToastContainer />
         </Container>
     );
 };

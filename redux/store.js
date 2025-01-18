@@ -4,10 +4,12 @@ import storage from "./storage";
 
 import userReducer from "./userSlice";
 import statReducer from "./statSlice";
+import settingsReducer from "./settingsSlice";
 
 const rootReducer = combineReducers({
     user: userReducer,
     stats: statReducer,
+    settings: settingsReducer
 });
 
 const persistConfig = {

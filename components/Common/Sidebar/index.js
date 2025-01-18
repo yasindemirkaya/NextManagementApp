@@ -6,10 +6,11 @@ import { icons } from '@/static/icons';
 import styles from "./index.module.scss";
 import { useSelector } from 'react-redux';
 import { useRouter } from "next/router";
+import { useTranslations } from "next-intl";
 
 const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
     const loggedInUser = useSelector(state => state.user.user);
-    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "tr";
+    const t = useTranslations();
     const router = useRouter();
 
     const [activeMenuId, setActiveMenuId] = useState(null);
@@ -59,7 +60,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                 }}
             >
                 {/* Ana menü adı */}
-                {lang === "tr" ? menu.nameTR : menu.name}
+                {t(menu.name)}
 
                 {/* Ana menünün alt menüsü varsa ok işareti ekle */}
                 {menu.subMenus && menu.subMenus.length > 0 && (
@@ -98,7 +99,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                                         className="me-2"
                                     />
                                     {/* Alt menü adı */}
-                                    {lang === "tr" ? subMenu.nameTR : subMenu.name}
+                                    {t(subMenu.name)}
 
                                     {/* Alt menü ok işareti */}
                                     {subMenu.subMenus && subMenu.subMenus.length > 0 && (
@@ -133,7 +134,7 @@ const Sidebar = ({ isSidebarVisible, toggleSidebar }) => {
                                                             className="me-2"
                                                         />
                                                         {/* Alt menülerin alt menüsü adı */}
-                                                        {lang === "tr" ? subSubMenu.nameTR : subSubMenu.name}
+                                                        {t(subSubMenu.name)}
                                                     </Nav.Link>
                                                 </div>
                                             ))}

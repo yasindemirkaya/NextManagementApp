@@ -37,11 +37,11 @@ export const getUserSettings = async () => {
 // |
 // ***************************
 
-export const createUserSettings = async (language, theme) => {
+export const createUserSettings = async (data) => {
     try {
         const response = await axios.post('/private/settings/user-settings/create-user-setting', {
-            language,
-            theme
+            language: data.language || "",
+            theme: data.theme || ""
         });
 
         if (response.code === 1) {

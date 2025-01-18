@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import styles from './index.module.scss';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '@/redux/userSlice';
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
@@ -12,6 +12,8 @@ import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { login } from '@/services/loginApi';
 import { useTranslations } from 'next-intl';
+import { getUserSettings } from '@/services/userSettingsApi';
+import { setUserSettings } from '@/redux/settingsSlice';
 
 const Login = () => {
     const t = useTranslations();
@@ -44,6 +46,22 @@ const Login = () => {
         setShowPassword((prevState) => !prevState);
     };
 
+    // Get user settings
+    const fetchUserSettings = async () => {
+        const result = await getUserSettings();
+        if (result.success) {
+            dispatch(setUserSettings({
+                language: result.data.language,
+                theme: result.data.theme
+            }))
+        } else {
+            dispatch(setUserSettings({
+                language: "tr",
+                theme: "light"
+            }))
+        }
+    };
+
     // Form submit
     const onSubmit = async (data) => {
         setLoading(true);
@@ -64,6 +82,9 @@ const Login = () => {
                     lastName: response.user.lastName,
                     role: response.user.role,
                 }))
+
+                // Kullanıcıyı dashboard'a göndermeden önce ayarları al ve redux'a set et
+                fetchUserSettings()
 
                 router.push('/dashboard');
             } else {

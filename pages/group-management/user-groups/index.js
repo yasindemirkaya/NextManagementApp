@@ -19,11 +19,11 @@ const UserGroups = () => {
                     <Col key={subMenu.id} md={4} className="mb-3">
                         <Card className="h-100">
                             <Card.Body className="d-flex flex-column justify-content-between">
-                                <Card.Title>{subMenu.name}</Card.Title>
-                                <Card.Text>{lang == 'tr' ? subMenu.descriptionTR : subMenu.description}</Card.Text>
+                                <Card.Title>{t(subMenu.name)}</Card.Title>
+                                <Card.Text>{t(subMenu.description)}</Card.Text>
                                 <Link href={subMenu.link} passHref>
                                     <Button variant="primary" className="mt-auto">
-                                        Go to {subMenu.name}
+                                        {t("Go to")} {t(subMenu.name)}
                                     </Button>
                                 </Link>
                             </Card.Body>

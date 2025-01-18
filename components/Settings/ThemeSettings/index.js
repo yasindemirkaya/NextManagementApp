@@ -3,27 +3,47 @@ import { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import Select from "react-select";
 import styles from './index.module.scss';
+import toast from '@/utils/toastify';
+import { ToastContainer } from 'react-toastify';
 
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '@/redux/userSlice';
+import { setUserSettings } from "@/redux/settingsSlice";
 import Cookies from 'js-cookie';
+
+import { createUserSettings } from '@/services/userSettingsApi';
 
 const ThemeSettings = () => {
     const router = useRouter();
     const dispatch = useDispatch();
     const t = useTranslations();
-    const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+    const theme = useSelector(state => state.settings.userSettings.theme);
 
     const themeOptions = [
-        { value: "0", label: t("Light Theme") },
-        { value: "1", label: t("Dark Theme") }
+        { value: "light", label: t("Light Theme") },
+        { value: "dark", label: t("Dark Theme") }
     ];
+
+    // Create or Update User Settings (Theme)
+    const updateUserSettings = async (selectedTheme) => {
+        const result = await createUserSettings({ theme: selectedTheme });
+
+        if (result.success) {
+            toast('SUCCESS', result.message)
+        } else {
+            toast('SUCCESS', result.error)
+        }
+    };
 
     const handleThemeChange = (selectedOption) => {
         const selectedTheme = selectedOption.value;
-        setTheme(selectedTheme);
-        localStorage.setItem("theme", selectedTheme);
+        dispatch(setUserSettings({
+            theme: selectedTheme,
+        }));
+
+        updateUserSettings(selectedTheme);
     };
 
     const handleLogout = () => {
@@ -59,10 +79,11 @@ const ThemeSettings = () => {
                     />
 
                     <span className={`${styles.infoText} text-danger`} onClick={handleLogout}>
-                        <em>{t("Değişikliklerin geçerli olması için yeniden giriş yapmanız gereklidir")}</em>
+                        <em>{t("You must log in again for the changes to take effect")}</em>
                     </span>
                 </Col>
             </Row>
+            <ToastContainer />
         </Container>
     );
 };
