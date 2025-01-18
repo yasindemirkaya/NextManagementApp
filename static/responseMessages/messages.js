@@ -188,10 +188,10 @@ const responseMessages = {
                 createdByNotFound: 'Created by user not found.'
             },
             tr: {
-                success: 'Kullanıcı grup tipi başarıyla oluşturuldu.',
-                noPermission: 'Kullanıcı grup tipi oluşturma yetkiniz yok.',
+                success: 'Kullanıcı grup türü başarıyla oluşturuldu.',
+                noPermission: 'Kullanıcı grup türü oluşturma yetkiniz yok.',
                 nameRequired: 'Tip adı gereklidir.',
-                alreadyExist: 'Bu isimde bir grup tipi zaten mevcut.',
+                alreadyExist: 'Bu isimde bir grup türü zaten mevcut.',
                 createdByNotFound: 'Oluşturan kullanıcı bulunamadı.'
             }
         },
@@ -203,9 +203,9 @@ const responseMessages = {
                 groupTypeNotFound: 'User group type not found.'
             },
             tr: {
-                success: 'Kullanıcı grup tipi başarıyla silindi.',
-                groupTypeIdRequired: 'Grup tipi ID gereklidir.',
-                groupTypeNotFound: 'Kullanıcı grup tipi bulunamadı.'
+                success: 'Kullanıcı grup türü başarıyla silindi.',
+                groupTypeIdRequired: 'Grup türü ID gereklidir.',
+                groupTypeNotFound: 'Kullanıcı grup türü bulunamadı.'
             }
         },
         // GET USER GROUP TYPES
@@ -227,9 +227,9 @@ const responseMessages = {
                 notFound: 'Group type not found.'
             },
             tr: {
-                success: 'Kullanıcı grup tipi başarıyla getirildi.',
-                groupTypeIdRequired: 'Grup tipi ID gereklidir.',
-                notFound: 'Grup tipi bulunamadı.'
+                success: 'Kullanıcı grup türü başarıyla getirildi.',
+                groupTypeIdRequired: 'Grup türü ID gereklidir.',
+                notFound: 'Grup türü bulunamadı.'
             }
         },
         // UPDATE USER GROUP TYPE
@@ -242,10 +242,10 @@ const responseMessages = {
                 userNotFound: 'User not found.'
             },
             tr: {
-                success: 'Kullanıcı grup tipi başarıyla güncellendi.',
-                idRequired: 'Grup tipi ID gereklidir.',
-                failedToUpdate: 'Kullanıcı grup tipi güncellenemedi.',
-                notFound: 'Grup tipi bulunamadı.',
+                success: 'Kullanıcı grup türü başarıyla güncellendi.',
+                idRequired: 'Grup türü ID gereklidir.',
+                failedToUpdate: 'Kullanıcı grup türü güncellenemedi.',
+                notFound: 'Grup türü bulunamadı.',
                 userNotFound: 'Kullanıcı bulunamadı.'
             }
         }

@@ -41,7 +41,7 @@ const handler = async (req, res) => {
                 });
             }
 
-            // Belirtilen ID ile grup tipini bul ve sil
+            // Belirtilen ID ile grup türünü bul ve sil
             const deletedGroupType = await UserGroupType.findByIdAndDelete(groupTypeId);
 
             if (!deletedGroupType) {

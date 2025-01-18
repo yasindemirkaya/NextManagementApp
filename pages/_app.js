@@ -26,15 +26,6 @@ export default function App({ Component, pageProps }) {
   const router = useRouter();
   const Layout = router.pathname === '/404' ? NotFoundLayout : DefaultLayout;
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const languageSet = localStorage.getItem('language');
-      if (!languageSet) {
-        localStorage.setItem('language', router.locale || 'tr');
-      }
-    }
-  }, [router.locale]);
-
   return (
     <div className={montserrat.className}>
       <Provider store={store}>

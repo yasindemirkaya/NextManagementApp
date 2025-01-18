@@ -16,17 +16,8 @@ import { deleteUser, deleteUserById, updateUser, updateUserById } from '@/servic
 import { useTranslations } from 'next-intl';
 
 const EditProfileCard = ({ userData, onCancel }) => {
-    const lang = localStorage.getItem("language")
     const t = useTranslations()
     const loggedInUser = useSelector(state => state.user.user);
-
-    let changePasswordText = "";
-    let deleteAccountText = "";
-
-    if (loggedInUser) {
-        changePasswordText = !isSelf(loggedInUser.id, userData.id) ? lang === "en" ? "Change this user's password." : "Bu kullanıcının şifresini değiştir" : lang == "en" ? "I want to change my password." : "Şifremi değiştirmek istiyorum."
-        deleteAccountText = !isSelf(loggedInUser.id, userData.id) ? lang === "en" ? "Delete this user's account." : "Bu kullanıcının hesabını sil" : lang == "en" ? "I want to delete my account." : "Hesabımı silmek istiyorum."
-    }
 
     const router = useRouter();
     const dispatch = useDispatch();
@@ -389,7 +380,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     <Row className="mt-3">
                         <Col md={12}>
                             <div onClick={() => setShowModal(true)} className={styles.link}>
-                                <p className="text-success">{changePasswordText}</p>
+                                <p className="text-success">{!isSelf(loggedInUser.id, userData.id) ? t("Change this user's password") : t("I want to change my password")}</p>
                             </div>
                         </Col>
 
@@ -397,7 +388,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         {deleteAccountDisplayer(loggedInUser, userData) ? (
                             <Col md={12}>
                                 <div onClick={handleDeleteAccount} className={styles.link}>
-                                    <p className="text-danger">{deleteAccountText}</p>
+                                    <p className="text-danger">{!isSelf(loggedInUser.id, userData.id) ? t("Delete this user's account") : t("I want to delete my account")}</p>
                                 </div>
                             </Col>
                         ) : null}

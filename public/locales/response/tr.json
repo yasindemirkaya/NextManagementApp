@@ -5,7 +5,7 @@
     "The user account has been deleted successfully": "Kullanıcı hesabı başarıyla silindi.",
     "User Account could not be deleted Please try again": "Kullanıcı hesabı silinemedi. Lütfen tekrar deneyin.",
     "An error occurred while deleting the user Please try again later": "Kullanıcı silinirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
-    "Group type could not be deleted Please try again": "Grup tipi silinemedi. Lütfen tekrar deneyin.",
+    "Group type could not be deleted Please try again": "Grup türü silinemedi. Lütfen tekrar deneyin.",
     "An error occurred while deleting the group type Please try again later": "Grup türü silinirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
     "An error occurred when creating a new notification Please try again later": "Yeni bildirim oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
     "Failed to fetch personal notifications Please try again later": "Kişisel bildirimler alınamadı. Lütfen daha sonra tekrar deneyin.",

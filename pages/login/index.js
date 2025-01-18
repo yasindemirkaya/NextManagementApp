@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import styles from './index.module.scss';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/userSlice';
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
@@ -14,8 +14,10 @@ import { login } from '@/services/loginApi';
 import { useTranslations } from 'next-intl';
 import { getUserSettings } from '@/services/userSettingsApi';
 import { setUserSettings } from '@/redux/settingsSlice';
+import { useSelector } from 'react-redux';
 
 const Login = () => {
+    const language = useSelector(state => state.settings.userSettings.language || "tr")
     const t = useTranslations();
     const router = useRouter();
     const dispatch = useDispatch();
@@ -29,12 +31,6 @@ const Login = () => {
 
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-
-    // Change language
-    const changeLanguage = (lang) => {
-        localStorage.setItem("language", lang);
-        router.push(router.asPath, router.asPath, { locale: lang });
-    };
 
     // Geri dön butonu için redirect
     const handleBack = () => {
@@ -86,7 +82,7 @@ const Login = () => {
                 // Kullanıcıyı dashboard'a göndermeden önce ayarları al ve redux'a set et
                 fetchUserSettings()
 
-                router.push('/dashboard');
+                router.push(`/dashboard`);
             } else {
                 setLoading(false);
                 toast('ERROR', response.message);
@@ -99,17 +95,6 @@ const Login = () => {
 
     return (
         <>
-            <Row>
-                <Col md={12} className="d-flex justify-content-center justify-content-md-end">
-                    <Button
-                        variant="link"
-                        onClick={() => changeLanguage(router.locale === 'en' ? 'tr' : 'en')}
-                        className={styles.languageSwitch}
-                    >
-                        {router.locale === 'en' ? 'EN' : 'TR'}
-                    </Button>
-                </Col>
-            </Row>
             <Container className={`mt-5 ${styles.loginContainer}`}>
                 <h2>{t('Login')}</h2>
                 <Form onSubmit={handleSubmit(onSubmit)}>

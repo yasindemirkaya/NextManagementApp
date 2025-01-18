@@ -10,9 +10,10 @@ import { setDashboardStats, setIsDashboardStatsInitialized } from '@/redux/statS
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import 'react-resizable/css/styles.css';
+import { useTranslations } from "use-intl";
 
 const Statistics = ({ stats }) => {
-    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "tr";
+    const t = useTranslations()
     const router = useRouter();
     const dispatch = useDispatch();
 
@@ -90,7 +91,7 @@ const Statistics = ({ stats }) => {
                                                 <Card className="d-flex">
                                                     <Card.Body className={styles.statsBody}>
                                                         <div>
-                                                            <Card.Title className={styles.statTitle} onClick={() => handleStatClick(stat.link)}>{lang == 'tr' ? stat.titleTR : stat.title}</Card.Title>
+                                                            <Card.Title className={styles.statTitle} onClick={() => handleStatClick(stat.link)}>{t(stat.title)}</Card.Title>
                                                             <Card.Text className={styles.statValue}>{stat.value}</Card.Text>
                                                         </div>
                                                         <div className={styles.iconFrame}>

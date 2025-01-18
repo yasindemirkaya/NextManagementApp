@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Breadcrumb } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import styles from './index.module.scss';
@@ -7,8 +7,8 @@ import Cookies from 'js-cookie';
 
 const BreadcrumbComponent = () => {
     const loggedInUser = useSelector(state => state.user.user);
+    const lang = useSelector(state => state.settings.userSettings.language)
     const token = Cookies.get('token');
-    const lang = useMemo(() => localStorage.getItem("language"), []);
     const router = useRouter();
     const pathSegments = router.pathname.split('/').filter(Boolean);
 
@@ -20,7 +20,7 @@ const BreadcrumbComponent = () => {
             case segment.includes('[groupId]'):
                 return lang === "en" ? 'Group Detail' : "Grup Detayı";
             case segment.includes('[groupTypeId]'):
-                return lang === "en" ? 'Group Type Detail' : "Grup Tipi Detayı";
+                return lang === "en" ? 'Group Type Detail' : "Grup Türü Detayı";
             case segment.includes('[notificationId]'):
                 return lang === "en" ? 'Notification Detail' : "Bildirim Detayı";
             default:

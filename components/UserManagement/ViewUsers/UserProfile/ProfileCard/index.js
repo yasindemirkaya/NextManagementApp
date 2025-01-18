@@ -14,6 +14,7 @@ const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) =>
     const [isEditing, setIsEditing] = useState(false);
     const token = Cookies.get('token');
     const loggedInUser = useSelector(state => state.user.user);
+    const language = useSelector(state => state.settings.userSettings.language)
 
     // Handle Edit
     const handleEditClick = () => setIsEditing(true);
@@ -65,9 +66,9 @@ const ProfileCard = ({ user, loading, error, from, getUser, getUserDetails }) =>
                             <p><strong>{t("Surname")}:</strong> {user.last_name}</p>
                             <p><strong>{t("Email")}:</strong> {user.email}</p>
                             <p><strong>{t("Mobile")}:</strong> {mobileFormatter(user.mobile)}</p>
-                            <p><strong>{t("Account Status")}:</strong> {formatAccountStatus(user.is_active)}</p>
-                            <p><strong>{t("Verification Status")}:</strong> {formatAccountVerification(user.is_verified)}</p>
-                            <p><strong>{t("Account Role")}:</strong> {formatAccountRole(user.role)}</p>
+                            <p><strong>{t("Account Status")}:</strong> {formatAccountStatus(user.is_active, language)}</p>
+                            <p><strong>{t("Verification Status")}:</strong> {formatAccountVerification(user.is_verified, language)}</p>
+                            <p><strong>{t("Account Role")}:</strong> {formatAccountRole(user.role, language)}</p>
                             <p className={styles.infoText}>*{t("This account is created by")} <b>{' ' + user.created_by}</b></p>
                             {user.updated_by && <p className={styles.infoText}>*{t("The last update for this account is made by")} <b>{user.updated_by}</b></p>}
                         </div>

@@ -1,55 +1,51 @@
 import { Badge } from 'react-bootstrap';
-const getLanguage = () => localStorage.getItem("language") || "en";
 
-export const formatAccountRole = (role) => {
-    const lang = getLanguage();
+export const formatAccountRole = (role, language) => {
     return (
         <Badge
             bg={role === 0 ? "secondary" : role === 1 ? "warning" : role === 2 ? "danger" : "secondary"}
         >
             {role === 0
-                ? lang === "en"
+                ? language === "en"
                     ? "Standard User"
                     : "Standart Kullanıcı"
                 : role === 1
-                    ? lang === "en"
+                    ? language === "en"
                         ? "Admin"
                         : "Yönetici"
                     : role === 2
-                        ? lang === "en"
+                        ? language === "en"
                             ? "Super Admin"
                             : "Sistem Yetkilisi"
-                        : lang === "en"
+                        : language === "en"
                             ? "Undefined Role"
                             : "Tanımsız Rol"}
         </Badge>
     );
 };
 
-export const formatAccountStatus = (status) => {
-    const lang = getLanguage();
+export const formatAccountStatus = (status, language) => {
     return (
         <Badge bg={status ? "success" : "danger"}>
             {status
-                ? lang === "en"
+                ? language === "en"
                     ? "Active"
                     : "Aktif"
-                : lang === "en"
+                : language === "en"
                     ? "Not Active"
                     : "Pasif"}
         </Badge>
     );
 };
 
-export const formatAccountVerification = (verification) => {
-    const lang = getLanguage();
+export const formatAccountVerification = (verification, language) => {
     return (
         <Badge bg={verification ? "success" : "danger"}>
             {verification
-                ? lang === "en"
+                ? language === "en"
                     ? "Verified"
                     : "Doğrulandı"
-                : lang === "en"
+                : language === "en"
                     ? "Not Verified"
                     : "Doğrulanmadı"}
         </Badge>

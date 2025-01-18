@@ -6,7 +6,6 @@ import styles from './index.module.scss'
 import { useTranslations } from "next-intl";
 
 const UserGroups = () => {
-    const lang = typeof window !== "undefined" ? localStorage.getItem("language") : "tr";
     const t = useTranslations();
     // User Management menüsünü ve alt menülerini bul
     const UserGroupsMenu = sidebarMenu.flatMap(menu => menu.subMenus || []).find(subMenu => subMenu.name === "User Groups");

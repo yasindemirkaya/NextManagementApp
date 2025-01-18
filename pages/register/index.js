@@ -32,12 +32,6 @@ const SignUp = () => {
         setShowPassword((prevState) => !prevState);
     };
 
-    // Change language
-    const changeLanguage = (lang) => {
-        localStorage.setItem("language", lang);
-        router.push(router.asPath, router.asPath, { locale: lang });
-    };
-
     // Form submit işlemi
     const onSubmit = async (data) => {
         const { firstName, lastName, email, password } = data;
@@ -62,17 +56,6 @@ const SignUp = () => {
 
     return (
         <>
-            <Row>
-                <Col md={12} className="d-flex justify-content-center justify-content-md-end">
-                    <Button
-                        variant="link"
-                        onClick={() => changeLanguage(router.locale === 'en' ? 'tr' : 'en')}
-                        className={styles.languageSwitch}
-                    >
-                        {router.locale === 'en' ? 'EN' : 'TR'}
-                    </Button>
-                </Col>
-            </Row>
             <Container className={`mt-5 ${styles.signupContainer}`}>
                 <h2>{t('Register')}</h2>
                 <Form onSubmit={handleSubmit(onSubmit)}>

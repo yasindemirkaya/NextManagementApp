@@ -10,8 +10,6 @@ import { useTranslations } from 'next-intl';
 
 const EditProfileCard = ({ groupTypeData, onCancel }) => {
     const t = useTranslations();
-    const lang = localStorage.getItem("language")
-    let deleteAccountText = lang == "en" ? "Delete this group type." : "Bu grup tipini sil.";
 
     const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -105,7 +103,7 @@ const EditProfileCard = ({ groupTypeData, onCancel }) => {
                     <Row className="mt-3">
                         <Col md={12}>
                             <div onClick={handleDeleteAccount} className={styles.link}>
-                                <p className="text-danger">{deleteAccountText}</p>
+                                <p className="text-danger">{t("Delete this group type")}</p>
                             </div>
                         </Col>
                     </Row>

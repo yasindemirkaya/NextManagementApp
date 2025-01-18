@@ -5,8 +5,10 @@ import styles from './index.module.scss';
 import { isTokenExpiredClient } from '@/helpers/tokenVerifier';
 import Cookies from 'js-cookie';
 import { useTranslations } from 'next-intl';
+import { useSelector } from 'react-redux';
 
 const Home = () => {
+  const language = useSelector(state => state.settings.userSettings.language)
   const t = useTranslations();
   const router = useRouter();
 
@@ -14,7 +16,7 @@ const Home = () => {
     const token = Cookies.get('token');
 
     if (token && !isTokenExpiredClient(token)) {
-      router.push('/dashboard');
+      router.push(`/dashboard`);
     }
   }, [router]);
 
@@ -26,25 +28,8 @@ const Home = () => {
     router.push('/register');
   };
 
-  // Change language
-  const changeLanguage = (lang) => {
-    localStorage.setItem("language", lang);
-    router.push(router.asPath, router.asPath, { locale: lang });
-  };
-
   return (
     <>
-      <Row>
-        <Col md={12} className="d-flex justify-content-center justify-content-md-end">
-          <Button
-            variant="link"
-            onClick={() => changeLanguage(router.locale === 'en' ? 'tr' : 'en')}
-            className={styles.languageSwitch}
-          >
-            {router.locale === 'en' ? 'EN' : 'TR'}
-          </Button>
-        </Col>
-      </Row>
       <Container className={`mt-5 ${styles.homeContainer}`}>
         <Card className="text-center">
           <Card.Header>{t("Welcome")}</Card.Header>

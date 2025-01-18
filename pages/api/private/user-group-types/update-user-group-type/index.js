@@ -42,7 +42,7 @@ const handler = async (req, res) => {
                 });
             }
 
-            // Güncelleme yapılacak grup tipini bul
+            // Güncelleme yapılacak grup türünü bul
             const groupType = await UserGroupType.findById(groupTypeId);
             if (!groupType) {
                 return res.status(404).json({
@@ -61,7 +61,7 @@ const handler = async (req, res) => {
             }
             const updatedByName = `${updatingUser.first_name} ${updatingUser.last_name}`;
 
-            // Grup tipinin ismini ve updated_by alanını güncelle
+            // Grup türünün ismini ve updated_by alanını güncelle
             groupType.type_name = newTypeName;
             groupType.updated_by = updatedByName;
 

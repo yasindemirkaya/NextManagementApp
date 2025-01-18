@@ -98,5 +98,13 @@
     "Create New Group Type": "Create New Group Type",
     "Settings": "Settings",
     "User Settings": "User Settings",
-    "Service Logs": "Service Logs"
+    "Service Logs": "Service Logs",
+    "Users": "Users",
+    "Groups": "Groups",
+    "Group Types": "Group Types",
+    "Delete this group": "Delete this group",
+    "Change this user's password": "Change this user's password.",
+    "I want to change my password": "I want to change my password.",
+    "Delete this user's account": "Delete this user's account.",
+    "I want to delete my account": "I want to delete my account."
 }

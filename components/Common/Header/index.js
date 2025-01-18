@@ -7,31 +7,52 @@ import { icons } from '@/static/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './index.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearUser } from '@/redux/userSlice';
+import { clearUser, setUser } from '@/redux/userSlice';
 import Cookies from 'js-cookie';
 import { getNotificationCount, getNotifications } from '@/services/notificationApi';
 import { useTranslations } from 'next-intl';
+import { setUserSettings } from '@/redux/settingsSlice';
+import { createUserSettings } from '@/services/userSettingsApi';
 
 const Header = ({ toggleSidebar }) => {
     const t = useTranslations();
     const router = useRouter();
     const dispatch = useDispatch();
+
     const loggedInUser = useSelector(state => state.user.user);
+    const theme = useSelector(state => state.settings.userSettings.theme)
     const token = Cookies.get('token');
 
     const [notificationCount, setNotificationCount] = useState(0);
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-        const savedTheme = localStorage.getItem("theme");
-        return savedTheme ? savedTheme === "dark" : false;
-    });
+    const toggleTheme = async (theme) => {
+        const result = await createUserSettings({ theme: theme });
 
-    const toggleTheme = () => setIsDarkMode(prevMode => !prevMode);
+        if (result.success) {
+            dispatch(setUserSettings({
+                theme: theme
+            }))
+        } else {
+            dispatch(setUserSettings({
+                theme: "light"
+            }))
+        }
+    }
 
-    const changeLanguage = (lang) => {
-        localStorage.setItem("language", lang);
+    const changeLanguage = async (lang) => {
+        const result = await createUserSettings({ language: lang });
+
+        if (result.success) {
+            dispatch(setUserSettings({
+                language: lang
+            }))
+        } else {
+            dispatch(setUserSettings({
+                language: "en"
+            }))
+        }
         router.push(router.asPath, router.asPath, { locale: lang });
     };
 
@@ -52,9 +73,8 @@ const Header = ({ toggleSidebar }) => {
     }, [token]);
 
     useEffect(() => {
-        document.documentElement.setAttribute("data-bs-theme", isDarkMode ? "dark" : "light");
-        localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-    }, [isDarkMode]);
+        document.documentElement.setAttribute("data-bs-theme", theme == 'dark' ? "dark" : "light");
+    }, [theme]);
 
     const fetchNotifications = async () => {
         setLoading(true);
@@ -110,8 +130,8 @@ const Header = ({ toggleSidebar }) => {
                             <label className={styles.toggleSwitch}>
                                 <input
                                     type="checkbox"
-                                    checked={isDarkMode}
-                                    onChange={toggleTheme}
+                                    checked={theme === "dark"}
+                                    onChange={() => toggleTheme(theme === "dark" ? "light" : "dark")}
                                 />
                                 <span className={styles.slider}>
                                     <FontAwesomeIcon icon={icons.faMoon} className={styles.iconMoon} />

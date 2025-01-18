@@ -16,9 +16,11 @@ const settingsSlice = createSlice({
             const { language, theme } = action.payload;
             if (language) {
                 state.userSettings.language = language;
+                localStorage.setItem("language", language)
             }
             if (theme) {
                 state.userSettings.theme = theme;
+                localStorage.setItem("theme", theme)
             }
         },
     },

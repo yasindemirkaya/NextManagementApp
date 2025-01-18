@@ -13,6 +13,8 @@ const userSlice = createSlice({
         },
         clearUser: (state) => {
             state.user = null;
+            localStorage.removeItem("language")
+            localStorage.removeItem("theme")
         }
     }
 });
