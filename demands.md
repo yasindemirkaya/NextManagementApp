@@ -5,9 +5,9 @@
 
 
 <!-- Create Demand -->
-    - Standard User'lar hesaplarını oluşturan Admin ya da Super Admin'lere talepte bulunur.
-    - Kullanıcının hesabını oluşturan kişi (createdBy) bir Admin ise talep önce o admine, onun onayından sonra bir Super Admin'e gider.
-    - Kullanıcının hesabını oluşturan kişi bir Super Admin ise direkt olarak talep onayı o Super Admin'e gider.
+    - Standard User'lar listeden seçtikleri Admin ya da Super Admin'lere talepte bulunur.
+    - Talebin gittiği kişi bir Admin ise talep önce o admine, onun onayından sonra bir Super Admin'e gider.
+    - Talebin gittiği kişi bir Super Admin ise direkt olarak onun onayı talebin kapatılması için yeterlidir.
     
     - Create Demand sayfası bir formdan oluşacak. 
         * Title (Talebin başlığı. (Talep türleri içinden select ile seçilecek. Kullanıcı text yazmayacak))
@@ -17,14 +17,14 @@
     - Kullanıcıdan yukarıdaki 3 alan alınacak.
     - Bu üç alana ek olarak request atılırken backendde aşağıdaki parametreler de eklenecek;
         * Status = Talebin durumu:
-            Admin onayında (0) 
+            Admin onayında (0)
             Super Admin onayında (1)
             Kabul edildi (2) 
             Reddedildi (3)
         * Admin Response:
             String
-    - Status parametresi talep yaratılırken duruma göre 0 ya da 1 gönderilecek.
-    - Talep yaratılırken Admin Response parametresi boş bir şekilde gönderilecek.
+    - Status parametresi talep yaratılırken duruma göre 0 ya da 1 gönderilecek. Admine gittiyse 0, Super Admin'e gittiyse 1 
+    - Talep yaratılırken "admin_response" parametresi boş bir şekilde gönderilecek.
 
 
 <!-- Get Demands -->
@@ -41,6 +41,7 @@
 <!-- Update Demands -->
     - Admin ve Super Admin'ler tablodaki talebin üzerine tıkladığında bir modal açılır.
     - Açılan modalda talebi onayla ya da reddet seçenekleri ve altında bir textarea yer alır.
+    - Bir Admin talebi onayladığında talep Super Admin onayına düşer. Admin talebi onaylarken hangi Super Admin'in onayına sunacağını seçer. (targetId güncelleme)
     - Kabul veya ret açıklamasını yönetici girer ve servise Status ve Admin Response değerleri güncellenerek o talep için update isteği atılır.
 
 
