@@ -167,9 +167,40 @@ const sidebarMenu = [
             },
         ],
     },
-    // SETTINGS
+    // DEMANDS
     {
         id: 5,
+        name: "Demands",
+        link: "/demands",
+        iconPrimary: "faChevronUp",
+        iconSecondary: "faChevronCircleUp",
+        permission: 0,
+        subMenus: [
+            // CREATE DEMAND
+            {
+                id: 61,
+                name: "Create Demand",
+                link: "/demands/create-demands",
+                description: "From here, you can create requests such as equipment and permissions to present to your managers.",
+                iconPrimary: "faHandPointUp",
+                iconSecondary: "",
+                permission: 0,
+            },
+            // VIEW DEMANDS
+            {
+                id: 62,
+                name: "View Demands",
+                link: "/demands/view-demands",
+                description: "From here you can follow the stage of your requests.",
+                iconPrimary: "faFileInvoice",
+                iconSecondary: "",
+                permission: 0,
+            },
+        ]
+    },
+    // SETTINGS
+    {
+        id: 6,
         name: "Settings",
         link: "/settings",
         iconPrimary: "faChevronUp",
@@ -178,7 +209,7 @@ const sidebarMenu = [
         subMenus: [
             // USER SETTINGS
             {
-                id: 51,
+                id: 61,
                 name: "User Settings",
                 link: "/settings",
                 description: "From here you can edit the application's settings for your account",
@@ -188,7 +219,7 @@ const sidebarMenu = [
             },
             // SERVICE LOGS
             {
-                id: 52,
+                id: 62,
                 name: "Service Logs",
                 link: "/settings/service-logs",
                 description: "From here you can review the detailed logs, requests and responses of the web services",

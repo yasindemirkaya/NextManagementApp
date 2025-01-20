@@ -97,7 +97,7 @@
     "View Group Types": "Grup Türlerini Görüntüle",
     "Create New Group Type": "Yeni Grup Türü Oluştur",
     "Settings": "Ayarlar",
-    "User Settings": "Kullanici Ayarlari",
+    "User Settings": "Kullanıcı Ayarları",
     "Service Logs": "Servis Kayıtları",
     "Users": "Kullanıcılar",
     "Groups": "Gruplar",
@@ -106,5 +106,10 @@
     "Change this user's password": "Bu kullanıcının şifresini değiştir.",
     "I want to change my password": "Şifremi değiştirmek istiyorum.",
     "Delete this user's account": "Bu kullanıcının hesabını sil.",
-    "I want to delete my account": "Hesabımı silmek istiyorum."
+    "I want to delete my account": "Hesabımı silmek istiyorum.",
+    "Demands": "Talepler",
+    "Create Demand": "Talep Oluştur",
+    "View Demands": "Talepleri Görüntüle",
+    "From here, you can create requests such as equipment and permissions to present to your managers": "Buradan yöneticilerinize sunmak üzere ekipman ve izin talepleri gibi talepler oluşturabilirsiniz.",
+    "From here you can follow the stage of your requests": "Taleplerinizin aşamalarını buradan takip edebilirsiniz."
 }

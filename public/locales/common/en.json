@@ -106,5 +106,10 @@
     "Change this user's password": "Change this user's password.",
     "I want to change my password": "I want to change my password.",
     "Delete this user's account": "Delete this user's account.",
-    "I want to delete my account": "I want to delete my account."
+    "I want to delete my account": "I want to delete my account.",
+    "Demands": "Demands",
+    "Create Demand": "Create Demand",
+    "View Demands": "View Demands",
+    "From here, you can create requests such as equipment and permissions to present to your managers": "From here, you can create requests such as equipment and permissions to present to your managers.",
+    "From here you can follow the stage of your requests": "From here you can follow the stage of your requests."
 }
