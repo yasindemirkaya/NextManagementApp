@@ -3,7 +3,7 @@
 // | Service Name: Create User
 // | Description: Service that allows admin or super admin to create a new user.
 // | Parameters: first_name, last_name, email, password, mobile, is_active, is_verified, role, created_by
-// | Endpoint: /api/private/admin/create-user
+// | Endpoint: /api/private/user/create-user
 // |
 // ------------------------------
 

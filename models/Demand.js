@@ -21,7 +21,11 @@ const demandSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    date: {
+    start_date: {
+        type: Date,
+        required: true
+    },
+    end_date: {
         type: Date,
         required: true
     },
@@ -31,13 +35,14 @@ const demandSchema = new mongoose.Schema({
     },
     admin_response: {
         type: String,
-        required: true
+        required: false,
+        default: ""
     }
 }, {
     timestamps: true,
 });
 
 
-const Demand = mongoose.models.Demand || mongoose.model('Demand', demandSchema, 'userSettings');
+const Demand = mongoose.models.Demand || mongoose.model('Demand', demandSchema, 'demands');
 
 export default Demand;

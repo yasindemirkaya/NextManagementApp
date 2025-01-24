@@ -492,6 +492,18 @@ const responseMessages = {
                 missingFields: "Language ya da Theme parametrelerinden biri zorunludur."
             }
         }
+    },
+    demands: {
+        create: {
+            en: {
+                success: 'Demand successfully created.',
+                allFieldsRequired: 'All fields are required.'
+            },
+            tr: {
+                success: 'Talep başarıyla oluşturuldu.',
+                allFieldsRequired: 'Tüm alanların girilmesi zorunludur.'
+            }
+        }
     }
 }
 

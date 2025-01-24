@@ -92,6 +92,6 @@
 
 
 <!-- SETTINGS -->
-* Tüm kullanıcılar için açıktır.
+* Sadece standart kullanıcıların yöneticilerine talep açması için kullanılır. 
 * Kullanıcılar login olduklarında hangi dil ve hangi tema ile sistemin açılması gerektiğini buradan seçebilirler.
 * Sonrasında başka özellikler de eklenecektir.
