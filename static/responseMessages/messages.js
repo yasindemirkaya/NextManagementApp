@@ -503,6 +503,16 @@ const responseMessages = {
                 success: 'Talep başarıyla oluşturuldu.',
                 allFieldsRequired: 'Tüm alanların girilmesi zorunludur.'
             }
+        },
+        get: {
+            en: {
+                success: 'Demands fetched successfully.',
+                failedToFetch: 'An error occured while fetching the demands.'
+            },
+            tr: {
+                success: 'Talepler başarıyla getirildi.',
+                failedToFetch: 'Talepler getirilirken bir sorun oluştu.'
+            }
         }
     }
 }

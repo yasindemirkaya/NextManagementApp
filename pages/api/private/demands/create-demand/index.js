@@ -13,6 +13,7 @@ import privateMiddleware from "@/middleware/private/index";
 import responseMessages from '@/static/responseMessages/messages';
 
 const handler = async (req, res) => {
+    // isteğin yapıldığı dil
     const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
 
     if (req.method === 'POST') {

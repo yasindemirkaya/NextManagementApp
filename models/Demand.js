@@ -23,11 +23,11 @@ const demandSchema = new mongoose.Schema({
     },
     start_date: {
         type: Date,
-        required: true
+        required: false
     },
     end_date: {
         type: Date,
-        required: true
+        required: false
     },
     status: {
         type: String,

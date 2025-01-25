@@ -180,7 +180,7 @@ const sidebarMenu = [
             {
                 id: 61,
                 name: "Create Demand",
-                link: "/demands/create-demands",
+                link: "/demands/create-demand",
                 description: "From here, you can create requests such as equipment and permissions to present to your managers.",
                 iconPrimary: "faHandPointUp",
                 iconSecondary: "",
