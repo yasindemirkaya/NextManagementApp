@@ -111,5 +111,18 @@
     "Create Demand": "Talep Oluştur",
     "View Demands": "Talepleri Görüntüle",
     "From here, you can create requests such as equipment and permissions to present to your managers": "Buradan yöneticilerinize sunmak üzere ekipman ve izin talepleri gibi talepler oluşturabilirsiniz.",
-    "From here you can follow the stage of your requests": "Taleplerinizin aşamalarını buradan takip edebilirsiniz."
+    "From here you can follow the stage of your requests": "Taleplerinizin aşamalarını buradan takip edebilirsiniz.",
+    "Annual Leave": "Yıllık İzin",
+    "Family Leave": "Aile İzni",
+    "Funeral Leave": "Cenaze İzni",
+    "Sick Leave": "Hastalık İzni",
+    "Remote Work Demand": "Uzaktan Çalışma İzni",
+    "Equipment Demand": "Ekipman Talebi",
+    "Equipment Maintenance Demand": "Ekipman Bakım Talebi",
+    "Pending Admin Approval": "Yönetici Onayında",
+    "Pending Super Admin Approval": "Sistem Yetkilisi Onaydında",
+    "Accepted": "Kabul Edildi",
+    "Rejected": "Reddedildi",
+    "Add New Demand": "Yeni Talep Oluştur",
+    "Demand data is not available Please try again later": "Talep verisine ulaşılamıyor. Lütfen daha sonra yeniden deneyin."
 }

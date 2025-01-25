@@ -111,5 +111,18 @@
     "Create Demand": "Create Demand",
     "View Demands": "View Demands",
     "From here, you can create requests such as equipment and permissions to present to your managers": "From here, you can create requests such as equipment and permissions to present to your managers.",
-    "From here you can follow the stage of your requests": "From here you can follow the stage of your requests."
+    "From here you can follow the stage of your requests": "From here you can follow the stage of your requests.",
+    "Annual Leave": "Annual Leave",
+    "Family Leave": "Family Leave",
+    "Funeral Leave": "Funeral Leave",
+    "Sick Leave": "Sick Leave",
+    "Remote Work Demand": "Remote Work Demand",
+    "Equipment Demand": "Equipment Demand",
+    "Equipment Maintenance Demand": "Equipment Maintenance Demand",
+    "Pending Admin Approval": "Pending Admin Approval",
+    "Pending Super Admin Approval": "Pending Super Admin Approval",
+    "Accepted": "Accepted",
+    "Rejected": "Rejected",
+    "Add New Demand": "Add New Demand",
+    "Demand data is not available Please try again later": "Demand data is not available. Please try again later."
 }

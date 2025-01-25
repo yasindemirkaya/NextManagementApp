@@ -10,7 +10,7 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { useTranslations } from "next-intl";
 
-const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, fetchUsers, getUserGroups, getAllGroupTypes }) => {
+const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, fetchUsers, getUserGroups, getAllGroupTypes, fetchDemands }) => {
     const [currentPageState, setCurrentPageState] = useState(currentPage);
 
     // Sorting
@@ -47,6 +47,11 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                     text: t('Add New Group Type'),
                     link: '/group-type-management/create-group-type'
                 };
+            case 'view-demands':
+                return {
+                    text: t('Add New Demand'),
+                    link: '/demands/create-demand'
+                }
             default:
                 return {
                     text: t('Add New Item'),
@@ -69,6 +74,8 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             case 'view-group-types':
                 getAllGroupTypes(page, itemsPerPage)
                 break;
+            case 'view-demands':
+                fetchDemands({ page: page, limit: itemsPerPage })
             default:
                 return;
         }
@@ -101,11 +108,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
 
             switch (from) {
                 case "view-users":
-                    fetchUsers({
-                        page: '',
-                        limit: '',
-                        search: searchQuery
-                    });
+                    fetchUsers({ page: '', limit: '', search: searchQuery });
                     break;
                 case "view-user-groups":
                     getUserGroups(currentPage, itemsPerPage, searchQuery);
@@ -113,6 +116,8 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                 case "view-group-types":
                     getAllGroupTypes(currentPage, itemsPerPage, searchQuery);
                     break;
+                case "view-demands":
+                    fetchDemands({ page: '', limit: '', search: searchQuery });
                 default:
                     return;
             }
@@ -125,11 +130,7 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
 
         switch (from) {
             case "view-users":
-                fetchUsers({
-                    page: 1,
-                    limit: 5,
-                    search: ''
-                });
+                fetchUsers({ page: 1, limit: 5, search: '' });
                 break;
             case "view-user-groups":
                 getUserGroups(currentPage, itemsPerPage, '')
@@ -137,6 +138,8 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             case "view-group-types":
                 getAllGroupTypes(currentPage, itemsPerPage, '')
                 break;
+            case "view-demands":
+                fetchDemands({ page: 1, limit: 5, search: '' })
             default:
                 return;
         }
@@ -161,6 +164,8 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                 TypeName = row["Type Name"];
                 ({ id } = row);
                 break;
+            case "view-demands":
+                break;
             default:
                 return;
         }
@@ -184,6 +189,8 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                     // Boşlukları "-" ile değiştirerek URL dostu hale getiriyoruz
                     const formattedTypeName = TypeName.toLowerCase().replace(/\s+/g, "-");
                     dynamicPath = `/group-type-management/${from}/${formattedTypeName}-${id}`;
+                    break;
+                case "view-demands":
                     break;
                 default:
                     return;
@@ -227,6 +234,17 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                     'Type Name': item['Type Name'],
                     'Created By': item['Created By'],
                     'Updated By': item['Updated By'],
+                }));
+            case 'view-demands':
+                return data.map((item) => ({
+                    // id: item.id,
+                    'Title': item['Title'],
+                    'Description': item['Description'],
+                    'Start Date': item['Start Date'],
+                    'End Date': item['End Date'],
+                    'Recipient': item['Recipient'],
+                    'Status': item['Status'],
+                    'Admin Response': item['Admin Response']
                 }));
             default:
                 return {

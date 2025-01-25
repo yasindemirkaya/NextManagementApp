@@ -13,9 +13,11 @@ import { createDemand } from "@/services/demandApi";
 
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
+import { useRouter } from "next/router";
 
 const CreateDemand = () => {
     const t = useTranslations()
+    const router = useRouter()
     const [showEndDate, setShowEndDate] = useState(false);
     const [userOptions, setUserOptions] = useState([]); // Kullanıcıları tutacak state
     const [loadingUsers, setLoadingUsers] = useState(false); // Yükleme durumu
@@ -68,6 +70,7 @@ const CreateDemand = () => {
 
             if (response.success) {
                 toast("SUCCESS", response.message)
+                router.push('/demands/view-demands')
                 reset();
             } else {
                 toast("ERROR", response.error)

@@ -12,20 +12,25 @@
 // ------------------------------
 
 import Demand from '@/models/Demand';
+import User from '@/models/User';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index';
 import responseMessages from '@/static/responseMessages/messages';
+import demandTypes from '@/static/data/demandTypes';
+import demandStatuses from '@/static/data/demandStatuses';
+
+const formatDate = (date) => (date ? new Date(date).toISOString().split('T')[0] : null);
 
 const handler = async (req, res) => {
-    // İsteğin yapıldığı dil
     const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
 
     if (req.method === 'GET') {
-        let userRole;
+        let userRole, userIdFromToken;
         try {
             const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
             userRole = decoded?.role;
+            userIdFromToken = decoded.id;
         } catch (error) {
             return res.status(200).json({
                 message: responseMessages.common[lang].invalidToken,
@@ -33,29 +38,19 @@ const handler = async (req, res) => {
             });
         }
 
-        // No permission for standard users
+        // İsteği yapan kullanıcı 0 ise o zaman sadece kendi taleplerini görsün
         if (userRole === 0) {
-            return res.status(403).json({
-                message: responseMessages.common[lang].noPermission,
-                code: 0
-            });
+            req.query.userId = userIdFromToken;
         }
 
         const { status, userId, targetId, limit, page, search } = req.query;
         let queryOptions = {};
 
-        if (status) {
-            queryOptions.status = status;
-        }
+        if (status) queryOptions.status = status;
+        if (userId) queryOptions.userId = userId;
+        if (targetId) queryOptions.targetId = targetId;
 
-        if (userId) {
-            queryOptions.userId = userId;
-        }
-
-        if (targetId) {
-            queryOptions.targetId = targetId;
-        }
-
+        // Search
         if (search) {
             queryOptions.$or = [
                 { title: { $regex: search, $options: 'i' } },
@@ -71,11 +66,39 @@ const handler = async (req, res) => {
             const totalDemands = await Demand.countDocuments(queryOptions);
             const totalPages = limitValue ? Math.ceil(totalDemands / limitValue) : 1;
 
-            const demands = limitValue && pageValue
-                ? await Demand.find(queryOptions)
-                    .limit(limitValue)
-                    .skip(skipValue)
-                : await Demand.find(queryOptions);
+            let demands = await Demand.find(queryOptions)
+                .limit(limitValue || 0)
+                .skip(skipValue)
+                .lean(); // Verileri düz obje olarak çekiyoruz
+
+            // targetId'leri kullanıcı bilgisiyle eşleştirme
+            const targetIds = demands.map(d => d.targetId).filter(Boolean);
+            const users = await User.find({ _id: { $in: targetIds } }, '_id first_name last_name');
+
+            const userMap = users.reduce((acc, user) => {
+                acc[user._id] = {
+                    id: user._id,
+                    user: user.first_name + ' ' + user.last_name,
+                };
+                return acc;
+            }, {});
+
+            demands = demands.map(d => {
+                const status = demandStatuses.find(status => String(status.id) === String(d.status));
+                const type = demandTypes.find(type => String(type.id) === String(d.title));
+
+                return {
+                    ...d,
+                    title: type ? type.typeName : null,
+                    start_date: formatDate(d.start_date),
+                    end_date: formatDate(d.end_date),
+                    targetId: userMap[d.targetId] || null,
+                    status: {
+                        value: d.status,
+                        label: status ? status.typeName : null
+                    }
+                };
+            });
 
             res.status(200).json({
                 code: 1,

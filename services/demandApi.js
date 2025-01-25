@@ -25,8 +25,8 @@ export const getDemands = async (params = {}) => {
     } catch (error) {
         return {
             success: false,
-            error: error.response?.message || error.message
-        };
+            error: error.message
+        }
     }
 };
 
