@@ -531,6 +531,19 @@ const responseMessages = {
                 notFound: 'Talep bulunamadı.',
                 failedToFetch: 'Talep getirilemedi.'
             }
+        },
+        // UPDATE DEMAND
+        update: {
+            en: {
+                success: 'Demand successfully updated.',
+                missingFields: 'Demand ID, status and admin response are required.',
+                notFound: 'Demand could not be found.'
+            },
+            tr: {
+                success: 'Talep başarıyla güncellendi.',
+                missingFields: 'Talep ID, durum ve yönetici yanıtı alanlarının gönderilmesi zorunludur.',
+                notFound: 'Talep bulunamadı'
+            }
         }
     }
 }
