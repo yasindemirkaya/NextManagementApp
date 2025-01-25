@@ -36,5 +36,7 @@
     "Description cannot be shorter than 10 characters": "Açıklama alanı 10 karakterden kısa olamaz.",
     "Description cannot be longer than 255 characters": "Açıklama alanı 255 karakterden uzun olamaz.",
     "Select a Title": "Bir başlık seçin.",
-    "Enter a description for your demand": "Talebiniz için bir açıklama girin."
+    "Enter a description for your demand": "Talebiniz için bir açıklama girin.",
+    "Select a recipient": "Bir alıcı seçiniz.",
+    "Recipient is required": "Alıcı seçimi zorunludur."
 }

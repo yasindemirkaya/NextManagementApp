@@ -38,12 +38,12 @@ const handler = async (req, res) => {
         }
 
         // Role kontrolü: Eğer userRole 0 ise, veri döndürme 
-        if (userRole === 0) {
-            return res.status(403).json({
-                message: responseMessages.common[lang].noPermission,
-                code: 0
-            });
-        }
+        // if (userRole === 0) {
+        //     return res.status(403).json({
+        //         message: responseMessages.common[lang].noPermission,
+        //         code: 0
+        //     });
+        // }
 
         const { is_active, is_verified, role, created_by, updated_by, limit, page, search } = req.query;
 

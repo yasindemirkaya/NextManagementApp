@@ -8,7 +8,7 @@ import axios from '@/utils/axios';
 
 export const getDemands = async (params = {}) => {
     try {
-        const response = await axios.get('/api/private/demands/get-demands', { params });
+        const response = await axios.get('/private/demands/get-demands', { params });
 
         if (response.code === 1) {
             return {
@@ -39,7 +39,7 @@ export const getDemands = async (params = {}) => {
 
 export const getDemandById = async (id) => {
     try {
-        const response = await axios.get('/api/private/demands/get-demand-by-id', {
+        const response = await axios.get('/private/demands/get-demand-by-id', {
             params: { id }
         });
 
@@ -71,9 +71,9 @@ export const getDemandById = async (id) => {
 
 export const createDemand = async (data = {}) => {
     try {
-        const response = await axios.post('/api/private/demand/create-demand', {
-            targetId: data.targetId,
-            title: data.title,
+        const response = await axios.post('/private/demands/create-demand', {
+            targetId: data.targetUser.value,
+            title: data.title.value,
             description: data.description,
             start_date: data.startDate,
             end_date: data.endDate || null
@@ -108,7 +108,7 @@ export const createDemand = async (data = {}) => {
 
 export const updateDemand = async (demandId, status, admin_response) => {
     try {
-        const response = await axios.put('/api/private/demands/update-demand', {
+        const response = await axios.put('/private/demands/update-demand', {
             demandId,
             status,
             admin_response

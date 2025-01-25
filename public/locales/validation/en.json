@@ -37,5 +37,7 @@
     "Description cannot be shorter than 10 characters": "Description cannot be shorter than 10 characters.",
     "Description cannot be longer than 255 characters": "Description cannot be longer than 255 characters.",
     "Select a Title": "Select a Title.",
-    "Enter a description for your demand": "Enter a description for your demand."
+    "Enter a description for your demand": "Enter a description for your demand.",
+    "Select a recipient": "Select a recipient.",
+    "Recipient is required": "Recipient is required."
 }
