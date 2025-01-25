@@ -493,7 +493,9 @@ const responseMessages = {
             }
         }
     },
+    // DEMANDS
     demands: {
+        // CREATE DEMAND
         create: {
             en: {
                 success: 'Demand successfully created.',
@@ -504,6 +506,7 @@ const responseMessages = {
                 allFieldsRequired: 'Tüm alanların girilmesi zorunludur.'
             }
         },
+        // GET DEMANDS
         get: {
             en: {
                 success: 'Demands fetched successfully.',
@@ -512,6 +515,21 @@ const responseMessages = {
             tr: {
                 success: 'Talepler başarıyla getirildi.',
                 failedToFetch: 'Talepler getirilirken bir sorun oluştu.'
+            }
+        },
+        // GET DEMAND BY ID
+        getById: {
+            en: {
+                success: 'Demand fetched successfully.',
+                idRequired: 'Demand ID is required.',
+                notFound: 'Demand could not be found.',
+                failedToFetch: 'Failed to fetch demand.'
+            },
+            tr: {
+                success: 'Talep detayları başarıyla getirildi.',
+                idRequired: 'Talep ID gönderilmesi zorunludur.',
+                notFound: 'Talep bulunamadı.',
+                failedToFetch: 'Talep getirilemedi.'
             }
         }
     }
