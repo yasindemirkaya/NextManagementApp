@@ -39,5 +39,6 @@
     "Select a Title": "Select a Title.",
     "Enter a description for your demand": "Enter a description for your demand.",
     "Select a recipient": "Select a recipient.",
-    "Recipient is required": "Recipient is required."
+    "Recipient is required": "Recipient is required.",
+    "Admin Response is required": "Admin Response is required."
 }

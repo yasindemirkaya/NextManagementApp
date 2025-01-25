@@ -80,5 +80,11 @@
     "Create New Notification": "Create New Notification",
     "Signing Up": "Signing Up...",
     "Creating Demand": "Creating Demand...",
-    "Recipient": "Recipient"
+    "Recipient": "Recipient",
+    "Update Demand": "Update Demand",
+    "Admin Response": "Admin Response",
+    "Accept": "Accept",
+    "Reject": "Reject",
+    "Close": "Close",
+    "Enter a response for the demand": "Enter a response for the demand."
 }

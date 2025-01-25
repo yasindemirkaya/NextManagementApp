@@ -29,7 +29,7 @@ const CreateDemand = () => {
         setValue,
         reset,
         formState: { errors, isSubmitting }
-    } = useForm({ mode: 'onBlur ' });
+    } = useForm({ mode: 'onBlur' });
 
     useEffect(() => {
         fetchUsers();
@@ -69,14 +69,14 @@ const CreateDemand = () => {
             const response = await createDemand(data);
 
             if (response.success) {
-                toast("SUCCESS", response.message)
+                toast('SUCCESS', response.message)
                 router.push('/demands/view-demands')
                 reset();
             } else {
-                toast("ERROR", response.error)
+                toast('ERROR', response.error)
             }
         } catch (error) {
-            toast("ERROR", response.error)
+            toast('ERROR', response.error)
         }
     };
 

@@ -124,5 +124,6 @@
     "Accepted": "Kabul Edildi",
     "Rejected": "Reddedildi",
     "Add New Demand": "Yeni Talep Oluştur",
-    "Demand data is not available Please try again later": "Talep verisine ulaşılamıyor. Lütfen daha sonra yeniden deneyin."
+    "Demand data is not available Please try again later": "Talep verisine ulaşılamıyor. Lütfen daha sonra yeniden deneyin.",
+    "You are not allowed to update this demand": "Bu talebi düzenleme yetkiniz yoktur."
 }

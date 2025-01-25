@@ -9,8 +9,13 @@ import * as XLSX from 'xlsx'
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { useTranslations } from "next-intl";
+import UpdateDemandModal from "@/components/Demands/UpdateDemand";
 
 const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, fetchUsers, getUserGroups, getAllGroupTypes, fetchDemands }) => {
+    // Update demand states
+    const [showModal, setShowModal] = useState(false);
+    const [demandData, setDemandData] = useState({});
+
     const [currentPageState, setCurrentPageState] = useState(currentPage);
 
     // Sorting
@@ -164,8 +169,16 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                 TypeName = row["Type Name"];
                 ({ id } = row);
                 break;
+            // View demands için sayfa yönlendirmesi yok, modal açarak update yaptırıyoruz
             case "view-demands":
-                break;
+                if (loggedInUser.role !== 0) {
+                    setDemandData(row);
+                    setShowModal(true);
+                } else {
+                    toast('ERROR', t('You are not allowed to update this demand'))
+                }
+
+                return;
             default:
                 return;
         }
@@ -262,6 +275,11 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
         const worksheet = XLSX.utils.json_to_sheet(processedData);
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
         XLSX.writeFile(workbook, `${from}-data.xlsx`);
+    };
+
+    // Close update demand modal
+    const closeModal = () => {
+        setShowModal(false);
     };
 
     return (
@@ -377,6 +395,15 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                 </div>
             </div>
             <ToastContainer />
+
+            {/* Update demand modal */}
+            <UpdateDemandModal
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                demandId={demandData.id}
+                fetchDemands={fetchDemands}
+                loggedInUser={loggedInUser}
+            />
         </>
     );
 };

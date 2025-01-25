@@ -88,6 +88,7 @@ export async function getStaticProps(context) {
     const headerMessages = await import(`../../../public/locales/common/${context.locale}.json`);
     const formMessages = await import(`../../../public/locales/form/${context.locale}.json`);
     const responseMessages = await import(`../../../public/locales/response/${context.locale}.json`);
+    const validationMessages = await import(`../../../public/locales/validation/${context.locale}.json`);
 
     return {
         props: {
@@ -95,6 +96,7 @@ export async function getStaticProps(context) {
                 ...headerMessages.default,
                 ...formMessages.default,
                 ...responseMessages.default,
+                ...validationMessages.default,
             },
         },
     };

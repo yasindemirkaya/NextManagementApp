@@ -80,5 +80,11 @@
     "Create New Notification": "Yeni Bildirim Oluştur",
     "Signing Up": "Giriş Yapılıyor...",
     "Creating Demand": "Talep Oluşturuluyor...",
-    "Recipient": "Alıcı"
+    "Recipient": "Alıcı",
+    "Update Demand": "Talebi Güncelle",
+    "Admin Response": "Yönetici Yanıtı",
+    "Accept": "Onayla",
+    "Reject": "Reddet",
+    "Close": "Kapat",
+    "Enter a response for the demand": "Talep için bir yanıt girin."
 }
