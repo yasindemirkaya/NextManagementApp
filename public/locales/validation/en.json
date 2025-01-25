@@ -33,5 +33,9 @@
     "Notification Type is required": "Notification Type is required.",
     "Please select at least one user": "Please select at least one user.",
     "Please select at least one group": "Please select at least one group.",
-    "Description is required": "Description is required."
+    "Description is required": "Description is required.",
+    "Description cannot be shorter than 10 characters": "Description cannot be shorter than 10 characters.",
+    "Description cannot be longer than 255 characters": "Description cannot be longer than 255 characters.",
+    "Select a Title": "Select a Title.",
+    "Enter a description for your demand": "Enter a description for your demand."
 }

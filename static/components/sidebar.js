@@ -215,7 +215,7 @@ const sidebarMenu = [
                 description: "From here you can edit the application's settings for your account",
                 iconPrimary: "faCog",
                 iconSecondary: "",
-                permission: 2,
+                permission: 0,
             },
             // SERVICE LOGS
             {

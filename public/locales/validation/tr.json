@@ -32,5 +32,9 @@
     "Notification Type is required": "Bildirim türü zorunludur.",
     "Please select at least one user": "Lütfen en az bir kullanıcı seçin.",
     "Please select at least one group": "Lütfen en az bir kullanıcı grubu seçin.",
-    "Description is required": "Açıklama zorunludur."
+    "Description is required": "Açıklama zorunludur.",
+    "Description cannot be shorter than 10 characters": "Açıklama alanı 10 karakterden kısa olamaz.",
+    "Description cannot be longer than 255 characters": "Açıklama alanı 255 karakterden uzun olamaz.",
+    "Select a Title": "Bir başlık seçin.",
+    "Enter a description for your demand": "Talebiniz için bir açıklama girin."
 }

@@ -78,5 +78,6 @@
     "User": "Kullanıcı",
     "Enter a password for the user": "Kullanıcı için bir şifre girin.",
     "Create New Notification": "Yeni Bildirim Oluştur",
-    "Signing Up": "Giriş Yapılıyor..."
+    "Signing Up": "Giriş Yapılıyor...",
+    "Creating Demand": "Talep Oluşturuluyor..."
 }
