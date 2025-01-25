@@ -71,7 +71,13 @@ export const getDemandById = async (id) => {
 
 export const createDemand = async (data = {}) => {
     try {
-        const response = await axios.post('/api/private/demand/create-demand', data);
+        const response = await axios.post('/api/private/demand/create-demand', {
+            targetId: data.targetId,
+            title: data.title,
+            description: data.description,
+            start_date: data.startDate,
+            end_date: data.endDate || null
+        });
 
         if (response.code === 1) {
             return {

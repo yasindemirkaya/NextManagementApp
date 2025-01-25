@@ -1,14 +1,12 @@
+
 import { useForm, Controller } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { Container, Card, Form, Button, Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import demandTypes from '@/static/data/demandTypes';
+
 import styles from './index.module.scss'
-import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
-import createDemand from "@/pages/api/private/demands/create-demand";
-import toast from '@/utils/toastify';
-import { ToastContainer } from 'react-toastify';
 
 const CreateDemand = () => {
     const t = useTranslations()
@@ -36,25 +34,7 @@ const CreateDemand = () => {
 
     // Submit demand
     const onSubmit = async (data) => {
-        try {
-            const requestData = {
-                title: data.title?.value,
-                description: data.description,
-                startDate: data.startDate,
-                endDate: data.endDate
-            }
 
-            const result = await createDemand(requestData)
-
-            if (result.success) {
-                toast('SUCCESS', result.message)
-                reset();
-            } else {
-                toast('ERROR', result.error)
-            }
-        } catch (error) {
-            toast('ERROR', result.error)
-        }
     };
 
     return (
@@ -163,6 +143,9 @@ const CreateDemand = () => {
                                         </Form.Group>
                                     </Col>
                                 )}
+
+                                {/* Target */}
+
                             </Row>
 
                             <Button variant="primary" type="submit" disabled={isSubmitting}>
@@ -172,7 +155,6 @@ const CreateDemand = () => {
                     </Card.Body>
                 </Card>
             </Container>
-            <ToastContainer />
         </>
     )
 }
