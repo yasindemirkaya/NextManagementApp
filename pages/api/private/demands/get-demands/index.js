@@ -43,6 +43,11 @@ const handler = async (req, res) => {
             req.query.userId = userIdFromToken;
         }
 
+        // İsteği yapan kullanıcı 1 (Admin) ise sadece kendi taleplerini görsün
+        if (userRole === 1) {
+            req.query.targetId = userIdFromToken;
+        }
+
         const { status, userId, targetId, limit, page, search } = req.query;
         let queryOptions = {};
 

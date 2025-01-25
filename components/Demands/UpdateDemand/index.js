@@ -80,14 +80,20 @@ const UpdateDemandModal = ({ loggedInUser, fetchDemands, demandId, show, onHide 
                         onClick={handleAccept}
                         disabled={loading}
                     >
-                        {loading ? t("Processing...") : t("Accept")}
+                        {t("Accept")}
                     </Button>
                     <Button
                         variant="danger"
                         onClick={handleReject}
                         disabled={loading}
                     >
-                        {loading ? t("Processing...") : t("Reject")}
+                        {t("Reject")}
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        onClick={onHide}
+                    >
+                        {t("Close")}
                     </Button>
                 </Modal.Footer>
             </Modal>

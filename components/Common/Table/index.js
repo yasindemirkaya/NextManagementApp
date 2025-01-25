@@ -172,6 +172,14 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             // View demands için sayfa yönlendirmesi yok, modal açarak update yaptırıyoruz
             case "view-demands":
                 if (loggedInUser.role !== 0) {
+                    if (loggedInUser.role === 1 && row.Status == "Sistem Yetkilisi Onayında" || row.Status == "Pending Super Admin Approval") {
+                        toast('ERROR', t('This demand cannot be updated as it is awaiting super admin approval'));
+                        return;
+                    }
+                    if (loggedInUser.role === 2 && row.Status == "Kabul Edildi" || row.Status == "Accepted" || row.Status == "Rejected" || row.Status == "Reddedildi") {
+                        toast('ERROR', t('This demand cannot be updated as it already accepted or rejected'))
+                        return;
+                    }
                     setDemandData(row);
                     setShowModal(true);
                 } else {

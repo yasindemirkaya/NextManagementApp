@@ -13,5 +13,7 @@
     "Failed to fetch your notifications Please try again later": "Failed to fetch your notifications. Please try again later.",
     "An error occurred while deleting the notification Please try again later": "An error occurred while deleting the notification. Please try again later.",
     "You are not allowed to update this data": "You are not allowed to update this data.",
-    "An error occurred Please try again": "An error occurred. Please try again."
+    "An error occurred Please try again": "An error occurred. Please try again.",
+    "This demand cannot be updated as it is awaiting super admin approval": "This demand cannot be updated as it is awaiting super admin approval",
+    "This demand cannot be updated as it already accepted or rejected": "This demand cannot be updated as it already accepted or rejected."
 }

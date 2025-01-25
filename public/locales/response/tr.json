@@ -13,5 +13,7 @@
     "Failed to fetch your notifications Please try again later": "Bildirimleriniz alınamadı. Lütfen daha sonra tekrar deneyin.",
     "An error occurred while deleting the notification Please try again later": "Bildirim silinirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
     "You are not allowed to update this data": "Bu veriyi güncelleme izniniz yok.",
-    "An error occurred Please try again": "Bir hata oluştu. Lütfen tekrar deneyin."
+    "An error occurred Please try again": "Bir hata oluştu. Lütfen tekrar deneyin.",
+    "This demand cannot be updated as it is awaiting system admin approval": "Bu talep, sistem yetkilisinin onayını beklediğinden güncellenemiyor.",
+    "This demand cannot be updated as it already accepted or rejected": "Bu talep zaten kabul edilmiş veya reddedilmiş olduğundan güncellenemez."
 }
