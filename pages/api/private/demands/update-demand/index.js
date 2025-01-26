@@ -47,7 +47,7 @@ const handler = async (req, res) => {
     // Req body
     const { demandId, status, admin_response, targetId } = req.body;
 
-    if (!demandId || !["0", "1", "2", "3"].includes(status) || !admin_response || !targetId) {
+    if (!demandId || !["0", "1", "2", "3"].includes(status) || !admin_response) {
         return res.status(400).json({
             code: 0,
             message: responseMessages.demands.update[lang].missingFields
@@ -71,9 +71,16 @@ const handler = async (req, res) => {
             });
         }
 
+        // Eğer status "2" ya da "3" ise targetId'yi null yapıyoruz
+        if (["2", "3"].includes(status)) {
+            demand.targetId = null;
+        } else if (userRole !== 2 && targetId) {
+            // Super Admin (role 2) değilse ve targetId varsa targetId'yi güncelliyoruz
+            demand.targetId = targetId;
+        }
+
         demand.status = status;
         demand.admin_response = admin_response;
-        demand.targetId = targetId;
         await demand.save();
 
         return res.status(200).json({

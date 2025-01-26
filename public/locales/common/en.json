@@ -125,5 +125,6 @@
     "Rejected": "Rejected",
     "Add New Demand": "Add New Demand",
     "Demand data is not available Please try again later": "Demand data is not available. Please try again later.",
-    "You are not allowed to update this demand": "You are not allowed to update this demand."
+    "You are not allowed to update this demand": "You are not allowed to update this demand.",
+    "Closed Demand": "Closed Demand"
 }

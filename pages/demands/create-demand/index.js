@@ -64,7 +64,6 @@ const CreateDemand = () => {
 
     // Submit demand
     const onSubmit = async (data) => {
-        console.log(data)
         try {
             const response = await createDemand(data);
 

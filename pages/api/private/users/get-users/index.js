@@ -87,7 +87,7 @@ const handler = async (req, res) => {
 
         // İstekte bulunan kullanıcının rolüne göre dönen veriyi filtreleme
         if (userRole === 1) {
-            queryOptions.role = { $in: [0, 1] };
+            queryOptions.role = { $in: [0, 1, 2] };
         }
 
         // Sayfalama ayarları (Varsayılan değerler kullanılırsa tüm verileri getiririz)

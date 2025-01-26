@@ -106,13 +106,20 @@ export const createDemand = async (data = {}) => {
 // |
 // ***************************
 
-export const updateDemand = async (demandId, status, admin_response) => {
+export const updateDemand = async (demandId, status, admin_response, targetId) => {
     try {
-        const response = await axios.put('/private/demands/update-demand', {
+        const requestData = {
             demandId,
             status,
             admin_response
-        });
+        };
+
+        // targetId sadece gerekliyse ekleniyor
+        if (targetId) {
+            requestData.targetId = targetId;
+        }
+
+        const response = await axios.put('/private/demands/update-demand', requestData);
 
         if (response.code === 1) {
             return {

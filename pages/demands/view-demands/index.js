@@ -48,7 +48,7 @@ const ViewUsers = () => {
             Description: demand.description,
             'Start Date': demand.start_date,
             'End Date': demand.end_date,
-            'Recipient': demand.targetId.user,
+            'Recipient': demand.targetId?.user || t('Closed Demand'),
             'Status': t(demand.status.label),
             'Admin Response': demand.admin_response,
         }));

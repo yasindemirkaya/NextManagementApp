@@ -536,12 +536,12 @@ const responseMessages = {
         update: {
             en: {
                 success: 'Demand successfully updated.',
-                missingFields: 'Demand ID, status, target ID and admin response are required.',
+                missingFields: 'Demand ID, status and admin response are required.',
                 notFound: 'Demand could not be found.'
             },
             tr: {
                 success: 'Talep başarıyla güncellendi.',
-                missingFields: 'Talep ID, durum, hedef ID ve yönetici yanıtı alanlarının gönderilmesi zorunludur.',
+                missingFields: 'Talep ID, durum ve yönetici yanıtı alanlarının gönderilmesi zorunludur.',
                 notFound: 'Talep bulunamadı'
             }
         },

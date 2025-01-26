@@ -11,7 +11,7 @@ const demandSchema = new mongoose.Schema({
     targetId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
+        required: false,
     },
     title: {
         type: String,
