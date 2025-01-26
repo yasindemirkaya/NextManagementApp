@@ -45,9 +45,9 @@ const handler = async (req, res) => {
     }
 
     // Req body
-    const { demandId, status, admin_response } = req.body;
+    const { demandId, status, admin_response, targetId } = req.body;
 
-    if (!demandId || !["0", "1", "2", "3"].includes(status) || !admin_response) {
+    if (!demandId || !["0", "1", "2", "3"].includes(status) || !admin_response || !targetId) {
         return res.status(400).json({
             code: 0,
             message: responseMessages.demands.update[lang].missingFields
@@ -73,6 +73,7 @@ const handler = async (req, res) => {
 
         demand.status = status;
         demand.admin_response = admin_response;
+        demand.targetId = targetId;
         await demand.save();
 
         return res.status(200).json({
