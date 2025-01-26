@@ -544,6 +544,15 @@ const responseMessages = {
                 missingFields: 'Talep ID, durum ve yönetici yanıtı alanlarının gönderilmesi zorunludur.',
                 notFound: 'Talep bulunamadı'
             }
+        },
+        // GET DEMAND COUNT
+        getCount: {
+            en: {
+                success: 'Demand count successfully fetched.'
+            },
+            tr: {
+                success: 'Talep sayısı başarıyla getirildi.'
+            }
         }
     }
 }

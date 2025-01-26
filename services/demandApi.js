@@ -132,3 +132,27 @@ export const updateDemand = async (demandId, status, admin_response) => {
         };
     }
 };
+
+
+// ***************************
+// |
+// | GET DEMAND COUNT
+// |
+// ***************************
+
+export const getDemandCount = async () => {
+    try {
+        const response = await axios.get('/private/demands/get-demand-count')
+
+        return {
+            success: true,
+            data: response.totalDemandCount,
+            message: response.message
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message
+        }
+    }
+};
