@@ -22,7 +22,7 @@ const GroupTypeManagement = () => {
                                 <Card.Text>{subMenu.description}</Card.Text>
                                 <Link href={subMenu.link} passHref>
                                     <Button variant="primary" className="mt-auto">
-                                        Go to {subMenu.name}
+                                        {t("Go to")} {subMenu.name}
                                     </Button>
                                 </Link>
                             </Card.Body>

@@ -5,16 +5,16 @@ import sidebarMenu from "@/static/components/sidebar";
 import styles from './index.module.scss'
 import { useTranslations } from "next-intl";
 
-const UserManagement = () => {
+const Demands = () => {
     const t = useTranslations();
     // User Management menüsünü ve alt menülerini bul
-    const userManagementMenu = sidebarMenu.find(menu => menu.name === "User Management");
+    const DemandsMenu = sidebarMenu.find(menu => menu.name === "Demands");
 
     return (
         <div className="container mt-5">
-            <h1 className="mb-4">{t("User Management")}</h1>
+            <h1 className="mb-4">{t("Demands")}</h1>
             <Row>
-                {userManagementMenu?.subMenus.map(subMenu => (
+                {DemandsMenu?.subMenus.map(subMenu => (
                     <Col key={subMenu.id} md={4} className="mb-3">
                         <Card className="h-100">
                             <Card.Body className="d-flex flex-column justify-content-between">
@@ -46,4 +46,4 @@ export async function getStaticProps(context) {
     };
 }
 
-export default UserManagement;
+export default Demands;

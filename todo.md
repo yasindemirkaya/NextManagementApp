@@ -1,0 +1,1 @@
+* 404 not found error sayfası multi language olmalı
