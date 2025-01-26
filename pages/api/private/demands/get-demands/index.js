@@ -38,12 +38,10 @@ const handler = async (req, res) => {
             });
         }
 
-        // İsteği yapan kullanıcı 0 ise o zaman sadece kendi taleplerini görsün
         if (userRole === 0) {
             req.query.userId = userIdFromToken;
         }
 
-        // İsteği yapan kullanıcı 1 (Admin) ise sadece kendi taleplerini görsün
         if (userRole === 1) {
             req.query.targetId = userIdFromToken;
         }
@@ -55,7 +53,6 @@ const handler = async (req, res) => {
         if (userId) queryOptions.userId = userId;
         if (targetId) queryOptions.targetId = targetId;
 
-        // Search
         if (search) {
             queryOptions.$or = [
                 { title: { $regex: search, $options: 'i' } },
@@ -74,11 +71,13 @@ const handler = async (req, res) => {
             let demands = await Demand.find(queryOptions)
                 .limit(limitValue || 0)
                 .skip(skipValue)
-                .lean(); // Verileri düz obje olarak çekiyoruz
+                .lean();
 
-            // targetId'leri kullanıcı bilgisiyle eşleştirme
             const targetIds = demands.map(d => d.targetId).filter(Boolean);
-            const users = await User.find({ _id: { $in: targetIds } }, '_id first_name last_name');
+            const userIds = demands.map(d => d.userId).filter(Boolean);
+            const uniqueUserIds = [...new Set([...targetIds, ...userIds])];
+
+            const users = await User.find({ _id: { $in: uniqueUserIds } }, '_id first_name last_name');
 
             const userMap = users.reduce((acc, user) => {
                 acc[user._id] = {
@@ -98,6 +97,7 @@ const handler = async (req, res) => {
                     start_date: formatDate(d.start_date),
                     end_date: formatDate(d.end_date),
                     targetId: userMap[d.targetId] || null,
+                    userId: userMap[d.userId] || null,
                     status: {
                         value: d.status,
                         label: status ? status.typeName : null

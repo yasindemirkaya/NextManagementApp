@@ -15,12 +15,11 @@ const handler = async (req, res) => {
     const lang = req.headers['accept-language']?.startsWith('tr') ? 'tr' : 'en';
 
     if (req.method === 'GET') {
-        let userId, userRole;
+        let userId;
         try {
             const token = req.headers.authorization?.split(' ')[1];
             const decoded = verify(token, process.env.JWT_SECRET);
             userId = decoded?.id;
-            userRole = decoded?.role;
         } catch (error) {
             return res.status(200).json({
                 message: responseMessages.common[lang].invalidToken,
@@ -28,15 +27,8 @@ const handler = async (req, res) => {
             });
         }
 
-        // Kullanıcının rolü Admin (1) veya Super Admin (2) değilse erişim reddedilir
-        if (![1, 2].includes(userRole)) {
-            return res.status(403).json({
-                message: responseMessages.common[lang].noPermission,
-                code: 0
-            });
-        }
-
         try {
+            // Kullanıcının kendisine atanmış taleplerin sayısını al
             const demandCount = await Demand.countDocuments({ targetId: userId });
 
             res.status(200).json({

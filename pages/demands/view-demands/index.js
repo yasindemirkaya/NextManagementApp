@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 
 const ViewUsers = () => {
     const t = useTranslations();
-    const headers = ["Title", "Description", "Start Date", 'End Date', 'Recipient', 'Status', 'Admin Response']
+    const headers = ["Demand Owner", "Title", "Description", "Start Date", 'End Date', 'Recipient', 'Status', 'Admin Response']
     const [demandData, setDemandData] = useState([])
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
@@ -43,6 +43,7 @@ const ViewUsers = () => {
     const formatDemandData = (demandData) => {
         const formattedData = demandData.map(demand => ({
             id: demand._id,
+            'Demand Owner': demand.userId.user,
             Title: t(demand.title),
             Description: demand.description,
             'Start Date': demand.start_date,
