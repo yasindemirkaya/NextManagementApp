@@ -16,6 +16,12 @@ const headerMenu = [
         name: "Notifications",
         link: "/notifications",
         icon: "faBell"
+    },
+    {
+        id: 3,
+        name: "Demands",
+        link: "/demands",
+        icon: "faHandPointUp"
     }
 ];
 

@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setUser } from '@/redux/userSlice';
 import Cookies from 'js-cookie';
 import { getNotificationCount, getNotifications } from '@/services/notificationApi';
+import { getDemandCount, getDemands } from '@/services/demandApi';
 import { useTranslations } from 'next-intl';
 import { setUserSettings } from '@/redux/settingsSlice';
 import { createUserSettings } from '@/services/userSettingsApi';
@@ -25,8 +26,37 @@ const Header = ({ toggleSidebar }) => {
 
     const [notificationCount, setNotificationCount] = useState(0);
     const [notifications, setNotifications] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loadingNotifications, setLoadingNotifications] = useState(false);
 
+    const [demandCount, setDemandsCount] = useState(0);
+    const [demands, setDemands] = useState([]);
+    const [loadingDemands, setLoadingDemands] = useState(false);
+
+    useEffect(() => {
+        if (token) {
+            fetchNotificationCount();
+            fetchNotifications();
+            fetchDemandCount();
+            fetchDemands();
+
+            const interval = setInterval(() => {
+                fetchNotificationCount();
+                fetchNotifications();
+                fetchDemandCount();
+                fetchDemands();
+            }, 5 * 60 * 1000);
+
+            return () => clearInterval(interval);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        document.documentElement.setAttribute("data-bs-theme", theme == 'dark' ? "dark" : "light");
+    }, [theme]);
+
+    let profileText = loggedInUser ? loggedInUser.email : "Profile";
+
+    // Toggle theme
     const toggleTheme = async (theme) => {
         const result = await createUserSettings({ theme: theme });
 
@@ -41,6 +71,7 @@ const Header = ({ toggleSidebar }) => {
         }
     }
 
+    // Change language
     const changeLanguage = async (lang) => {
         const result = await createUserSettings({ language: lang });
 
@@ -56,35 +87,17 @@ const Header = ({ toggleSidebar }) => {
         router.push(router.asPath, router.asPath, { locale: lang });
     };
 
-    let profileText = loggedInUser ? loggedInUser.email : "Profile";
-
-    useEffect(() => {
-        if (token) {
-            fetchNotificationCount();
-            fetchNotifications();
-
-            const interval = setInterval(() => {
-                fetchNotificationCount();
-                fetchNotifications();
-            }, 5 * 60 * 1000);
-
-            return () => clearInterval(interval);
-        }
-    }, [token]);
-
-    useEffect(() => {
-        document.documentElement.setAttribute("data-bs-theme", theme == 'dark' ? "dark" : "light");
-    }, [theme]);
-
+    // Get notifications
     const fetchNotifications = async () => {
-        setLoading(true);
+        setLoadingNotifications(true);
         const result = await getNotifications({ type: 2, page: 1, limit: 3 });
-        setLoading(false);
+        setLoadingNotifications(false);
         if (result.success) {
             setNotifications(result.data);
         }
     };
 
+    // Get notification count
     const fetchNotificationCount = async () => {
         const result = await getNotificationCount(token);
         if (result.success) {
@@ -92,11 +105,31 @@ const Header = ({ toggleSidebar }) => {
         }
     };
 
+    // Get demands
+    const fetchDemands = async () => {
+        setLoadingDemands(true);
+        const result = await getDemands({ page: 1, limit: 3, status: loggedInUser.role == 1 ? 0 : 1 });
+        setLoadingDemands(false);
+        if (result.success) {
+            setDemands(result.data);
+        }
+    };
+
+    // Get demand count
+    const fetchDemandCount = async () => {
+        const result = await getDemandCount(token);
+        if (result.success) {
+            setDemandsCount(result.data);
+        }
+    };
+
+    // Logout
     const handleLogout = () => {
         Cookies.remove('token');
         dispatch(clearUser());
         router.push('/login');
     };
+
 
     if (!loggedInUser || !token) {
         return null;
@@ -127,6 +160,7 @@ const Header = ({ toggleSidebar }) => {
 
                         {/* Right Menu */}
                         <Nav className="ms-auto d-flex align-items-center">
+                            {/* THEME */}
                             <label className={styles.toggleSwitch}>
                                 <input
                                     type="checkbox"
@@ -139,6 +173,7 @@ const Header = ({ toggleSidebar }) => {
                                 </span>
                             </label>
 
+                            {/* LANGUAGE */}
                             <Button
                                 variant="link"
                                 onClick={() => changeLanguage(router.locale === 'en' ? 'tr' : 'en')}
@@ -147,6 +182,7 @@ const Header = ({ toggleSidebar }) => {
                                 {router.locale === 'en' ? 'EN' : 'TR'}
                             </Button>
 
+                            {/* NOTIFICATIONS & DEMANDS */}
                             {headerMenu
                                 .filter(menu => menu.id > 2)
                                 .map(menu => (
@@ -163,7 +199,7 @@ const Header = ({ toggleSidebar }) => {
                                                         )}
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        {loading ? (
+                                                        {loadingNotifications ? (
                                                             <Dropdown.Item disabled>Loading</Dropdown.Item>
                                                         ) : notifications.length > 0 ? (
                                                             <>
@@ -190,6 +226,45 @@ const Header = ({ toggleSidebar }) => {
                                                     <FontAwesomeIcon icon={icons[menu.icon]} />
                                                 </Nav.Link>
                                             )
+                                        ) : menu.name === "Demands" ? (
+                                            demandCount > 0 ? (
+                                                <Dropdown>
+                                                    <Dropdown.Toggle as={Nav.Link}>
+                                                        <FontAwesomeIcon icon={icons[menu.icon]} />
+                                                        {demandCount > 0 && (
+                                                            <Badge bg="danger" pill className={styles.notificationBadge}>
+                                                                {demandCount}
+                                                            </Badge>
+                                                        )}
+                                                    </Dropdown.Toggle>
+                                                    <Dropdown.Menu>
+                                                        {loadingDemands ? (
+                                                            <Dropdown.Item disabled>Loading</Dropdown.Item>
+                                                        ) : demands.length > 0 ? (
+                                                            <>
+                                                                {demands.map((demand, index) => (
+                                                                    <Dropdown.Item
+                                                                        key={index}
+                                                                        as={Link}
+                                                                        href="/demands/view-demands"
+                                                                    >
+                                                                        {demand.title}
+                                                                    </Dropdown.Item>
+                                                                ))}
+                                                                <Dropdown.Item as={Link} href="/demands/view-demands" className={styles.viewMore}>
+                                                                    View More
+                                                                </Dropdown.Item>
+                                                            </>
+                                                        ) : (
+                                                            <Dropdown.Item>No demands</Dropdown.Item>
+                                                        )}
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            ) : (
+                                                <Nav.Link as={Link} href="/demands/view-demands">
+                                                    <FontAwesomeIcon icon={icons[menu.icon]} />
+                                                </Nav.Link>
+                                            )
                                         ) : (
                                             <Nav.Link as={Link} href={menu.link}>
                                                 {t(menu.name)}
@@ -199,6 +274,7 @@ const Header = ({ toggleSidebar }) => {
                                 ))
                             }
 
+                            {/* LOGOUT */}
                             {loggedInUser ? (
                                 <>
                                     <Nav.Link as={Link} href="/profile" className={styles.menuItem}>{profileText}</Nav.Link>
