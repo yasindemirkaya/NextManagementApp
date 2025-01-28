@@ -126,5 +126,8 @@
     "Add New Demand": "Yeni Talep Oluştur",
     "Demand data is not available Please try again later": "Talep verisine ulaşılamıyor. Lütfen daha sonra yeniden deneyin.",
     "You are not allowed to update this demand": "Bu talebi düzenleme yetkiniz yoktur.",
-    "Closed Demand": "Kapalı Talep"
+    "Closed Demand": "Kapalı Talep",
+    "Page Not Found": "Sayfa Bulunamadı",
+    "Oops! The page you're looking for doesn't exist or has been moved": "Hata! Aradığınız sayfa mevcut değil veya taşındı.",
+    "Go to Home": "Ana Sayfaya Git"
 }

@@ -126,5 +126,8 @@
     "Add New Demand": "Add New Demand",
     "Demand data is not available Please try again later": "Demand data is not available. Please try again later.",
     "You are not allowed to update this demand": "You are not allowed to update this demand.",
-    "Closed Demand": "Closed Demand"
+    "Closed Demand": "Closed Demand",
+    "Page Not Found": "Page Not Found",
+    "Oops! The page you're looking for doesn't exist or has been moved": "Oops! The page you're looking for doesn't exist or has been moved.",
+    "Go to Home": "Go to Home"
 }
