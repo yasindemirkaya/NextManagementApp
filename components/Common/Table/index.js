@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import styles from "./index.module.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
@@ -9,7 +10,10 @@ import * as XLSX from 'xlsx'
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { useTranslations } from "next-intl";
-import UpdateDemandModal from "@/components/Demands/UpdateDemand";
+
+const UpdateDemandModal = dynamic(() => import("@/components/Demands/UpdateDemand"), {
+    ssr: false
+});
 
 const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, currentPage, fetchUsers, getUserGroups, getAllGroupTypes, fetchDemands }) => {
     // Update demand states
@@ -405,13 +409,13 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
             <ToastContainer />
 
             {/* Update demand modal */}
-            <UpdateDemandModal
+            {from === "view-demands" && showModal && <UpdateDemandModal
                 show={showModal}
                 onHide={() => setShowModal(false)}
                 demandId={demandData.id}
                 fetchDemands={fetchDemands}
-                loggedInUser={loggedInUser}
-            />
+                loggedInUser={loggedInUser} />
+            }
         </>
     );
 };

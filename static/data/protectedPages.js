@@ -5,6 +5,7 @@ const protectedPages = [
     '/group-management',
     '/group-type-management',
     '/notifications',
+    '/demands',
     '/settings'
 ];
 

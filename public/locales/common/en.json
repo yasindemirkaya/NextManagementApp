@@ -129,5 +129,7 @@
     "Closed Demand": "Closed Demand",
     "Page Not Found": "Page Not Found",
     "Oops! The page you're looking for doesn't exist or has been moved": "Oops! The page you're looking for doesn't exist or has been moved.",
-    "Go to Home": "Go to Home"
+    "Go to Home": "Go to Home",
+    "Only standard users can use this page to make requests to their administrators": "Only standard users can use this page to make requests to their administrators.",
+    "Click to view the requests submitted to you": "Click to view the requests submitted to you."
 }

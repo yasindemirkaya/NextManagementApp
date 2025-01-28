@@ -2,7 +2,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Container, Card, Form, Button, Row, Col } from 'react-bootstrap';
+import { Container, Card, Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import Select from 'react-select';
 import demandTypes from '@/static/data/demandTypes';
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
@@ -15,12 +15,18 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { useRouter } from "next/router";
 
+import { useSelector } from 'react-redux';
+
+
 const CreateDemand = () => {
     const t = useTranslations()
     const router = useRouter()
+
     const [showEndDate, setShowEndDate] = useState(false);
     const [userOptions, setUserOptions] = useState([]); // Kullanıcıları tutacak state
     const [loadingUsers, setLoadingUsers] = useState(false); // Yükleme durumu
+
+    const loggedInUser = useSelector(state => state.user.user);
 
     const {
         control,
@@ -78,6 +84,20 @@ const CreateDemand = () => {
             toast('ERROR', response.error)
         }
     };
+
+    if (loggedInUser.role !== 0) {
+        return (
+            <>
+                <Alert variant="warning">
+                    {("Only standard users can use this page to make requests to their administrators")}
+                </Alert>
+
+                <Alert variant="success" onClick={() => router.push('/demands/view-demands')} style={{ cursor: 'pointer' }}>
+                    {t("Click to view the requests submitted to you")}
+                </Alert>
+            </>
+        )
+    }
 
     return (
         <>

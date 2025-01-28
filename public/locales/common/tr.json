@@ -129,5 +129,7 @@
     "Closed Demand": "Kapalı Talep",
     "Page Not Found": "Sayfa Bulunamadı",
     "Oops! The page you're looking for doesn't exist or has been moved": "Hata! Aradığınız sayfa mevcut değil veya taşındı.",
-    "Go to Home": "Ana Sayfaya Git"
+    "Go to Home": "Ana Sayfaya Git",
+    "Only standard users can use this page to make requests to their administrators": "Bu sayfayı yalnızca standart kullanıcılar yöneticilerine istekte bulunmak için kullanabilir.",
+    "Click to view the requests submitted to you": "Size iletilen talepleri görüntülemek için tıklayın."
 }
