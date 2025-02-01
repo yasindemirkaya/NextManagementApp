@@ -86,5 +86,8 @@
     "Accept": "Onayla",
     "Reject": "Reddet",
     "Close": "Kapat",
-    "Enter a response for the demand": "Talep için bir yanıt girin."
+    "Enter a response for the demand": "Talep için bir yanıt girin.",
+    "This group type is created by": "Bu grup türü şu kullanıcı tarafından oluşturuldu: ",
+    "The last update for this group type is made by": "Bu grup türü en son şu kullanıcı tarafından güncellendi: ",
+    "Edit": "Düzenle"
 }

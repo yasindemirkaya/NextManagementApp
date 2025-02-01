@@ -380,7 +380,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                     <Row className="mt-3">
                         <Col md={12}>
                             <div onClick={() => setShowModal(true)} className={styles.link}>
-                                <p className="text-success">{!isSelf(loggedInUser.id, userData.id) ? t("Change this user's password") : t("I want to change my password")}</p>
+                                <p className="text-success">{!isSelf(loggedInUser?.id, userData?.id) ? t("Change this user's password") : t("I want to change my password")}</p>
                             </div>
                         </Col>
 
@@ -388,7 +388,7 @@ const EditProfileCard = ({ userData, onCancel }) => {
                         {deleteAccountDisplayer(loggedInUser, userData) ? (
                             <Col md={12}>
                                 <div onClick={handleDeleteAccount} className={styles.link}>
-                                    <p className="text-danger">{!isSelf(loggedInUser.id, userData.id) ? t("Delete this user's account") : t("I want to delete my account")}</p>
+                                    <p className="text-danger">{!isSelf(loggedInUser?.id, userData?.id) ? t("Delete this user's account") : t("I want to delete my account")}</p>
                                 </div>
                             </Col>
                         ) : null}

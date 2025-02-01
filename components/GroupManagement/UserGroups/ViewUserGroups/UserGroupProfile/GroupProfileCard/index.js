@@ -105,15 +105,15 @@ const GroupProfileCard = ({ userGroup, loading, error, getUserGroupDetails }) =>
                             </div>
 
                             {/* Created By */}
-                            <p className={styles.infoText}>*{t("This user group is created by")} {userGroup.created_by}</p>
+                            <p className={styles.infoText}>*{t("This user group is created by")} <b>{userGroup.created_by}</b></p>
                             {/* Updated By */}
                             {
                                 userGroup.updated_by ?
-                                    (<p className={styles.infoText}>*{t("The last update for this account is made by")} {userGroup.updated_by}</p>)
+                                    (<p className={styles.infoText}>*{t("The last update for this account is made by")} <b>{userGroup.updated_by}</b></p>)
                                     : null
                             }
                         </div>
-                        {editButtonDisplayer(loggedInUser) ? (<Button variant="primary" onClick={handleEditClick}>Edit</Button>) : null}
+                        {editButtonDisplayer(loggedInUser) ? (<Button variant="primary" onClick={handleEditClick}>{t("Edit")}</Button>) : null}
                     </Card.Body>
                 </Card>
             ) : (

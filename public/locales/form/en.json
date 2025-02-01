@@ -86,5 +86,8 @@
     "Accept": "Accept",
     "Reject": "Reject",
     "Close": "Close",
-    "Enter a response for the demand": "Enter a response for the demand."
+    "Enter a response for the demand": "Enter a response for the demand.",
+    "This group type is created by": "This group type is created by",
+    "The last update for this group type is made by": "The last update for this group type is made by",
+    "Edit": "Edit"
 }
