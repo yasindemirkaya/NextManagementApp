@@ -178,7 +178,7 @@ const sidebarMenu = [
         subMenus: [
             // CREATE DEMAND
             {
-                id: 61,
+                id: 51,
                 name: "Create Demand",
                 link: "/demands/create-demand",
                 description: "From here, you can create requests such as equipment and permissions to present to your managers",
@@ -188,7 +188,7 @@ const sidebarMenu = [
             },
             // VIEW DEMANDS
             {
-                id: 62,
+                id: 52,
                 name: "View Demands",
                 link: "/demands/view-demands",
                 description: "From here you can follow the stage of your requests",
@@ -198,9 +198,40 @@ const sidebarMenu = [
             },
         ]
     },
-    // SETTINGS
+    // PROJECTS
     {
         id: 6,
+        name: "Projects",
+        link: "/project-management",
+        iconPrimary: "faChevronUp",
+        iconSecondary: "faChevronCircleUp",
+        permission: 0,
+        subMenus: [
+            // CREATE PROJECT
+            {
+                id: 61,
+                name: "Create Project",
+                link: "/project-management/create-project",
+                description: "From here, you can create projects for yourself, your staff or teams.",
+                iconPrimary: "faDiagramProject",
+                iconSecondary: "",
+                permission: 1,
+            },
+            // VIEW PROJECTS
+            {
+                id: 62,
+                name: "View Projects",
+                link: "/project-management/view-projects",
+                description: "You can update details about your projects from here.",
+                iconPrimary: "faListCheck",
+                iconSecondary: "",
+                permission: 0,
+            },
+        ]
+    },
+    // SETTINGS
+    {
+        id: 7,
         name: "Settings",
         link: "/settings",
         iconPrimary: "faChevronUp",
@@ -209,7 +240,7 @@ const sidebarMenu = [
         subMenus: [
             // USER SETTINGS
             {
-                id: 61,
+                id: 71,
                 name: "User Settings",
                 link: "/settings",
                 description: "From here you can edit the application's settings for your account",
@@ -219,7 +250,7 @@ const sidebarMenu = [
             },
             // SERVICE LOGS
             {
-                id: 62,
+                id: 72,
                 name: "Service Logs",
                 link: "/settings/service-logs",
                 description: "From here you can review the detailed logs, requests and responses of the web services",
