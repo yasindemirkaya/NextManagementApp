@@ -25,21 +25,21 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    projectLead: {
+    project_lead: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    assignmentType: {
+    assignment_type: {
         type: String,
         required: true
     },
-    assigneeUser: [{
+    assignee_user: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: false,
     }],
-    assigneeGroup: [{
+    assignee_group: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Group',
         required: false,

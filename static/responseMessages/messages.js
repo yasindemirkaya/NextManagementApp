@@ -554,6 +554,23 @@ const responseMessages = {
                 success: 'Talep sayısı başarıyla getirildi.'
             }
         }
+    },
+    // PROJECTS
+    projects: {
+        create: {
+            en: {
+                success: "Project created successfully.",
+                allFieldsRequired: "All fields are required.",
+                assigneeUserRequired: "Assignee User(s) are required.",
+                assigneeGroupRequired: "Assignee Group(s) are required.",
+            },
+            tr: {
+                success: "Proje başarıyla oluşturuldu.",
+                allFieldsRequired: "Tüm alanlar zorunludur.",
+                assigneeUserRequired: "Atanan Kullanıcı(lar)'ın seçilmesi zorunludur.",
+                assigneeGroupRequired: "Atanan Grup(lar)'ın seçilmesi zorunludur."
+            }
+        }
     }
 }
 

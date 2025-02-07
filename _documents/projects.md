@@ -26,7 +26,7 @@
         * Start Date: Datepicker'dan seçilen proje başlangıç tarihi. (Zorunlu)
         * End Date: Datepicker'dan seçilen proje bitiş tarihi. (Kullanıcı deadline girmek isterse görünür olacak. Zorunlu bir alan değil.)
         * Project Lead: Proje yöneticisi. Kullanıcıların olduğu Select'ten seçilen kişinin userId'si tabloda tutulacak.
-        * Status: Proje Durumu. static/data/projectStatuses dosyasından gelen listeden Select içerisinden seçilecek. Seçilen türl Strimng olarak tabloda tutulacak. (Bir proje yaratılırken bu değer default olarak "0: To Do" olacak)
+        * Status: Proje Durumu. static/data/projectStatuses dosyasından gelen listeden Select içerisinden seçilecek. Seçilen türl String olarak tabloda tutulacak. (Bir proje yaratılırken bu değer default olarak "0: To Do" olacak)
         * Assignment Type: String. 0 1 ya da 2 değerlerini alacak.
             > 0: Individual User (Tek bir kullanıcıya atanan proje.)
             > 1: Multiple Users (Birden fazla kullanıcıya atanan proje. Bu seçenek seçilirse o zaman kullanıcı seçmek için formda liste açılacak.)
