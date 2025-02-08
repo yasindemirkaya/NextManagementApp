@@ -582,6 +582,21 @@ const responseMessages = {
                 success: "Projeler başarıyla getirildi.",
                 failedToFetch: "Projeler getirilirken bir sorun oluştu."
             }
+        },
+        // GET BY ID
+        getById: {
+            en: {
+                success: "The project fetched successfully.",
+                projectIdRequired: "Project ID is required.",
+                notFound: "Requested project could not be found.",
+                failedToFetch: "An error occured when fetching the requested project."
+            },
+            tr: {
+                success: "Proje başarıyla getirildi.",
+                projectIdRequired: "Proje ID gereklidir.",
+                notFound: "Proje bulunamadı.",
+                failedToFetch: "Proje getirilirken bir sorun oluştu."
+            }
         }
     }
 }
