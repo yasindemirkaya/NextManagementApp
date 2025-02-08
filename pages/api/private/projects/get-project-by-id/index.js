@@ -39,7 +39,8 @@ const handler = async (req, res) => {
     // Authorization control
     if (userRole === 0) {
         return res.status(403).json({
-            message: responseMessages.common[lang].noPermission
+            message: responseMessages.common[lang].noPermission,
+            code: 0
         });
     }
 
@@ -49,7 +50,8 @@ const handler = async (req, res) => {
     // Project ID required
     if (!id) {
         return res.status(400).json({
-            message: responseMessages.projects.getById[lang].projectIdRequired
+            message: responseMessages.projects.getById[lang].projectIdRequired,
+            code: 0
         });
     }
 
@@ -60,7 +62,8 @@ const handler = async (req, res) => {
         // Project Not Found
         if (!project) {
             return res.status(404).json({
-                message: responseMessages.projects.getById[lang].notFound
+                message: responseMessages.projects.getById[lang].notFound,
+                code: 0
             });
         }
 
@@ -94,7 +97,8 @@ const handler = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: responseMessages.projects.getById[lang].failedToFetch
+            message: responseMessages.projects.getById[lang].failedToFetch,
+            code: 0
         });
     }
 };
