@@ -557,6 +557,7 @@ const responseMessages = {
     },
     // PROJECTS
     projects: {
+        // CREATE
         create: {
             en: {
                 success: "Project created successfully.",
@@ -569,6 +570,17 @@ const responseMessages = {
                 allFieldsRequired: "Tüm alanlar zorunludur.",
                 assigneeUserRequired: "Atanan Kullanıcı(lar)'ın seçilmesi zorunludur.",
                 assigneeGroupRequired: "Atanan Grup(lar)'ın seçilmesi zorunludur."
+            }
+        },
+        // GET
+        get: {
+            en: {
+                success: "Projects fetched successfully.",
+                failedToFetch: "An error occured while fetching the projects."
+            },
+            tr: {
+                success: "Projeler başarıyla getirildi.",
+                failedToFetch: "Projeler getirilirken bir sorun oluştu."
             }
         }
     }
