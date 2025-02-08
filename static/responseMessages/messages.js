@@ -608,6 +608,19 @@ const responseMessages = {
                 success: "Proje başarıyla güncellendi.",
                 notFound: "Proje bulunamadı.",
             }
+        },
+        // DELETE
+        delete: {
+            en: {
+                success: "Project is successfully deleted.",
+                projectIdRequired: "Project ID is required.",
+                notFund: "Project could not be found."
+            },
+            tr: {
+                success: "Proje başarıyla silindi.",
+                projectIdRequired: "Proje ID gereklidir.",
+                notFund: "Project bulunamadı."
+            }
         }
     }
 }
