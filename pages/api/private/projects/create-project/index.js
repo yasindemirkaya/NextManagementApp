@@ -64,7 +64,9 @@ const handler = async (req, res) => {
                 project_lead,
                 assignment_type,
                 assignee_user: ["0", "1"].includes(assignment_type) ? assignee_user : [],
-                assignee_group: assignment_type === "2" ? assignee_group : []
+                assignee_group: assignment_type === "2" ? assignee_group : [],
+                created_by: userId,
+                updated_by: null
             });
 
             await newProject.save();

@@ -62,6 +62,7 @@ const handler = async (req, res) => {
         let skipValue = (pageValue && limitValue) ? (pageValue - 1) * limitValue : 0;
 
         try {
+            // Find project based on limit and pagination
             const totalProjects = await Project.countDocuments(queryOptions);
             const totalPages = limitValue ? Math.ceil(totalProjects / limitValue) : 1;
 
@@ -72,7 +73,10 @@ const handler = async (req, res) => {
 
             // Project lead
             const projectLeads = projects.map(p => p.project_lead).filter(Boolean);
-            const uniqueUserIds = [...new Set(projectLeads)];
+            const createdByUsers = projects.map(p => p.created_by).filter(Boolean);
+            const updatedByUsers = projects.map(p => p.updated_by).filter(Boolean);
+
+            const uniqueUserIds = [...new Set([...projectLeads, ...createdByUsers, ...updatedByUsers])];
 
             const users = await User.find({ _id: { $in: uniqueUserIds } }, '_id first_name last_name');
 
@@ -89,7 +93,9 @@ const handler = async (req, res) => {
                 ...p,
                 start_date: formatDate(p.start_date),
                 end_date: formatDate(p.end_date),
-                project_lead: userMap[p.project_lead] || null
+                project_lead: userMap[p.project_lead] || null,
+                created_by: userMap[p.created_by] || null,
+                updated_by: userMap[p.updated_by] || null
             }));
 
             // Response

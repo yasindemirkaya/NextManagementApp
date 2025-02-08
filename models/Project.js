@@ -52,7 +52,7 @@ const projectSchema = new mongoose.Schema({
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
+        required: false,
     },
 }, {
     timestamps: true,
