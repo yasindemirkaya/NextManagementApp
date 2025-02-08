@@ -597,6 +597,17 @@ const responseMessages = {
                 notFound: "Proje bulunamadı.",
                 failedToFetch: "Proje getirilirken bir sorun oluştu."
             }
+        },
+        // UPDATE
+        update: {
+            en: {
+                success: "Project successfully updated.",
+                notFound: "Project could not be found.",
+            },
+            tr: {
+                success: "Proje başarıyla güncellendi.",
+                notFound: "Proje bulunamadı.",
+            }
         }
     }
 }
