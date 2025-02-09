@@ -8,6 +8,7 @@
 
 import Project from '@/models/Project';
 import User from '@/models/User';
+import UserGroup from '@/models/UserGroup';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index';
 import responseMessages from '@/static/responseMessages/messages';
@@ -24,11 +25,12 @@ const handler = async (req, res) => {
         });
     }
 
-    let userRole;
+    // Token control
+    let userId;
     try {
         const token = req.headers.authorization?.split(' ')[1];
         const decoded = verify(token, process.env.JWT_SECRET);
-        userRole = decoded?.role;
+        userId = decoded?.id;
     } catch (error) {
         return res.status(200).json({
             message: responseMessages.common[lang].invalidToken,
@@ -36,15 +38,7 @@ const handler = async (req, res) => {
         });
     }
 
-    // Authorization control
-    if (userRole === 0) {
-        return res.status(403).json({
-            message: responseMessages.common[lang].noPermission,
-            code: 0
-        });
-    }
-
-    // Request
+    // Request query
     const { id } = req.query;
 
     // Project ID required
@@ -56,7 +50,7 @@ const handler = async (req, res) => {
     }
 
     try {
-        // Find project by id
+        // Find projects
         const project = await Project.findById(id).lean();
 
         // Project Not Found
@@ -67,10 +61,11 @@ const handler = async (req, res) => {
             });
         }
 
-        // Format project_lead, created_by and updated_by
+        // Format users
         const userIds = [project.project_lead, project.created_by, project.updated_by].filter(Boolean);
         const users = await User.find({ _id: { $in: userIds } }, '_id first_name last_name');
 
+        // Map users
         const userMap = users.reduce((acc, user) => {
             acc[user._id] = {
                 id: user._id,
@@ -79,7 +74,26 @@ const handler = async (req, res) => {
             return acc;
         }, {});
 
-        // Format response
+        // Find users in user groups
+        const userGroups = await UserGroup.find({ members: userId }, '_id');
+        const userGroupIds = userGroups.map(group => group._id.toString());
+
+        // Access control
+        const hasAccess =
+            userId === project.created_by?.toString() ||
+            userId === project.project_lead?.toString() ||
+            project.assignee_users?.some(assignee => assignee.toString() === userId) ||
+            project.assignee_groups?.some(group => userGroupIds.includes(group.toString()));
+
+        // No access
+        if (!hasAccess) {
+            return res.status(403).json({
+                message: responseMessages.common[lang].noPermission,
+                code: 0
+            });
+        }
+
+        // Format project
         const formattedProject = {
             ...project,
             start_date: formatDate(project.start_date),
