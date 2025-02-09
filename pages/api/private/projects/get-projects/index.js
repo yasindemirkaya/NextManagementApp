@@ -14,9 +14,11 @@
 
 import Project from '@/models/Project';
 import User from '@/models/User';
+import UserGroup from '@/models/UserGroup';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index';
 import responseMessages from '@/static/responseMessages/messages';
+import mongoose from 'mongoose';
 
 const formatDate = (date) => (date ? new Date(date).toISOString().split('T')[0] : null);
 
@@ -42,6 +44,24 @@ const handler = async (req, res) => {
         const { type, project_lead, status, assignment_type, limit, page, search } = req.query;
         let queryOptions = {};
 
+        // Eğer kullanıcı Super Admin değilse, filtrelemeler uygulanır
+        if (userRole !== 2) {
+            const userObjectId = new mongoose.Types.ObjectId(userId);
+
+            // Kullanıcının dahil olduğu grupları bul
+            const userGroups = await UserGroup.find({ members: userObjectId }, '_id');
+            const userGroupIds = userGroups.map(group => group._id);
+
+            // Filtreleme kuralları
+            queryOptions.$or = [
+                { created_by: userObjectId },
+                { project_lead: userObjectId },
+                { $and: [{ assignment_type: { $in: [0, 1] } }, { assignee_user: userObjectId }] },
+                { $and: [{ assignment_type: 2 }, { assignee_group: { $in: userGroupIds } }] }
+            ];
+        }
+
+        // Filter
         if (type) queryOptions.type = type;
         if (project_lead) queryOptions.project_lead = project_lead;
         if (status) queryOptions.status = status;
@@ -62,24 +82,25 @@ const handler = async (req, res) => {
         let skipValue = (pageValue && limitValue) ? (pageValue - 1) * limitValue : 0;
 
         try {
-            // Find project based on limit and pagination
+            // Calculate page count and limit
             const totalProjects = await Project.countDocuments(queryOptions);
             const totalPages = limitValue ? Math.ceil(totalProjects / limitValue) : 1;
 
+            // Projeleri getir
             let projects = await Project.find(queryOptions)
                 .limit(limitValue || 0)
                 .skip(skipValue)
                 .lean();
 
-            // Project lead
+            // Kullanıcı bilgilerini al
             const projectLeads = projects.map(p => p.project_lead).filter(Boolean);
             const createdByUsers = projects.map(p => p.created_by).filter(Boolean);
             const updatedByUsers = projects.map(p => p.updated_by).filter(Boolean);
-
             const uniqueUserIds = [...new Set([...projectLeads, ...createdByUsers, ...updatedByUsers])];
 
             const users = await User.find({ _id: { $in: uniqueUserIds } }, '_id first_name last_name');
 
+            // Map user
             const userMap = users.reduce((acc, user) => {
                 acc[user._id] = {
                     id: user._id,
@@ -88,7 +109,7 @@ const handler = async (req, res) => {
                 return acc;
             }, {});
 
-            // Projects object
+            // Format projects
             projects = projects.map(p => ({
                 ...p,
                 start_date: formatDate(p.start_date),
@@ -98,7 +119,7 @@ const handler = async (req, res) => {
                 updated_by: userMap[p.updated_by] || null
             }));
 
-            // Response
+            // Success response
             res.status(200).json({
                 code: 1,
                 message: responseMessages.projects.get[lang].success,

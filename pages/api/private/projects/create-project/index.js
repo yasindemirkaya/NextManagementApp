@@ -71,7 +71,7 @@ const handler = async (req, res) => {
 
             await newProject.save();
 
-            return res.status(201).json({
+            return res.status(200).json({
                 message: responseMessages.projects.create[lang].success,
                 code: 1,
                 projectId: newProject._id
