@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Spinner, Alert } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import Table from "@/components/Common/Table";
 import { getDemands } from "@/services/demandApi";
 import { useTranslations } from 'next-intl';
 
 const ViewUsers = () => {
     const t = useTranslations();
+    const loggedInUser = useSelector(state => state.user.user);
     const headers = ["Demand Owner", "Title", "Description", "Start Date", 'End Date', 'Recipient', 'Status', 'Admin Response']
     const [demandData, setDemandData] = useState([])
     const [loading, setLoading] = useState(false)
@@ -16,7 +18,7 @@ const ViewUsers = () => {
     const [currentPage, setCurrentPage] = useState(1)
 
     useEffect(() => {
-        fetchDemands({ page: 1, limit: 10 });
+        fetchDemands({ page: 1, limit: 10, status: loggedInUser.role == 1 ? 0 : 1 });
     }, [])
 
     const fetchDemands = async (params) => {

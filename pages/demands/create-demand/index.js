@@ -85,7 +85,7 @@ const CreateDemand = () => {
         }
     };
 
-    if (loggedInUser.role !== 0) {
+    if (loggedInUser?.role !== 0) {
         return (
             <>
                 <Alert variant="warning">

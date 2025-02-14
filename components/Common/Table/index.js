@@ -289,10 +289,10 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
         XLSX.writeFile(workbook, `${from}-data.xlsx`);
     };
 
-    // Close update demand modal
-    const closeModal = () => {
-        setShowModal(false);
-    };
+    // Show past demands
+    const handleShowPastDemandsClick = () => {
+        fetchDemands({ page: 1, limit: 5, status: 2 })
+    }
 
     return (
         <>
@@ -323,6 +323,13 @@ const Table = ({ headers, data, itemsPerPage, from, totalPages, totalData, curre
                             <FontAwesomeIcon icon={icons.faPlusCircle} className="me-2" />
                             {buttonCustomizer(from).text}
                         </Button>
+                        {/* Show Past Demands for Admins */}
+                        {from == 'view-demands' && loggedInUser?.role != 0 &&
+                            <Button className="me-2" onClick={handleShowPastDemandsClick}>
+                                {t('Show Past Demands')}
+                            </Button>
+                        }
+
                         <Button variant="success" onClick={exportToExcel}>
                             <FontAwesomeIcon icon={icons.faFileExcel} />
                         </Button>

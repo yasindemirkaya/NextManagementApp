@@ -110,6 +110,7 @@
     "Demands": "Demands",
     "Create Demand": "Create Demand",
     "View Demands": "View Demands",
+    "Show Past Demands": "Show Past Demands",
     "From here, you can create requests such as equipment and permissions to present to your managers": "From here, you can create requests such as equipment and permissions to present to your managers.",
     "From here you can follow the stage of your requests": "From here you can follow the stage of your requests.",
     "Annual Leave": "Annual Leave",
@@ -131,5 +132,7 @@
     "Oops! The page you're looking for doesn't exist or has been moved": "Oops! The page you're looking for doesn't exist or has been moved.",
     "Go to Home": "Go to Home",
     "Only standard users can use this page to make requests to their administrators": "Only standard users can use this page to make requests to their administrators.",
-    "Click to view the requests submitted to you": "Click to view the requests submitted to you."
+    "Click to view the requests submitted to you": "Click to view the requests submitted to you.",
+    "Projects": "Projects",
+    "View Projects": "View Projects"
 }
