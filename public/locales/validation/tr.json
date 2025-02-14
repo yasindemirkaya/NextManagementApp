@@ -39,5 +39,12 @@
     "Enter a description for your demand": "Talebiniz için bir açıklama girin.",
     "Select a recipient": "Bir alıcı seçiniz.",
     "Recipient is required": "Alıcı seçimi zorunludur.",
-    "Admin Response is required": "Yönetici Yanıtı girilmesi zorunludur."
+    "Admin Response is required": "Yönetici Yanıtı girilmesi zorunludur.",
+    "Enter a description for your project": "Projeniz için bir açıklama girin.",
+    "Select a Project Type": "Bir Proje Türü seçin.",
+    "Project Type is required": "Proje Türü seçimi zorunludur.",
+    "Select an Assignment Type": "Bir Atama Türü seçin.",
+    "Assignment Type is required": "Atama Türü seçimi zorunludur.",
+    "Project Lead is required": "Proje Yöneticisi seçimi zorunludur.",
+    "Select a Project Lead": "Bir Proje Yöneticisi seçin."
 }

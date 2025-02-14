@@ -89,5 +89,12 @@
     "Enter a response for the demand": "Talep için bir yanıt girin.",
     "This group type is created by": "Bu grup türü şu kullanıcı tarafından oluşturuldu: ",
     "The last update for this group type is made by": "Bu grup türü en son şu kullanıcı tarafından güncellendi: ",
-    "Edit": "Düzenle"
+    "Edit": "Düzenle",
+    "Create Project": "Proje Oluştur",
+    "Project Type": "Project Türü",
+    "Creating Project": "Proje Oluşturuluyor...",
+    "Project Lead": "Proje Yöneticisi",
+    "Assignment Type": "Atama Türü",
+    "Assignee User(s)": "Atanan Kullanıcı(lar)",
+    "Assignee Group(s)": "Atanan Grup(lar)"
 }

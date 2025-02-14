@@ -39,14 +39,14 @@ const handler = async (req, res) => {
             }
 
             // assignment_type kontrolü
-            if ([0, 1].includes(assignment_type) && (!assignee_user || assignee_user.length === 0)) {
+            if (assignment_type === 0 && (!assignee_user || assignee_user.length === 0)) {
                 return res.status(400).json({
                     message: responseMessages.projects.create[lang].assigneeUserRequired,
                     code: 0
                 });
             }
 
-            if (assignment_type === 2 && (!assignee_group || assignee_group.length === 0)) {
+            if (assignment_type === 1 && (!assignee_group || assignee_group.length === 0)) {
                 return res.status(400).json({
                     message: responseMessages.projects.create[lang].assigneeGroupRequired,
                     code: 0
@@ -63,8 +63,8 @@ const handler = async (req, res) => {
                 status: "To Do",
                 project_lead,
                 assignment_type,
-                assignee_user: ["0", "1"].includes(assignment_type) ? assignee_user : [],
-                assignee_group: assignment_type === "2" ? assignee_group : [],
+                assignee_user: assignment_type === 0 ? assignee_user : [],
+                assignee_group: assignment_type === 1 ? assignee_group : [],
                 created_by: userId,
                 updated_by: null
             });

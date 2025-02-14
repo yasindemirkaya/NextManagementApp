@@ -40,5 +40,12 @@
     "Enter a description for your demand": "Enter a description for your demand.",
     "Select a recipient": "Select a recipient.",
     "Recipient is required": "Recipient is required.",
-    "Admin Response is required": "Admin Response is required."
+    "Admin Response is required": "Admin Response is required.",
+    "Enter a description for your project": "Enter a description for your project.",
+    "Select a Project Type": "Select a Project Type",
+    "Project Type is required": "Project Type is required.",
+    "Select an Assignment Type": "Select an Assignment Type",
+    "Assignment Type is required": "Assignment Type is required.",
+    "Project Lead is required": "Project Lead is required.",
+    "Select a Project Lead": "Select a Project Lead"
 }

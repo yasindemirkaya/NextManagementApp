@@ -26,13 +26,12 @@
         * Start Date: Datepicker'dan seçilen proje başlangıç tarihi. (Zorunlu)
         * End Date: Datepicker'dan seçilen proje bitiş tarihi. (Kullanıcı deadline girmek isterse görünür olacak. Zorunlu bir alan değil.)
         * Project Lead: Proje yöneticisi. Kullanıcıların olduğu Select'ten seçilen kişinin userId'si tabloda tutulacak.
-        * Status: Proje Durumu. static/data/projectStatuses dosyasından gelen listeden Select içerisinden seçilecek. Seçilen türl String olarak tabloda tutulacak. (Bir proje yaratılırken bu değer default olarak "0: To Do" olacak)
+        * Status: Proje Durumu. static/data/projectStatuses dosyasından gelen listeden Select içerisinden seçilecek. Seçilen tür String olarak tabloda tutulacak. (Bir proje yaratılırken bu değer default olarak "0: To Do" olacak)
         * Assignment Type: String. 0 1 ya da 2 değerlerini alacak.
-            > 0: Individual User (Tek bir kullanıcıya atanan proje.)
-            > 1: Multiple Users (Birden fazla kullanıcıya atanan proje. Bu seçenek seçilirse o zaman kullanıcı seçmek için formda liste açılacak.)
-            > 2: User Group (Bir kullanıcı grubuna atanan proje.)
-        * AssigneeUser: AssignmentType 0 ya da 1 seçilirse o zaman seçilen kullanıcı ya da kullanıcıların userId'leri burada bir array olarak tutulacak. (Eğer individal user seçeneği seçilirse o zaman tek bir kullanıcı ID'si barındıran tek elemanlı bir array olacak.)
-        * AssigneeGroup: Assignment Type 2 seçilirse seçilen grup ya da grupların ID'leri burada tutulacak. (Bir proje birden fazla gruba atanabilir.)
+            > 0: User (Tek bir kullanıcıya ya da birden fazla kullanıcıya birlikte atanan proje.)
+            > 1: Group (Tek bir kullanıcı grubuna ya da birden fazla kullanıcı grubuna birlikte atanan proje)
+        * AssigneeUser: AssignmentType 0 seçilirse o zaman seçilen kullanıcı ya da kullanıcıların userId'leri burada bir array olarak tutulacak.
+        * AssigneeGroup: AssignmentType 1 seçilirse seçilen grup ya da grupların ID'leri burada tutulacak. (Bir proje birden fazla gruba atanabilir.)
 
 <!-- Get Projects -->
     - Super Adminler için tüm projeler getirilecek.
