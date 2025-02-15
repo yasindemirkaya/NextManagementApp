@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Container, Card, Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import Select from 'react-select';
-import demandTypes from '@/static/data/demandTypes';
+import demandTypes from '@/static/data/demands/demandTypes';
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 import styles from './index.module.scss'
 

@@ -1,4 +1,4 @@
-import { Row, Col, Card, Alert } from "react-bootstrap";
+import { Row, Col, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icons } from '@/static/icons';
 import styles from './index.module.scss';
@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setDashboardStats, setIsDashboardStatsInitialized } from '@/redux/statSlice';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import 'react-resizable/css/styles.css';
 import { useTranslations } from "use-intl";
 
 const Statistics = ({ stats }) => {
@@ -72,12 +71,12 @@ const Statistics = ({ stats }) => {
     return (
         <>
             {showDashboardStats ?
-                < DragDropContext onDragEnd={onDragEnd}>
+                <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="droppable" direction="horizontal">
                         {(provided) => (
                             <Row ref={provided.innerRef} {...provided.droppableProps}>
                                 {statistics.map((stat, index) => (
-                                    < Draggable key={index} draggableId={String(index)} index={index} >
+                                    <Draggable key={index} draggableId={String(index)} index={index} >
                                         {(provided) => (
                                             <Col
                                                 xs={getColumnSize(statistics.length).xs}

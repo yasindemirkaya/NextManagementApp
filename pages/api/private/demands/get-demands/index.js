@@ -16,8 +16,8 @@ import User from '@/models/User';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index';
 import responseMessages from '@/static/responseMessages/messages';
-import demandTypes from '@/static/data/demandTypes';
-import demandStatuses from '@/static/data/demandStatuses';
+import demandTypes from '@/static/data/demands/demandTypes';
+import demandStatuses from '@/static/data/demands/demandStatuses';
 
 const formatDate = (date) => (date ? new Date(date).toISOString().split('T')[0] : null);
 

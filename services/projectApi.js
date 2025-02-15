@@ -39,7 +39,7 @@ export const getProjects = async (params = {}) => {
 
 export const getProjectById = async (id) => {
     try {
-        const response = await axios.get('/private/demands/get-project-by-id', {
+        const response = await axios.get('/private/projects/get-project-by-id', {
             params: { id }
         });
 
@@ -102,7 +102,7 @@ export const createProject = async (projectData) => {
 
 export const updateProject = async (projectData) => {
     try {
-        const response = await axios.put('/private/project/update-project', projectData);
+        const response = await axios.put('/private/projects/update-project', projectData);
 
         if (response.code === 1) {
             return {
