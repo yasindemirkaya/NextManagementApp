@@ -86,7 +86,7 @@ const ViewProjects = () => {
 
                             return (
                                 <Col key={status._id} xs={12} sm={6} md={4} lg={2}>
-                                    <Droppable droppableId={status.typeName} direction="horizontal">
+                                    <Droppable droppableId={status.typeName} direction="vertical" mode="virtual">
                                         {(provided) => (
                                             <div
                                                 ref={provided.innerRef}
