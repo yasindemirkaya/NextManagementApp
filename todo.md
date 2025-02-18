@@ -1,5 +1,5 @@
-* capitalizeFirstLetter methodu sadece tüm cümlenin ilk harfi boşsa onu büyütsün, diğerlerine hiç dokunmasın
+* Boarddaki projelerin üstüne tıklanınca proje detay sayfasının açılması.
+    > Hem proje ile ilgili bilgilerin update edilebilmesi.
+    > Hem de projeye task atamalarının yapılması. (Sonra)
 
-* Proje sütunlarının sayfanın en altına kadar uzun olması.
 * Tut sürükle hareketlerinin elden geçirilmesi
-* Dark temaya uygun classların kullanılması
