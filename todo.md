@@ -1,6 +1,3 @@
-* /project-management sayfasının kodunun yazılması
-
-
 * DEMANDS > MANAGE DEMAND TYPES
     > Demands sayfası altından Manage Demand Types menüsüne gidilecek.
     > Burası View Group Types sayfasının aynısı olacak.

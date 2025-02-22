@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 const Demands = () => {
     const t = useTranslations();
-    // User Management menüsünü ve alt menülerini bul
+    // Demands menüsünü ve alt menülerini bul
     const DemandsMenu = sidebarMenu.find(menu => menu.name === "Demands");
 
     return (
