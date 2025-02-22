@@ -570,6 +570,15 @@ const responseMessages = {
                 alreadyExist: "Bu isimde bir talep türü zaten mevcut.",
                 createdByNotFound: "Talep türünü oluşturan kullanıcı bulunamadı."
             }
+        },
+        // GET DEMAND TYPES
+        getTypes: {
+            en: {
+                success: "Demand Types successfully fetched."
+            },
+            tr: {
+                success: "Talep Türleri başarıyla getirildi."
+            }
         }
     },
     // PROJECTS
