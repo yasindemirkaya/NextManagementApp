@@ -163,3 +163,109 @@ export const getDemandCount = async () => {
         }
     }
 };
+
+
+// ***************************
+// |
+// | GET ALL DEMAND TYPES
+// |
+// ***************************
+
+export const getDemandTypes = async (params = {}) => {
+    try {
+        const response = await axios.get('/private/demands/get-demand-types', { params });
+
+        return {
+            success: true,
+            data: response.demand_types,
+            pagination: response.pagination,
+            message: response.message,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message,
+        };
+    }
+};
+
+
+// ***************************
+// |
+// | GET DEMAND TYPE BY ID
+// |
+// ***************************
+
+export const getDemandTypeById = async (id) => {
+    try {
+        const response = await axios.get('/private/demands/get-demand-type-by-id', {
+            params: { id }
+        });
+
+        return {
+            success: true,
+            data: response.demandType,
+            message: response.message,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message,
+        };
+    }
+};
+
+
+// ***************************
+// |
+// | CREATE DEMAND TYPE
+// |
+// ***************************
+
+export const createDemandType = async (typeName) => {
+    try {
+        const response = await axios.post('/private/demands/create-demand-type', {
+            typeName,
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+// ***************************
+// |
+// | UPDATE USER GROUP TYPE
+// |
+// ***************************
+
+export const updateDemandType = async (demandTypeId, newTypeName) => {
+    try {
+        const response = await axios.put('/private/demands/update-demand-type', {
+            demandTypeId,
+            newTypeName,
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+// ***************************
+// |
+// | DELETE DEMAND TYPE
+// |
+// ***************************
+
+export const deleteDemandType = async (demandTypeId) => {
+    try {
+        const response = await axios.delete('/private/deands/delete-demand-type', {
+            data: { demandTypeId },
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
