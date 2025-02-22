@@ -606,6 +606,19 @@ const responseMessages = {
                 userNotFound: "Talep türünü güncelleyen kullanıcı bulunamadı."
 
             }
+        },
+        // DELETE DEMAND TYPE
+        deleteType: {
+            en: {
+                success: "Demand Type successfully deleted.",
+                idRequired: "Demand Type ID is required.",
+                notFound: "Demand Type could not be found."
+            },
+            tr: {
+                success: "Talep türü başarıyla silindi.",
+                idRequired: "Talep türü ID alanı zorunludur.",
+                notFound: "Talep türü bulunamadı."
+            }
         }
     },
     // PROJECTS
