@@ -553,6 +553,23 @@ const responseMessages = {
             tr: {
                 success: 'Talep sayısı başarıyla getirildi.'
             }
+        },
+        // CREATE DEMAND TYPE
+        createType: {
+            en: {
+                success: "Demand type created successfully.",
+                noPermission: "You do not have permission to create a deman type.",
+                nameRequired: "Demand Type name is required.",
+                alreadyExist: "A demand type with this name already exists.",
+                createdByNotFound: "Created by user could not be found."
+            },
+            tr: {
+                success: "Talep türü başarıyla oluşturuldu.",
+                noPermission: "Talep türü oluştrma yetkiniz yoktur.",
+                nameRequired: "Talep türü adı alanı zorunludur.",
+                alreadyExist: "Bu isimde bir talep türü zaten mevcut.",
+                createdByNotFound: "Talep türünü oluşturan kullanıcı bulunamadı."
+            }
         }
     },
     // PROJECTS

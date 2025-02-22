@@ -3,7 +3,7 @@
 // | Service Name: Create Demand
 // | Description: Service used for standard users to submit requests to their administrators
 // | Parameters: title, description, targetId, start_date, end_date, status, admin_response
-// | Endpoint: /api/private/demand/create-demand
+// | Endpoint: /api/private/demands/create-demand
 // |
 // ------------------------------
 
