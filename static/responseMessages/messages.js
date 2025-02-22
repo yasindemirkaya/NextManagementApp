@@ -579,6 +579,17 @@ const responseMessages = {
             tr: {
                 success: "Talep Türleri başarıyla getirildi."
             }
+        },
+        // GET DEMAND TYPE BY ID
+        getTypeById: {
+            en: {
+                success: "Demand Type fetches successfully.",
+                getTypeById: "Demand Type could not be found."
+            },
+            tr: {
+                success: "Talep Türü başarıyla getirildi.",
+                getTypeById: "Talep Türü bulunamadı."
+            }
         }
     },
     // PROJECTS
