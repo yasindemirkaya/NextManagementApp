@@ -26,7 +26,7 @@ const handler = async (req, res) => {
 
             // Super admin (2) değilse işlem reddedilir
             if (role !== 2) {
-                return res.status(403).json({
+                return res.status(200).json({
                     message: responseMessages.common[lang].noPermission,
                     code: 0,
                 });
@@ -36,7 +36,7 @@ const handler = async (req, res) => {
             const { groupTypeId, newTypeName } = req.body;
 
             if (!groupTypeId || !newTypeName) {
-                return res.status(400).json({
+                return res.status(200).json({
                     message: responseMessages.userGroupTypes.update[lang].idRequired,
                     code: 0,
                 });
@@ -45,7 +45,7 @@ const handler = async (req, res) => {
             // Güncelleme yapılacak grup türünü bul
             const groupType = await UserGroupType.findById(groupTypeId);
             if (!groupType) {
-                return res.status(404).json({
+                return res.status(200).json({
                     message: responseMessages.userGroupTypes.update[lang].groupNotFound,
                     code: 0,
                 });
@@ -54,7 +54,7 @@ const handler = async (req, res) => {
             // Güncelleme yapan kullanıcının bilgilerini al
             const updatingUser = await User.findById(userId);
             if (!updatingUser) {
-                return res.status(404).json({
+                return res.status(200).json({
                     message: responseMessages.common[lang].userNotFound,
                     code: 0,
                 });

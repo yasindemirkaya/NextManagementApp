@@ -590,6 +590,22 @@ const responseMessages = {
                 success: "Talep Türü başarıyla getirildi.",
                 getTypeById: "Talep Türü bulunamadı."
             }
+        },
+        // UPDATE DEMAND TYPE
+        updateType: {
+            en: {
+                success: "Demand Type successfully updated.",
+                idRequired: "Demand Type ID is required.",
+                notFound: "Demand Type could not be found.",
+                userNotFound: "Updating user could not be found."
+            },
+            tr: {
+                success: "Talep türü başarıyla güncellendi.",
+                idRequired: "Talep türü ID alanı zorunludur.",
+                notFound: "Talep türü bulunamadı.",
+                userNotFound: "Talep türünü güncelleyen kullanıcı bulunamadı."
+
+            }
         }
     },
     // PROJECTS
