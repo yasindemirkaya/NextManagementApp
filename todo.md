@@ -26,11 +26,11 @@
     > Proje türleri artık static/data/projects/projectTypes altından değili veritabanından servis ile getirilecek.
 
     - ENDPOINTS
-        > api/private/demands/get-project-types
-        > api/private/demands/get-project-type-by-id
-        > api/private/demands/create-project-type
-        > api/private/demands/update-project-type
-        > api/private/demands/delete-project-type
+        > api/private/projects/get-project-types
+        > api/private/projects/get-project-type-by-id
+        > api/private/projects/create-project-type
+        > api/private/projects/update-project-type
+        > api/private/projects/delete-project-type
 
 * PROJECTS > VIEW PROJECT > PROJECT DETAIL
     > Sayfanın sol tarafında yer alan güncelleme kartında (form) projenin detayları getirilecek.
