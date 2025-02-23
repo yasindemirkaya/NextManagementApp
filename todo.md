@@ -1,20 +1,3 @@
-* DEMANDS > MANAGE DEMAND TYPES
-    > Demands sayfası altından Manage Demand Types menüsüne gidilecek.
-    > Burası View Group Types sayfasının aynısı olacak.
-    > Varolan talep türlerini güncelleme ve yeni talep türü oluşturma.
-    > Talep türleri artık static/data/demands/demandTypes sayfası altından değil, veritabanından servis ile getirilecek.
-
-    - ENDPOINTS
-        > api/private/demands/get-demand-types
-        > api/private/demands/get-demand-type-by-id
-        > api/private/demands/create-demand-type
-        > api/private/demands/update-demand-type
-        > api/private/demands/delete-demand-type
-
-    > DemandType modeli yazılmalı
-    > Db'ye demandTypes diye tablo açılmalı
-
-
 * PROJECTS > MANAGE PROJECT TYPES
     > Project Management sayfası altından Manage Project Types menüsüne gidilecek
     > Burası View Group Types sayfasının aynısı olacak, tablo şeklinde.

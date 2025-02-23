@@ -623,7 +623,7 @@ const responseMessages = {
     },
     // PROJECTS
     projects: {
-        // CREATE
+        // CREATE PROJECT
         create: {
             en: {
                 success: "Project created successfully.",
@@ -638,7 +638,7 @@ const responseMessages = {
                 assigneeGroupRequired: "Atanan Grup(lar)'ın seçilmesi zorunludur."
             }
         },
-        // GET
+        // GET PROJECTS
         get: {
             en: {
                 success: "Projects fetched successfully.",
@@ -649,7 +649,7 @@ const responseMessages = {
                 failedToFetch: "Projeler getirilirken bir sorun oluştu."
             }
         },
-        // GET BY ID
+        // GET PROJECT BY ID
         getById: {
             en: {
                 success: "The project fetched successfully.",
@@ -664,7 +664,7 @@ const responseMessages = {
                 failedToFetch: "Proje getirilirken bir sorun oluştu."
             }
         },
-        // UPDATE
+        // UPDATE PROJECT
         update: {
             en: {
                 success: "Project successfully updated.",
@@ -675,7 +675,7 @@ const responseMessages = {
                 notFound: "Proje bulunamadı.",
             }
         },
-        // DELETE
+        // DELETE PROJECT
         delete: {
             en: {
                 success: "Project is successfully deleted.",
@@ -686,6 +686,72 @@ const responseMessages = {
                 success: "Proje başarıyla silindi.",
                 projectIdRequired: "Proje ID gereklidir.",
                 notFund: "Project bulunamadı."
+            }
+        },
+        // CREATE PROJECT TYPE
+        createType: {
+            en: {
+                success: "Project type created successfully.",
+                noPermission: "You do not have permission to create a deman type.",
+                nameRequired: "Project Type name is required.",
+                alreadyExist: "A Project type with this name already exists.",
+                createdByNotFound: "Created by user could not be found."
+            },
+            tr: {
+                success: "Proje türü başarıyla oluşturuldu.",
+                noPermission: "Proje türü oluştrma yetkiniz yoktur.",
+                nameRequired: "Proje türü adı alanı zorunludur.",
+                alreadyExist: "Bu isimde bir Proje türü zaten mevcut.",
+                createdByNotFound: "Proje türünü oluşturan kullanıcı bulunamadı."
+            }
+        },
+        // GET PROJECT TYPES
+        getTypes: {
+            en: {
+                success: "Project Types successfully fetched."
+            },
+            tr: {
+                success: "Proje Türleri başarıyla getirildi."
+            }
+        },
+        // GET PROJECT TYPE BY ID
+        getTypeById: {
+            en: {
+                success: "Project Type fetches successfully.",
+                getTypeById: "Project Type could not be found."
+            },
+            tr: {
+                success: "Proje Türü başarıyla getirildi.",
+                getTypeById: "Proje Türü bulunamadı."
+            }
+        },
+        // UPDATE PROJECT TYPE
+        updateType: {
+            en: {
+                success: "Project Type successfully updated.",
+                idRequired: "Project Type ID is required.",
+                notFound: "Project Type could not be found.",
+                userNotFound: "Updating user could not be found."
+            },
+            tr: {
+                success: "Proje türü başarıyla güncellendi.",
+                idRequired: "Proje türü ID alanı zorunludur.",
+                notFound: "Proje türü bulunamadı.",
+                userNotFound: "Proje türünü güncelleyen kullanıcı bulunamadı."
+
+            }
+        },
+        // DELETE PROJECT TYPE
+        deleteType: {
+            en: {
+                success: "Project Type successfully deleted.",
+                idRequired: "Project Type ID is required.",
+                notFound: "Project Type could not be found."
+            },
+            tr: {
+                success: "Proje türü başarıyla silindi.",
+                idRequired: "Proje türü ID alanı zorunludur.",
+                notFound: "Proje türü bulunamadı."
             }
         }
     }

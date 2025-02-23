@@ -76,7 +76,7 @@ const handler = async (req, res) => {
                 message: responseMessages.demands.createType[lang].success,
                 code: 1,
                 demand_type: typeName,
-                _id: newDemandType._id,
+                id: newDemandType._id,
             });
         } catch (error) {
             return res.status(500).json({
