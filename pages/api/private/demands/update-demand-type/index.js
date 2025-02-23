@@ -72,8 +72,8 @@ const handler = async (req, res) => {
             return res.status(200).json({
                 message: responseMessages.demands.updateType[lang].success,
                 code: 1,
-                updated_demand_type: {
-                    _id: demandType._id,
+                demand_type: {
+                    id: demandType._id,
                     type_name: demandType.type_name,
                     updated_by: demandType.updated_by,
                     updatedAt: demandType.updatedAt,
