@@ -62,9 +62,9 @@ const CreateDemand = () => {
         const response = await getDemandTypes();
         if (response.success) {
             // Format demand types
-            const typeOptions = response.data.map(demand => ({
-                value: demand.type_name,
-                label: demand.type_name
+            const typeOptions = response.data.map(item => ({
+                value: item.type_name,
+                label: item.type_name
             }));
             setDemandTypes(typeOptions)
         }

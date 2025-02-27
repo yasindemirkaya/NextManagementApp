@@ -8,10 +8,9 @@ import { useRouter } from "next/router";
 
 import { getUsers } from "@/services/userApi";
 import { getAllUserGroups } from '@/services/userGroupApi';
-import { createProject } from '@/services/projectApi';
+import { createProject, getProjectTypes } from '@/services/projectApi';
 
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
-import projectTypes from '@/static/data/projects/projectTypes';
 import assignmentTypes from '@/static/data/projects/assignmentTypes';
 
 import toast from '@/utils/toastify';
@@ -28,18 +27,15 @@ const CreateProject = () => {
     const [userGroupOptions, setUserGroupOptions] = useState([]);
     const [loadingUserGroups, setLoadingUserGroups] = useState(false);
 
+    const [projectTypes, setProjectTypes] = useState([]);
+
     const assignmentType = watch("assignmentType");
 
     useEffect(() => {
         fetchUsers();
         fetchUserGroups();
+        fetchProjectTypes();
     }, []);
-
-    // Format project types
-    const projectTypeOptions = projectTypes.map(item => ({
-        value: item.typeName,
-        label: item.typeName
-    }));
 
     // Format assignment types
     const assignmentTypeOptions = assignmentTypes.map(item => ({
@@ -79,9 +75,17 @@ const CreateProject = () => {
         setLoadingUserGroups(false);
     };
 
-    // On assignment type change
-    const handleAssignmentTypeChange = async (selectedOption) => {
-        setValue("assignmentType", selectedOption.value)
+    // Get Project Types
+    const fetchProjectTypes = async () => {
+        const response = await getProjectTypes();
+        if (response.success) {
+            // Format project types
+            const typeOptions = response.data.map(item => ({
+                value: item.type_name,
+                label: item.type_name
+            }));
+            setProjectTypes(typeOptions)
+        }
     }
 
     // Submit project
@@ -106,7 +110,7 @@ const CreateProject = () => {
 
         if (response.success) {
             toast('SUCCESS', response.message)
-            router.push('/projects/view-projects')
+            router.push('/project-management/view-projects')
             reset()
         } else {
             toast('ERROR', response.error)
@@ -180,7 +184,7 @@ const CreateProject = () => {
                                                 <>
                                                     <Select
                                                         {...field}
-                                                        options={projectTypeOptions}
+                                                        options={projectTypes}
                                                         theme={(theme) => ({
                                                             ...theme,
                                                             colors: {
