@@ -18,7 +18,7 @@ const ViewUsers = () => {
     const [currentPage, setCurrentPage] = useState(1)
 
     useEffect(() => {
-        fetchDemands({ page: 1, limit: 10, status: loggedInUser.role == 1 ? 0 : 1 });
+        fetchDemands({ page: 1, limit: 10, status: 0 });
     }, [])
 
     const fetchDemands = async (params) => {

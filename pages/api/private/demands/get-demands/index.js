@@ -16,7 +16,6 @@ import User from '@/models/User';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index';
 import responseMessages from '@/static/responseMessages/messages';
-import demandTypes from '@/static/data/demands/demandTypes';
 import demandStatuses from '@/static/data/demands/demandStatuses';
 
 const formatDate = (date) => (date ? new Date(date).toISOString().split('T')[0] : null);
@@ -89,11 +88,10 @@ const handler = async (req, res) => {
 
             demands = demands.map(d => {
                 const status = demandStatuses.find(status => String(status.id) === String(d.status));
-                const type = demandTypes.find(type => String(type.id) === String(d.title));
 
                 return {
                     ...d,
-                    title: type ? type.typeName : null,
+                    title: d.title,
                     start_date: formatDate(d.start_date),
                     end_date: formatDate(d.end_date),
                     targetId: userMap[d.targetId] || null,

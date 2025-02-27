@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Container, Card, Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import Select from 'react-select';
-import demandTypes from '@/static/data/demands/demandTypes';
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
 import styles from './index.module.scss'
 
 import { getUsers } from "@/services/userApi";
-import { createDemand } from "@/services/demandApi";
+import { createDemand, getDemandTypes } from "@/services/demandApi";
 
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
@@ -22,9 +21,9 @@ const CreateDemand = () => {
     const t = useTranslations()
     const router = useRouter()
 
-    const [showEndDate, setShowEndDate] = useState(false);
     const [userOptions, setUserOptions] = useState([]); // Kullanıcıları tutacak state
     const [loadingUsers, setLoadingUsers] = useState(false); // Yükleme durumu
+    const [demandTypes, setDemandTypes] = useState([]);
 
     const loggedInUser = useSelector(state => state.user.user);
 
@@ -39,6 +38,7 @@ const CreateDemand = () => {
 
     useEffect(() => {
         fetchUsers();
+        fetchDemandTypes();
     }, [])
 
     // Get admins for recipient selection
@@ -57,16 +57,18 @@ const CreateDemand = () => {
         setLoadingUsers(false);
     };
 
-    // Format demand types
-    const typeOptions = demandTypes.map(demand => ({
-        value: demand.id,
-        label: demand.typeName
-    }));
-
-    const handleTypeChange = (selectedOption) => {
-        // Eğer seçilen değer 1, 2, 3, 4, 5 ise endDate alanını göster
-        setShowEndDate([1, 2, 3, 4, 5].includes(selectedOption?.value));
-    };
+    // Get Demand Types
+    const fetchDemandTypes = async () => {
+        const response = await getDemandTypes();
+        if (response.success) {
+            // Format demand types
+            const typeOptions = response.data.map(demand => ({
+                value: demand.type_name,
+                label: demand.type_name
+            }));
+            setDemandTypes(typeOptions)
+        }
+    }
 
     // Submit demand
     const onSubmit = async (data) => {
@@ -119,7 +121,7 @@ const CreateDemand = () => {
                                                 <>
                                                     <Select
                                                         {...field}
-                                                        options={typeOptions}
+                                                        options={demandTypes}
                                                         theme={(theme) => ({
                                                             ...theme,
                                                             colors: {
@@ -132,10 +134,6 @@ const CreateDemand = () => {
                                                             },
                                                         })}
                                                         placeholder={t("Select a Title")}
-                                                        onChange={(selectedOption) => {
-                                                            field.onChange(selectedOption);
-                                                            handleTypeChange(selectedOption);
-                                                        }}
                                                     />
                                                     {fieldState.error && (
                                                         <Form.Text className="text-danger">
@@ -190,21 +188,19 @@ const CreateDemand = () => {
                                 </Col>
 
                                 {/* End Date */}
-                                {showEndDate && (
-                                    <Col md={12} className="mb-3">
-                                        <Form.Group controlId="endDate">
-                                            <Form.Label>{t("End Date")}</Form.Label>
-                                            <Form.Control
-                                                type="date"
-                                                {...register("endDate", { required: t("End date is required") })}
-                                                isInvalid={!!errors.endDate}
-                                            />
-                                            <Form.Control.Feedback type="invalid">
-                                                {errors.endDate?.message}
-                                            </Form.Control.Feedback>
-                                        </Form.Group>
-                                    </Col>
-                                )}
+                                <Col md={12} className="mb-3">
+                                    <Form.Group controlId="endDate">
+                                        <Form.Label>{t("End Date")}</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            {...register("endDate", { required: t("End date is required") })}
+                                            isInvalid={!!errors.endDate}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.endDate?.message}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                </Col>
 
                                 {/* Recipient */}
                                 <Col md={12} className="mb-3">
