@@ -4,12 +4,16 @@ import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import styles from './index.module.scss';
 
-import { getProjectTypes, updateProject } from '@/services/projectApi';
+import { getProjectTypes, updateProject, deleteProject } from '@/services/projectApi';
 
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 
+import { useRouter } from "next/router";
+
 const ProjectCard = ({ project }) => {
+    const router = useRouter()
+
     const [isEditable, setIsEditable] = useState(false);
     const [projectTypes, setProjectTypes] = useState([]);
     const [initialProjectData, setInitialProjectData] = useState(project);
@@ -50,6 +54,23 @@ const ProjectCard = ({ project }) => {
         setValue("start_date", initialProjectData.start_date);
         setValue("end_date", initialProjectData.end_date);
     };
+
+    // Handle Delete
+    const handleDelete = async () => {
+        const result = await deleteProject(project._id)
+
+        if (result.success) {
+            setIsEditable(false)
+            toast('SUCCESS', result.message)
+
+            setTimeout(() => {
+                router.push('/project-management/view-projects')
+            }, 2000);
+        } else {
+            setIsEditable(false)
+            toast('ERROR', result.error)
+        }
+    }
 
     // Update project
     const onSubmit = async (data) => {
@@ -215,7 +236,7 @@ const ProjectCard = ({ project }) => {
                                     <Button variant="success" type="submit" onClick={handleSubmit(onSubmit)} className="me-2">
                                         Save
                                     </Button>
-                                    <Button variant="danger" type="submit" onClick={handleSubmit(onSubmit)}>
+                                    <Button variant="danger" type="submit" onClick={handleDelete}>
                                         Delete
                                     </Button>
                                 </>
