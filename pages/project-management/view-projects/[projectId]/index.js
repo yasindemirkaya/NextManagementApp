@@ -4,10 +4,12 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Alert } from "react-bootstrap";
+import { Container, Row, Col, Alert, Card } from "react-bootstrap";
 
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
+
+import ProjectCard from "@/components/ProjectManagement/ViewProjects/ProjectCard";
 
 const ProjectDetailPage = () => {
     const router = useRouter();
@@ -44,7 +46,36 @@ const ProjectDetailPage = () => {
 
     return (
         <>
-            Project Detail {projectId}
+            <Container>
+                <Row>
+                    {/* Left Column - ProjectCard */}
+                    <Col md={4} className="mb-4">
+                        <ProjectCard project={project} />
+                    </Col>
+
+                    {/* Middle Column - User and Group Management (Placeholder) */}
+                    <Col md={4} className="mb-4">
+                        <Card>
+                            <Card.Body>
+                                <Card.Title>User and Group Management</Card.Title>
+                                {/* İçerik buraya gelecek */}
+                            </Card.Body>
+                        </Card>
+                    </Col>
+
+                    {/* Right Column - Task Creation (Placeholder) */}
+                    <Col md={4} className="mb-4">
+                        <Card>
+                            <Card.Body>
+                                <Card.Title>Create Task</Card.Title>
+                                {/* İçerik buraya gelecek */}
+                            </Card.Body>
+                        </Card>
+                    </Col>
+
+                    <ToastContainer />
+                </Row>
+            </Container>
             <ToastContainer />
         </>
     )
