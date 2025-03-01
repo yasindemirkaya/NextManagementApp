@@ -137,5 +137,6 @@
     "View Projects": "Projeleri Görüntüle",
     "Create Project": "Proje Oluştur",
     "From here, you can create projects for yourself, your staff or teams": "Buradan kendiniz, personeliniz veya ekipleriniz için projeler oluşturabilirsiniz.",
-    "You can update details about your projects from here": "Projelerinizle ilgili detayları buradan güncelleyebilirsiniz."
+    "You can update details about your projects from here": "Projelerinizle ilgili detayları buradan güncelleyebilirsiniz.",
+    "An error occurred when fetching the requested project Please try again": "Aranan proje getirilirken bir sorun oluştu. Lütfen tekrar deneyin."
 }

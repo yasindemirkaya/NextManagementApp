@@ -43,7 +43,7 @@ const handler = async (req, res) => {
 
     // Project ID required
     if (!id) {
-        return res.status(400).json({
+        return res.status(200).json({
             message: responseMessages.projects.getById[lang].projectIdRequired,
             code: 0
         });
@@ -55,7 +55,7 @@ const handler = async (req, res) => {
 
         // Project Not Found
         if (!project) {
-            return res.status(404).json({
+            return res.status(200).json({
                 message: responseMessages.projects.getById[lang].notFound,
                 code: 0
             });
@@ -87,7 +87,7 @@ const handler = async (req, res) => {
 
         // No access
         if (!hasAccess) {
-            return res.status(403).json({
+            return res.status(200).json({
                 message: responseMessages.common[lang].noPermission,
                 code: 0
             });

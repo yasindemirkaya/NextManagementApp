@@ -8,8 +8,11 @@ import styles from './index.module.scss';
 
 import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
+import { useRouter } from 'next/router';
 
 const ViewProjects = () => {
+    const router = useRouter();
+
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -105,6 +108,8 @@ const ViewProjects = () => {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                                 className={styles.projectCard}
+                                                                onClick={() => router.push(`/project-management/view-projects/${project._id}`)}
+                                                                style={{ cursor: 'pointer' }}
                                                             >
                                                                 <Card.Body>
                                                                     <Card.Title>{project.title}</Card.Title>
