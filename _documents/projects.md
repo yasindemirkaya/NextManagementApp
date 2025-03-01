@@ -22,7 +22,7 @@
     - Create Project sayfası bir formdan oluşacak.
         * Title: Projenin başlığı. String olarak kullanıcı tarafından girilecek. Zorunlu.
         * Description: Proje açıklaması. String olarak kullanıcı tarafından girilecek. Zorunlu.
-        * Type: Projenin türü static/data/projectTypes dosyasından gelen listeden Select içerisinden seçilecek. Seçilen tür String olarak tabloda tutulacak. Zorunlu.
+        * Type: Projenin türü projectTypes tablosundan gelen listeden Select içerisinden seçilecek. Seçilen tür String olarak tabloda tutulacak. Zorunlu.
         * Start Date: Datepicker'dan seçilen proje başlangıç tarihi. (Zorunlu)
         * End Date: Datepicker'dan seçilen proje bitiş tarihi. (Kullanıcı deadline girmek isterse görünür olacak. Zorunlu bir alan değil.)
         * Project Lead: Proje yöneticisi. Kullanıcıların olduğu Select'ten seçilen kişinin userId'si tabloda tutulacak.

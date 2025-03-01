@@ -36,11 +36,11 @@ const handler = async (req, res) => {
     }
 
     // Request body
-    const { projectId, project_lead, title, description, end_date, status, assignment_type, assignee_user, assignee_group } = req.body;
+    const { projectId, project_lead, title, description, type, start_date, end_date, status, assignment_type, assignee_user, assignee_group } = req.body;
 
     // Project ID required
     if (!projectId) {
-        return res.status(400).json({
+        return res.status(200).json({
             code: 0,
             message: responseMessages.projects.update[lang].projectIdRequired
         });
@@ -70,11 +70,13 @@ const handler = async (req, res) => {
         if (project_lead) project.project_lead = project_lead;
         if (title) project.title = title;
         if (description) project.description = description;
+        if (start_date) project.start_date = start_date;
         if (end_date) project.end_date = end_date;
         if (status) project.status = status;
         if (assignment_type) project.assignment_type = assignment_type;
         if (assignee_user) project.assignee_user = assignee_user;
         if (assignee_group) project.assignee_group = assignee_group;
+        if (type) project.type = type;
 
         project.updated_by = userId;
         await project.save();
