@@ -10,8 +10,11 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 
 import { useRouter } from "next/router";
+import { useTranslations } from "use-intl";
+import { capitalizeFirstLetter } from "@/helpers/capitalizeFirstLetter";
 
 const ProjectCard = ({ project }) => {
+    const t = useTranslations()
     const router = useRouter()
 
     const [isEditable, setIsEditable] = useState(false);
@@ -116,13 +119,26 @@ const ProjectCard = ({ project }) => {
                         <Form.Label>Project Title</Form.Label>
                         <Controller
                             name="title"
+                            placeholder={t("Enter a title")}
                             control={control}
-                            render={({ field }) => (
-                                <Form.Control
-                                    type="text"
-                                    {...field}
-                                    readOnly={!isEditable}
-                                />
+                            rules={{
+                                required: t("Title is required"),
+                                minLength: { value: 2, message: t("Title must be at least 2 characters") }
+                            }}
+                            render={({ field, fieldState }) => (
+                                <>
+                                    <Form.Control
+                                        type="text"
+                                        {...field}
+                                        readOnly={!isEditable}
+                                        isInvalid={fieldState.invalid}
+                                    />
+                                    {fieldState.invalid && (
+                                        <Form.Control.Feedback type="invalid">
+                                            {fieldState.error?.message}
+                                        </Form.Control.Feedback>
+                                    )}
+                                </>
                             )}
                         />
                     </Form.Group>
@@ -133,14 +149,31 @@ const ProjectCard = ({ project }) => {
                         <Controller
                             name="description"
                             control={control}
-                            render={({ field }) => (
-                                <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    {...field}
-                                    readOnly={!isEditable}
-                                    style={{ resize: 'none' }}
-                                />
+                            rules={{
+                                required: t("Description is required"),
+                                maxLength: { value: 255, message: t("Description cannot be longer than 255 characters") },
+                                minLength: { value: 10, message: t("Description cannot be shorter than 10 characters") },
+                                onBlur: (e) => {
+                                    const formattedValue = capitalizeFirstLetter(e.target.value);
+                                    setValue("description", formattedValue);
+                                },
+                            }}
+                            render={({ field, fieldState }) => (
+                                <>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        {...field}
+                                        readOnly={!isEditable}
+                                        style={{ resize: 'none' }}
+                                        isInvalid={fieldState.invalid}
+                                    />
+                                    {fieldState.invalid && (
+                                        <Form.Control.Feedback type="invalid">
+                                            {fieldState.error?.message}
+                                        </Form.Control.Feedback>
+                                    )}
+                                </>
                             )}
                         />
                     </Form.Group>
@@ -151,26 +184,34 @@ const ProjectCard = ({ project }) => {
                         <Controller
                             control={control}
                             name="projectType"
+                            rules={{ required: t("Project Type is required") }}
                             render={({ field, fieldState }) => (
-                                <Select
-                                    {...field}
-                                    options={projectTypes}
-                                    theme={(theme) => ({
-                                        ...theme,
-                                        colors: {
-                                            ...theme.colors,
-                                            primary25: 'var(--primary-25)',
-                                            primary: 'var(--primary)',
-                                            neutral0: 'var(--neutral-0)',
-                                            neutral80: 'var(--neutral-80)',
-                                            neutral25: 'var(--neutral-25)',
-                                        },
-                                    })}
-                                    isDisabled={!isEditable}
-                                    placeholder="Select a Project Type"
-                                    onChange={selectedOption => setValue("projectType", selectedOption.value)}
-                                    value={projectTypes.find(option => option.value === getValues("projectType"))}
-                                />
+                                <>
+                                    <Select
+                                        {...field}
+                                        options={projectTypes}
+                                        theme={(theme) => ({
+                                            ...theme,
+                                            colors: {
+                                                ...theme.colors,
+                                                primary25: 'var(--primary-25)',
+                                                primary: 'var(--primary)',
+                                                neutral0: 'var(--neutral-0)',
+                                                neutral80: 'var(--neutral-80)',
+                                                neutral25: 'var(--neutral-25)',
+                                            },
+                                        })}
+                                        isDisabled={!isEditable}
+                                        placeholder="Select a Project Type"
+                                        onChange={selectedOption => setValue("projectType", selectedOption.value)}
+                                        value={projectTypes.find(option => option.value === getValues("projectType"))}
+                                    />
+                                    {fieldState.invalid && (
+                                        <Form.Control.Feedback type="invalid">
+                                            {fieldState.error?.message}
+                                        </Form.Control.Feedback>
+                                    )}
+                                </>
                             )}
                         />
                     </Form.Group>
@@ -181,17 +222,26 @@ const ProjectCard = ({ project }) => {
                         <Controller
                             name="start_date"
                             control={control}
-                            render={({ field }) => (
-                                <Form.Control
-                                    {...field}
-                                    type="date"
-                                    onChange={(e) => setValue("start_date", e.target.value)}
-                                    readOnly={!isEditable}
-                                    value={getValues("start_date") || ""}
-                                />
+                            rules={{ required: t("Start date is required") }}
+                            render={({ field, fieldState }) => (
+                                <>
+                                    <Form.Control
+                                        {...field}
+                                        type="date"
+                                        onChange={(e) => setValue("start_date", e.target.value)}
+                                        readOnly={!isEditable}
+                                        value={getValues("start_date") || ""}
+                                    />
+                                    {fieldState.invalid && (
+                                        <Form.Control.Feedback type="invalid">
+                                            {fieldState.error?.message}
+                                        </Form.Control.Feedback>
+                                    )}
+                                </>
                             )}
                         />
                     </Form.Group>
+
 
                     {/* Project End Date */}
                     <Form.Group className="mb-3">
@@ -199,17 +249,26 @@ const ProjectCard = ({ project }) => {
                         <Controller
                             name="end_date"
                             control={control}
-                            render={({ field }) => (
-                                <Form.Control
-                                    {...field}
-                                    type="date"
-                                    onChange={(e) => setValue("end_date", e.target.value)}
-                                    readOnly={!isEditable}
-                                    value={getValues("end_date") || ""}
-                                />
+                            rules={{ required: t("End date is required") }}
+                            render={({ field, fieldState }) => (
+                                <>
+                                    <Form.Control
+                                        {...field}
+                                        type="date"
+                                        onChange={(e) => setValue("end_date", e.target.value)}
+                                        readOnly={!isEditable}
+                                        value={getValues("end_date") || ""}
+                                    />
+                                    {fieldState.invalid && (
+                                        <Form.Control.Feedback type="invalid">
+                                            {fieldState.error?.message}
+                                        </Form.Control.Feedback>
+                                    )}
+                                </>
                             )}
                         />
                     </Form.Group>
+
 
                     {/* Created By */}
                     <p className={styles.infoText}>
