@@ -101,6 +101,9 @@ const handler = async (req, res) => {
                 ...project,
                 start_date: formatDate(project.start_date),
                 end_date: formatDate(project.end_date),
+                created_by: project.created_by ? userMap[project.created_by] : null,
+                updated_by: project.updated_by ? userMap[project.updated_by] : null,
+                project_lead: userMap[project.project_lead] || { id: project.project_lead, name: 'Unknown User' },
                 assignee_user: (project.assignee_user || []).map(id => userMap[id] || { id, name: 'Unknown User' }),
                 assignee_group: (project.assignee_group || []).map(id => groupMap[id] || { id, name: 'Unknown Group' }),
             };

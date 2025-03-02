@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { useTranslations } from "use-intl";
 import { capitalizeFirstLetter } from "@/helpers/capitalizeFirstLetter";
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, fetchProjectDetails }) => {
     const t = useTranslations()
     const router = useRouter()
 
@@ -89,6 +89,7 @@ const ProjectCard = ({ project }) => {
 
         if (result.success) {
             toast('SUCCESS', result.message)
+            fetchProjectDetails(project._id)
             setIsEditable(false)
         } else {
             toast('ERROR', result.error)
@@ -97,7 +98,9 @@ const ProjectCard = ({ project }) => {
     };
 
     useEffect(() => {
-        fetchProjectTypes();
+        if (projectTypes.length == 0) {
+            fetchProjectTypes();
+        }
 
         // Başlangıç verilerini ayarlıyoruz
         setInitialProjectData(project);
@@ -276,9 +279,11 @@ const ProjectCard = ({ project }) => {
                     </p>
 
                     {/* Updated By */}
-                    <p className={styles.infoText}>
-                        <em>*The last update for this project is made by <b>{project.updated_by?.name}</b></em>
-                    </p>
+                    {project.updated_by && (
+                        <p className={styles.infoText}>
+                            <em>*The last update for this project is made by <b>{project.updated_by?.name}</b></em>
+                        </p>
+                    )}
 
                     {/* Buttons */}
                     <Row>

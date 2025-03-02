@@ -50,7 +50,7 @@ const ProjectDetailPage = () => {
                 <Row>
                     {/* Left Column - ProjectCard */}
                     <Col md={4} className="mb-4">
-                        <ProjectCard project={project} />
+                        <ProjectCard project={project} fetchProjectDetails={fetchProjectDetails} />
                     </Col>
 
                     {/* Middle Column - User and Group Management (Placeholder) */}
