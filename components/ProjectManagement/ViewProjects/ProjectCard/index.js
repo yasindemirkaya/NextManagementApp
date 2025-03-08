@@ -115,11 +115,11 @@ const ProjectCard = ({ project, fetchProjectDetails }) => {
         <>
             <Card className={styles.projectCard}>
                 <Card.Body>
-                    <Card.Title>Project Details</Card.Title>
+                    <Card.Title>{t('Project Details')}</Card.Title>
 
                     {/* Project Title */}
                     <Form.Group className="mt-3 mb-3">
-                        <Form.Label>Project Title</Form.Label>
+                        <Form.Label>{t('Project Title')}</Form.Label>
                         <Controller
                             name="title"
                             placeholder={t("Enter a title")}

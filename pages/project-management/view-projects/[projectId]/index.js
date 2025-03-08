@@ -10,6 +10,7 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 
 import ProjectCard from "@/components/ProjectManagement/ViewProjects/ProjectCard";
+import UserAndGroupManagement from "@/components/ProjectManagement/ViewProjects/UserAndGroupManagement";
 
 const ProjectDetailPage = () => {
     const router = useRouter();
@@ -55,12 +56,7 @@ const ProjectDetailPage = () => {
 
                     {/* Middle Column - User and Group Management (Placeholder) */}
                     <Col md={4} className="mb-4">
-                        <Card>
-                            <Card.Body>
-                                <Card.Title>User and Group Management</Card.Title>
-                                {/* İçerik buraya gelecek */}
-                            </Card.Body>
-                        </Card>
+                        <UserAndGroupManagement project={project} fetchProjectDetails={fetchProjectDetails} />
                     </Col>
 
                     {/* Right Column - Task Creation (Placeholder) */}
