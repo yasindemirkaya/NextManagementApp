@@ -96,5 +96,7 @@
     "Project Lead": "Project Lead",
     "Assignment Type": "Assignment Type",
     "Assignee User(s)": "Assignee User(s)",
-    "Assignee Group(s)": "Assignee Group(s)"
+    "Assignee Group(s)": "Assignee Group(s)",
+    "This project is created by": "This project is created by",
+    "The last update for this project is made by": "The last update for this project is made by"
 }

@@ -148,7 +148,7 @@ const ProjectCard = ({ project, fetchProjectDetails }) => {
 
                     {/* Project Description */}
                     <Form.Group className="mb-3">
-                        <Form.Label>Description</Form.Label>
+                        <Form.Label>{t('Description')}</Form.Label>
                         <Controller
                             name="description"
                             control={control}
@@ -183,7 +183,7 @@ const ProjectCard = ({ project, fetchProjectDetails }) => {
 
                     {/* Project Type */}
                     <Form.Group controlId="projectType" className="mb-3">
-                        <Form.Label>Project Type</Form.Label>
+                        <Form.Label>{t('Project Type')}</Form.Label>
                         <Controller
                             control={control}
                             name="projectType"
@@ -205,7 +205,7 @@ const ProjectCard = ({ project, fetchProjectDetails }) => {
                                             },
                                         })}
                                         isDisabled={!isEditable}
-                                        placeholder="Select a Project Type"
+                                        placeholder={t('Select a Project Type')}
                                         onChange={selectedOption => setValue("projectType", selectedOption.value)}
                                         value={projectTypes.find(option => option.value === getValues("projectType"))}
                                     />
@@ -221,7 +221,7 @@ const ProjectCard = ({ project, fetchProjectDetails }) => {
 
                     {/* Project Start Date */}
                     <Form.Group className="mb-3">
-                        <Form.Label>Start Date</Form.Label>
+                        <Form.Label>{t('Start Date')}</Form.Label>
                         <Controller
                             name="start_date"
                             control={control}
@@ -248,7 +248,7 @@ const ProjectCard = ({ project, fetchProjectDetails }) => {
 
                     {/* Project End Date */}
                     <Form.Group className="mb-3">
-                        <Form.Label>End Date</Form.Label>
+                        <Form.Label>{t('End Date')}</Form.Label>
                         <Controller
                             name="end_date"
                             control={control}
@@ -275,13 +275,13 @@ const ProjectCard = ({ project, fetchProjectDetails }) => {
 
                     {/* Created By */}
                     <p className={styles.infoText}>
-                        <em>*This project is created by <b>{project.created_by?.name}</b></em>
+                        <em>*{t('This project is created by')} <b>{project.created_by?.name}</b></em>
                     </p>
 
                     {/* Updated By */}
                     {project.updated_by && (
                         <p className={styles.infoText}>
-                            <em>*The last update for this project is made by <b>{project.updated_by?.name}</b></em>
+                            <em>*{t('The last update for this project is made by')} <b>{project.updated_by?.name}</b></em>
                         </p>
                     )}
 
@@ -290,18 +290,18 @@ const ProjectCard = ({ project, fetchProjectDetails }) => {
                         <Col>
                             {!isEditable ? (
                                 <Button variant="primary" onClick={handleEdit}>
-                                    Edit
+                                    {t('Edit')}
                                 </Button>
                             ) : (
                                 <>
                                     <Button variant="secondary" onClick={handleCancel} className="me-2">
-                                        Cancel
+                                        {t('Cancel')}
                                     </Button>
                                     <Button variant="success" type="submit" onClick={handleSubmit(onSubmit)} className="me-2">
-                                        Save
+                                        {t('Save')}
                                     </Button>
                                     <Button variant="danger" type="submit" onClick={handleDelete}>
-                                        Delete
+                                        {t('Delete')}
                                     </Button>
                                 </>
                             )}

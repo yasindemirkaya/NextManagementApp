@@ -96,5 +96,7 @@
     "Project Lead": "Proje Yöneticisi",
     "Assignment Type": "Atama Türü",
     "Assignee User(s)": "Atanan Kullanıcı(lar)",
-    "Assignee Group(s)": "Atanan Grup(lar)"
+    "Assignee Group(s)": "Atanan Grup(lar)",
+    "This project is created by": "Bu proje şu kullanıcı tarafından oluşturuldu: ",
+    "The last update for this project is made by": "Bu proje en son şu kullanıcı tarafından güncellendi: "
 }
