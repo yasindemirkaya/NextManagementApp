@@ -54,7 +54,7 @@ const ProjectDetailPage = () => {
                         <ProjectCard project={project} fetchProjectDetails={fetchProjectDetails} />
                     </Col>
 
-                    {/* Middle Column - User and Group Management (Placeholder) */}
+                    {/* Middle Column - User and Group Management */}
                     <Col md={4} className="mb-4">
                         <UserAndGroupManagement project={project} fetchProjectDetails={fetchProjectDetails} />
                     </Col>

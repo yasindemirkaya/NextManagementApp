@@ -99,5 +99,12 @@
     "Assignee Group(s)": "Atanan Grup(lar)",
     "This project is created by": "Bu proje şu kullanıcı tarafından oluşturuldu: ",
     "The last update for this project is made by": "Bu proje en son şu kullanıcı tarafından güncellendi: ",
-    "Project Details": "Proje Detayları"
+    "Project Details": "Proje Detayları",
+    "Project Title": "Proje Başlığı",
+    "User and Group Management": "Kullanıcı ve Grup Yönetimi",
+    "Assignee Users": "Atanan Kullanıcılar",
+    "Assignee Groups": "Atanan Gruplar",
+    "Select a Project Lead": "Bir Proje Lideri seçin",
+    "Add or Remove Users": "Kullanıcı Ekle veya Çıkar",
+    "Add or Remove Groups": "Grup Ekle veya Çıkar"
 }

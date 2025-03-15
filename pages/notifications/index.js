@@ -10,7 +10,7 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 import { getStyleForNotificationType } from "@/helpers/getStyleForNotificationType";
 import Swal from "sweetalert2";
-import { useTranslations } from "use-intl";
+import { useTranslations } from 'next-intl';
 
 const Notifications = () => {
     const t = useTranslations();

@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setDashboardStats, setIsDashboardStatsInitialized } from '@/redux/statSlice';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { useTranslations } from "use-intl";
+import { useTranslations } from 'next-intl';
 
 const Statistics = ({ stats }) => {
     const t = useTranslations()

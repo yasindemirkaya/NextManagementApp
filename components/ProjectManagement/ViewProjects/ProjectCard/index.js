@@ -10,7 +10,7 @@ import toast from '@/utils/toastify';
 import { ToastContainer } from 'react-toastify';
 
 import { useRouter } from "next/router";
-import { useTranslations } from "use-intl";
+import { useTranslations } from 'next-intl';
 import { capitalizeFirstLetter } from "@/helpers/capitalizeFirstLetter";
 
 const ProjectCard = ({ project, fetchProjectDetails }) => {
@@ -245,7 +245,6 @@ const ProjectCard = ({ project, fetchProjectDetails }) => {
                         />
                     </Form.Group>
 
-
                     {/* Project End Date */}
                     <Form.Group className="mb-3">
                         <Form.Label>{t('End Date')}</Form.Label>
@@ -271,7 +270,6 @@ const ProjectCard = ({ project, fetchProjectDetails }) => {
                             )}
                         />
                     </Form.Group>
-
 
                     {/* Created By */}
                     <p className={styles.infoText}>
