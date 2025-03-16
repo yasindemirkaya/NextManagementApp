@@ -15,7 +15,7 @@ const taskSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        required: true
+        required: false
     },
     assignee_user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -37,7 +37,7 @@ const taskSchema = new mongoose.Schema({
     },
     priority: {
         type: String,
-        required: true
+        required: false
     },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
