@@ -17,14 +17,19 @@ const taskSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    assignment_type: {
+        type: String,
+        required: true
+    },
     assignee_user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
+        required: false,
     },
     assignee_group: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Group',
+        required: false,
     },
     project_id: {
         type: mongoose.Schema.Types.ObjectId,

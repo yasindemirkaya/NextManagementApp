@@ -32,8 +32,8 @@ const handler = async (req, res) => {
             const { title, description, label, assignee_user, assignee_group, project_id, deadline, priority, assignment_type } = req.body;
 
             // Zorunlu alan kontrolü
-            if (!title || !description || !label || !assignee_user || !assignee_group || !project_id || !deadline || assignment_type === undefined) {
-                return res.status(400).json({
+            if (!title || !description || !label || !project_id || !deadline || assignment_type === undefined) {
+                return res.status(200).json({
                     message: responseMessages.tasks.create[lang].allFieldsRequired,
                     code: 0
                 });
@@ -41,7 +41,7 @@ const handler = async (req, res) => {
 
             // assignment_type ve assignee_user kontrolü
             if (assignment_type === 0 && (!assignee_user || assignee_user.length === 0)) {
-                return res.status(400).json({
+                return res.status(200).json({
                     message: responseMessages.tasks.create[lang].assigneeUserRequired,
                     code: 0
                 });
@@ -49,8 +49,17 @@ const handler = async (req, res) => {
 
             // assignment_type ve assignee_group kontrolü
             if (assignment_type === 1 && (!assignee_group || assignee_group.length === 0)) {
-                return res.status(400).json({
+                return res.status(200).json({
                     message: responseMessages.tasks.create[lang].assigneeGroupRequired,
+                    code: 0
+                });
+            }
+
+            // Existing task kontrolü
+            const existingTask = await Project.findOne({ title, project_id });
+            if (existingTask) {
+                return res.status(200).json({
+                    message: responseMessages.tasks.create[lang].taskAlreadyExists,
                     code: 0
                 });
             }
@@ -62,6 +71,7 @@ const handler = async (req, res) => {
                 label,
                 assignee_user: assignment_type === 0 ? assignee_user : null,
                 assignee_group: assignment_type === 1 ? assignee_group : null,
+                assignment_type,
                 project_id,
                 deadline,
                 status: "To Do",

@@ -754,6 +754,26 @@ const responseMessages = {
                 notFound: "Proje türü bulunamadı."
             }
         }
+    },
+    // TASKS
+    tasks: {
+        // CREATE TASK
+        create: {
+            en: {
+                success: "Task created successfully.",
+                allFieldsRequired: "All fields are required.",
+                assigneeUserRequired: "Assignee User(s) are required.",
+                assigneeGroupRequired: "Assignee Group(s) are required.",
+                taskAlreadyExists: "A task with this title already exists."
+            },
+            tr: {
+                success: "Görev başarıyla oluşturuldu.",
+                allFieldsRequired: "Tüm alanlar zorunludur.",
+                assigneeUserRequired: "Atanan Kullanıcı(lar)'ın seçilmesi zorunludur.",
+                assigneeGroupRequired: "Atanan Grup(lar)'ın seçilmesi zorunludur.",
+                taskAlreadyExists: "Bu başlığa sahip bir görev zaten mevcut."
+            }
+        },
     }
 }
 
