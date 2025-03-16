@@ -32,3 +32,12 @@
 
 <!-- Get Task By ID -->
     - View Project sayfasının sağındaki listeden bir taskın üzerine tıklandığında ya da Proje Detay Board'undan bir taska tıklandığında açılan Task Detay modalının içini doldurmak için çağırılacak
+
+<!-- Update Task -->
+    - Proje boardu üzerinden tıklanarak Task detayı sayfası açıldığında gelen formdan düzenleme yapılır.
+    - Taskın assignee'si değiştirilebilecek.
+    - Title, Description, Label ve Status değiştirilebilecek.
+
+<!-- Delete Task -->
+    - Taskı tamamen silen servis
+
