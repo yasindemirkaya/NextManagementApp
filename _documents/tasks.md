@@ -9,6 +9,7 @@
     - AssigneeUser (userId) (Zorunlu değil, unassigned kalabilir. Sonrasında update edilebilir)
     - AssigneeGroup (groupId) (Zorunlu değil, unassigned kalabilir. Sonrasında update edilebilir)
     - Status (String) 
+    - Priority (Low, Medium, High) (Zorunlu değil, boş geçilirse Low olarak default setlenir.)
     - Project Id (ID) (Hangi projeye ait bir task olduğunu bilmek için)
 
 
