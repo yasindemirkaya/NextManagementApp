@@ -33,6 +33,38 @@ export const getTasks = async (params = {}) => {
 
 // ***************************
 // |
+// | GET TASK BY ID
+// |
+// ***************************
+
+export const getTaskById = async (id) => {
+    try {
+        const response = await axios.get('/private/tasks/get-task-by-id', {
+            params: { id }
+        });
+
+        if (response.code === 1) {
+            return {
+                success: true,
+                data: response.task
+            };
+        } else {
+            return {
+                success: false,
+                error: response.message
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+};
+
+
+// ***************************
+// |
 // | CREATE TASK
 // |
 // ***************************

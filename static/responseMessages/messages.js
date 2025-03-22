@@ -785,6 +785,21 @@ const responseMessages = {
                 failedToFetch: "Görevler getirilirken bir sorun oluştu."
             }
         },
+        // GET TASK BY ID
+        getById: {
+            en: {
+                success: "The task fetched successfully.",
+                taskIdRequired: "Task ID is required.",
+                notFound: "Requested task could not be found.",
+                failedToFetch: "An error occured when fetching the requested task."
+            },
+            tr: {
+                success: "Görev başarıyla getirildi.",
+                taskIdRequired: "Görev ID gereklidir.",
+                notFound: "Görev bulunamadı.",
+                failedToFetch: "Görev getirilirken bir sorun oluştu."
+            }
+        },
     }
 }
 
