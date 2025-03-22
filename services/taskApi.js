@@ -2,6 +2,37 @@ import axios from '@/utils/axios';
 
 // ***************************
 // |
+// | GET ALL TASKS
+// |
+// ***************************
+
+export const getTasks = async (params = {}) => {
+    try {
+        const response = await axios.get('/private/tasks/get-tasks', { params });
+
+        if (response.code === 1) {
+            return {
+                success: true,
+                data: response.tasks,
+                pagination: response.pagination
+            };
+        } else {
+            return {
+                success: false,
+                error: response.message
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message
+        }
+    }
+};
+
+
+// ***************************
+// |
 // | CREATE TASK
 // |
 // ***************************

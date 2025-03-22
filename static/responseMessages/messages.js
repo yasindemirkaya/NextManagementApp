@@ -774,6 +774,17 @@ const responseMessages = {
                 taskAlreadyExists: "Bu başlığa sahip bir görev zaten mevcut."
             }
         },
+        // GET TASKS
+        get: {
+            en: {
+                success: "Tasks fetched successfully.",
+                failedToFetch: "An error occured while fetching the tasks."
+            },
+            tr: {
+                success: "Görevler başarıyla getirildi.",
+                failedToFetch: "Görevler getirilirken bir sorun oluştu."
+            }
+        },
     }
 }
 
