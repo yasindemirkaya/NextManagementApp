@@ -558,14 +558,14 @@ const responseMessages = {
         createType: {
             en: {
                 success: "Demand type created successfully.",
-                noPermission: "You do not have permission to create a deman type.",
+                noPermission: "You do not have permission to create a project type.",
                 nameRequired: "Demand Type name is required.",
                 alreadyExist: "A demand type with this name already exists.",
                 createdByNotFound: "Created by user could not be found."
             },
             tr: {
                 success: "Talep türü başarıyla oluşturuldu.",
-                noPermission: "Talep türü oluştrma yetkiniz yoktur.",
+                noPermission: "Talep türü oluşturma yetkiniz yoktur.",
                 nameRequired: "Talep türü adı alanı zorunludur.",
                 alreadyExist: "Bu isimde bir talep türü zaten mevcut.",
                 createdByNotFound: "Talep türünü oluşturan kullanıcı bulunamadı."
@@ -692,14 +692,14 @@ const responseMessages = {
         createType: {
             en: {
                 success: "Project type created successfully.",
-                noPermission: "You do not have permission to create a deman type.",
+                noPermission: "You do not have permission to create a project type.",
                 nameRequired: "Project Type name is required.",
                 alreadyExist: "A Project type with this name already exists.",
                 createdByNotFound: "Created by user could not be found."
             },
             tr: {
                 success: "Proje türü başarıyla oluşturuldu.",
-                noPermission: "Proje türü oluştrma yetkiniz yoktur.",
+                noPermission: "Proje türü oluşturma yetkiniz yoktur.",
                 nameRequired: "Proje türü adı alanı zorunludur.",
                 alreadyExist: "Bu isimde bir Proje türü zaten mevcut.",
                 createdByNotFound: "Proje türünü oluşturan kullanıcı bulunamadı."
@@ -811,6 +811,23 @@ const responseMessages = {
                 success: "Görev başarıyla silindi.",
                 projectIdRequired: "Görev ID gereklidir.",
                 notFound: "Görev bulunamadı."
+            }
+        },
+        // CREATE TASK LABEL
+        createLabel: {
+            en: {
+                success: "Task label created successfully.",
+                noPermission: "You do not have permission to create a task label.",
+                nameRequired: "Task Label name is required.",
+                alreadyExist: "A task label with this name already exists.",
+                createdByNotFound: "Created by user could not be found."
+            },
+            tr: {
+                success: "Görev etiketi başarıyla oluşturuldu.",
+                noPermission: "Görev etiketi oluşturma yetkiniz yoktur.",
+                nameRequired: "Görev etiketi adı alanı zorunludur.",
+                alreadyExist: "Bu isimde bir Görev etiketi zaten mevcut.",
+                createdByNotFound: "Görevi etiketini oluşturan kullanıcı bulunamadı."
             }
         },
     }

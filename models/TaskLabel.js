@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const taskLabelTypeSchema = new mongoose.Schema({
+const TaskLabelSchema = new mongoose.Schema({
     label_name: {
         type: String,
         required: true,
@@ -19,6 +19,6 @@ const taskLabelTypeSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-const TaskLabelType = mongoose.models.TaskLabelType || mongoose.model('TaskLabelType', taskLabelTypeSchema, 'taskLabelTypes');
+const TaskLabel = mongoose.models.TaskLabel || mongoose.model('TaskLabel', TaskLabelSchema, 'taskLabels');
 
-export default TaskLabelType;
+export default TaskLabel;
