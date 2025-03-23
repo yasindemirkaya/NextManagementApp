@@ -158,6 +158,31 @@ export const deleteTask = async (taskId) => {
 
 // ***************************
 // |
+// | GET ALL TASK LABELS
+// |
+// ***************************
+
+export const getTaskLabels = async (params = {}) => {
+    try {
+        const response = await axios.get('/private/tasks/get-task-labels', { params });
+
+        return {
+            success: true,
+            data: response.task_labels,
+            pagination: response.pagination,
+            message: response.message,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message,
+        };
+    }
+};
+
+
+// ***************************
+// |
 // | CREATE TASK LABEL
 // |
 // ***************************

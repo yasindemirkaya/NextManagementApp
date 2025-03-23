@@ -841,6 +841,15 @@ const responseMessages = {
                 createdByNotFound: "Görevi etiketini oluşturan kullanıcı bulunamadı."
             }
         },
+        // GET TASK LABELS
+        getLabels: {
+            en: {
+                success: "Task Labels successfully fetched."
+            },
+            tr: {
+                success: "Görev Etiketleri başarıyla getirildi."
+            }
+        },
     }
 }
 
