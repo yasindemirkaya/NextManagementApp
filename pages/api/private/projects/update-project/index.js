@@ -87,7 +87,6 @@ const handler = async (req, res) => {
             message: responseMessages.projects.update[lang].success,
         });
     } catch (error) {
-        console.log('ERROR VAR:', error)
         return res.status(500).json({
             code: 0,
             message: responseMessages.common[lang].errorOccured

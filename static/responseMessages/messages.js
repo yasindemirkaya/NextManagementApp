@@ -800,6 +800,17 @@ const responseMessages = {
                 failedToFetch: "Görev getirilirken bir sorun oluştu."
             }
         },
+        // UPDATE TASK
+        update: {
+            en: {
+                success: "Task successfully updated.",
+                notFound: "Task could not be found.",
+            },
+            tr: {
+                success: "Görev başarıyla güncellendi.",
+                notFound: "Görev bulunamadı.",
+            }
+        },
         // DELETE TASK
         delete: {
             en: {

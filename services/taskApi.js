@@ -96,7 +96,37 @@ export const createTask = async (taskData) => {
 
 // ***************************
 // |
-// | DELETE PROJECT
+// | UPDATE TASK
+// |
+// ***************************
+
+export const updateTask = async (taskData) => {
+    try {
+        const response = await axios.put('/private/tasks/update-task', taskData);
+
+        if (response.code === 1) {
+            return {
+                success: true,
+                message: response.message
+            };
+        } else {
+            return {
+                success: false,
+                error: response.message
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+};
+
+
+// ***************************
+// |
+// | DELETE TASK
 // |
 // ***************************
 

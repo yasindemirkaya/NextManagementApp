@@ -135,7 +135,6 @@ const handler = async (req, res) => {
                 task: formattedTask
             });
         } catch (error) {
-            console.log(error)
             res.status(500).json({
                 message: responseMessages.tasks.getById[lang].failedToFetch,
                 code: 0
