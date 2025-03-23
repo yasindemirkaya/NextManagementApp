@@ -223,3 +223,40 @@ export const createTaskLabel = async (labelName) => {
         throw error;
     }
 };
+
+
+// ***************************
+// |
+// | UPDATE TASK LABEL
+// |
+// ***************************
+
+export const updateTaskLabel = async (taskId, labelName) => {
+    try {
+        const response = await axios.put('/private/tasks/update-task-label', {
+            taskId,
+            labelName,
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+// ***************************
+// |
+// | DELETE TASK LABEL
+// |
+// ***************************
+
+export const deleteTaskLabel = async (taskId) => {
+    try {
+        const response = await axios.delete('/private/tasks/delete-task-label', {
+            data: { taskId },
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};

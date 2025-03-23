@@ -861,6 +861,35 @@ const responseMessages = {
                 notFound: "Görev Etiketi bulunamadı."
             }
         },
+        // UPDATE TASK LABEL
+        updateLabel: {
+            en: {
+                success: "Task Label successfully updated.",
+                idRequired: "Task Label ID is required.",
+                notFound: "Task Label could not be found.",
+                userNotFound: "Updating user could not be found."
+            },
+            tr: {
+                success: "Görev etiketi başarıyla güncellendi.",
+                idRequired: "Görev etiketi ID alanı zorunludur.",
+                notFound: "Görev etiketi bulunamadı.",
+                userNotFound: "Görev etiketini güncelleyen kullanıcı bulunamadı."
+
+            }
+        },
+        // DELETE TASK LABEL
+        deleteLabel: {
+            en: {
+                success: "Task Label successfully deleted.",
+                idRequired: "Task Label ID is required.",
+                notFound: "Task Label could not be found."
+            },
+            tr: {
+                success: "Görevi Etiketi başarıyla silindi.",
+                idRequired: "Görevi Etiketi ID alanı zorunludur.",
+                notFound: "Görevi Etiketi bulunamadı."
+            }
+        }
     }
 }
 
