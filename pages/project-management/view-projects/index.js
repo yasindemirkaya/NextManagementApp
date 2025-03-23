@@ -88,7 +88,7 @@ const ViewProjects = () => {
                             const statusProjects = projects.filter((project) => project.status === status.typeName);
 
                             return (
-                                <Col key={status._id} xs={12} sm={6} md={4} lg={2}>
+                                <Col key={status.id} xs={12} sm={6} md={4} lg={2}>
                                     <Droppable droppableId={status.typeName} direction="vertical" mode="virtual">
                                         {(provided) => (
                                             <div
@@ -97,19 +97,16 @@ const ViewProjects = () => {
                                                 className={styles.droppableContainer}
                                             >
                                                 {/* Status Title */}
-                                                <h5 className="text-center">{status.typeName}</h5>
+                                                <h5 className="text-center mb-3">{status.typeName}</h5>
                                                 {/* Projects */}
                                                 {statusProjects.map((project, index) => (
                                                     <Draggable key={project._id} draggableId={project._id} index={index}>
                                                         {(provided) => (
-                                                            // Project Card
                                                             <Card
                                                                 ref={provided.innerRef}
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                                 className={styles.projectCard}
-                                                                onClick={() => router.push(`/project-management/view-projects/${project._id}`)}
-                                                                style={{ cursor: 'pointer' }}
                                                             >
                                                                 <Card.Body>
                                                                     <Card.Title>{project.title}</Card.Title>

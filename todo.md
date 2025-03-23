@@ -1,10 +1,4 @@
-* PROJECTS > VIEW PROJECT > PROJECT DETAIL
-    > Sayfanın sol tarafında yer alan güncelleme kartında (form) projenin detayları getirilecek. (DONE)
-    > Sayfanın ortasında yer alan kartta kullanıcı ya da grup yönetimi kısmı olacak (DONE)
-        > Bu alandan project lead değiştirilebilecek (DONE)
-        > Projeye kullanıcı eklenip çıkartılabilecek (DONE)
-        > Projeye kullanıcı grubu eklenip çıkartılabilecek (DONE) 
-    > Sayfanın sağında yer alan karttan bu proje içerisinden task açılabilecek (task kısmı yapıldıktan sonra eklenecek)
-
-
-* ProjectCard componentına language kısımları eklenecek. Gerekiyorsa validationlar yazılacak dil dosyalarına
+* Projects > View Projects > Proje Detay sayfasının sağ tarafındaki karta o projede en son oluşturulmuş 5 task listelenecek, altında View All butonu olacak.
+* View All butonuna tıklandığında Projects > Task Board ekranına yönlendirilecek.
+    - Bu sayfa Projects > View Projects sayfası gibi board olacak. Tut sürükle vb hepsi olacak.
+    - Boarddaki bir taskın üzerine tıklandığında o taskı güncelleyebileceğimiz bir Modal açılacak.

@@ -2,7 +2,7 @@
 // |
 // | Service Name: Update Task Label
 // | Description: Service that allows super admin to update a task label's name.
-// | Parameters: taskId, labelName
+// | Parameters: taskLabelId, labelName
 // | Endpoint: /api/private/tasks/update-task-label
 // |
 // ------------------------------
@@ -32,10 +32,10 @@ const handler = async (req, res) => {
             }
 
             // Request body
-            const { taskId, labelName } = req.body;
+            const { taskLabelId, labelName } = req.body;
 
             // Payload control
-            if (!taskId || !labelName) {
+            if (!taskLabelId || !labelName) {
                 return res.status(200).json({
                     message: responseMessages.tasks.updateLabel[lang].idRequired,
                     code: 0,
@@ -43,7 +43,7 @@ const handler = async (req, res) => {
             }
 
             // Task label not found
-            const taskLabel = await TaskLabel.findById(taskId);
+            const taskLabel = await TaskLabel.findById(taskLabelId);
             if (!taskLabel) {
                 return res.status(200).json({
                     message: responseMessages.tasks.updateLabel[lang].notFound,
