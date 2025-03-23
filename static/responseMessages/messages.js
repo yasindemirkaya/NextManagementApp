@@ -680,12 +680,12 @@ const responseMessages = {
             en: {
                 success: "Project is successfully deleted.",
                 projectIdRequired: "Project ID is required.",
-                notFund: "Project could not be found."
+                notFound: "Project could not be found."
             },
             tr: {
                 success: "Proje başarıyla silindi.",
                 projectIdRequired: "Proje ID gereklidir.",
-                notFund: "Project bulunamadı."
+                notFound: "Proje bulunamadı."
             }
         },
         // CREATE PROJECT TYPE
@@ -798,6 +798,19 @@ const responseMessages = {
                 taskIdRequired: "Görev ID gereklidir.",
                 notFound: "Görev bulunamadı.",
                 failedToFetch: "Görev getirilirken bir sorun oluştu."
+            }
+        },
+        // DELETE TASK
+        delete: {
+            en: {
+                success: "Task is successfully deleted.",
+                taskIdRequired: "Task ID is required.",
+                notFound: "Task could not be found."
+            },
+            tr: {
+                success: "Görev başarıyla silindi.",
+                projectIdRequired: "Görev ID gereklidir.",
+                notFound: "Görev bulunamadı."
             }
         },
     }

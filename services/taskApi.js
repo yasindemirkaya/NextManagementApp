@@ -92,3 +92,35 @@ export const createTask = async (taskData) => {
         };
     }
 };
+
+
+// ***************************
+// |
+// | DELETE PROJECT
+// |
+// ***************************
+
+export const deleteTask = async (taskId) => {
+    try {
+        const response = await axios.delete('/private/tasks/delete-task', {
+            data: { taskId }
+        });
+
+        if (response.code === 1) {
+            return {
+                success: true,
+                message: response.message
+            };
+        } else {
+            return {
+                success: false,
+                error: response.message
+            };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+};
