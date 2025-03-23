@@ -183,6 +183,32 @@ export const getTaskLabels = async (params = {}) => {
 
 // ***************************
 // |
+// | GET TASK LABEL BY ID
+// |
+// ***************************
+
+export const getTaskLabelById = async (id) => {
+    try {
+        const response = await axios.get('/private/tasks/get-task-label-by-id', {
+            params: { id }
+        });
+
+        return {
+            success: true,
+            data: response.taskLabel,
+            message: response.message,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message,
+        };
+    }
+};
+
+
+// ***************************
+// |
 // | CREATE TASK LABEL
 // |
 // ***************************

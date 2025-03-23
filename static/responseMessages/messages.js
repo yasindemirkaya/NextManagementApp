@@ -583,7 +583,7 @@ const responseMessages = {
         // GET DEMAND TYPE BY ID
         getTypeById: {
             en: {
-                success: "Demand Type fetches successfully.",
+                success: "Demand Type fetched successfully.",
                 getTypeById: "Demand Type could not be found."
             },
             tr: {
@@ -717,7 +717,7 @@ const responseMessages = {
         // GET PROJECT TYPE BY ID
         getTypeById: {
             en: {
-                success: "Project Type fetches successfully.",
+                success: "Project Type fetched successfully.",
                 getTypeById: "Project Type could not be found."
             },
             tr: {
@@ -848,6 +848,17 @@ const responseMessages = {
             },
             tr: {
                 success: "Görev Etiketleri başarıyla getirildi."
+            }
+        },
+        // GET TASK LABEL BY ID
+        getLabelById: {
+            en: {
+                success: "Task Label fetched successfully.",
+                notFound: "Task Label could not be found."
+            },
+            tr: {
+                success: "Görev Etiketi başarıyla getirildi.",
+                notFound: "Görev Etiketi bulunamadı."
             }
         },
     }
