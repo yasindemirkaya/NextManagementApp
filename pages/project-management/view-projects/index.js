@@ -78,6 +78,15 @@ const ViewProjects = () => {
         setLoading(false);
     };
 
+    // Add placeholder style when item is being dragged
+    const getMovingCardStyle = (provided, isDragging) => ({
+        ...provided.draggableProps.style,
+        backgroundColor: isDragging ? '#D3D3D3' : '#FFFFFF',
+        border: isDragging ? '2px solid #18BC9C' : '1px solid #DDD',
+        borderRadius: '8px',
+        boxShadow: isDragging ? '0px 4px 6px rgba(0, 0, 0, 0.1)' : 'none',
+    });
+
     return (
         <>
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -85,21 +94,38 @@ const ViewProjects = () => {
                     <Row className="d-flex justify-content-between g-3">
                         {/* Statuses */}
                         {filteredStatuses.map((status) => {
-                            const statusProjects = projects.filter((project) => project.status === status.typeName);
+                            const projectItems = projects.filter((project) => project.status === status.typeName);
 
                             return (
                                 <Col key={status.id} xs={12} sm={6} md={4} lg={2}>
-                                    <Droppable droppableId={status.typeName} direction="vertical" mode="virtual">
+                                    {/* Status Title */}
+                                    <h5 className="text-center mb-3">{status.typeName}</h5>
+
+                                    <Droppable
+                                        droppableId={status.typeName}
+                                        direction="vertical"
+                                        mode="virtual"
+                                        renderClone={(provided, snapshot, rubric) => {
+                                            return (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    style={getMovingCardStyle(provided, snapshot.isDragging)}
+                                                >
+                                                    <div>{rubric.item}</div>
+                                                </div>
+                                            );
+                                        }}
+                                    >
                                         {(provided) => (
                                             <div
                                                 ref={provided.innerRef}
                                                 {...provided.droppableProps}
                                                 className={styles.droppableContainer}
                                             >
-                                                {/* Status Title */}
-                                                <h5 className="text-center mb-3">{status.typeName}</h5>
-                                                {/* Projects */}
-                                                {statusProjects.map((project, index) => (
+                                                {/* Project Items */}
+                                                {projectItems.map((project, index) => (
                                                     <Draggable key={project._id} draggableId={project._id} index={index}>
                                                         {(provided) => (
                                                             <Card
@@ -107,6 +133,8 @@ const ViewProjects = () => {
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
                                                                 className={styles.projectCard}
+                                                                onClick={() => router.push(`/project-management/view-projects/${project._id}`)}
+                                                                style={{ cursor: 'pointer' }}
                                                             >
                                                                 <Card.Body>
                                                                     <Card.Title>{project.title}</Card.Title>
@@ -126,6 +154,7 @@ const ViewProjects = () => {
                     </Row>
                 </Container>
             </DragDropContext>
+
             <ToastContainer />
         </>
     );
