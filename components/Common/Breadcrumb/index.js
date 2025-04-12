@@ -25,6 +25,8 @@ const BreadcrumbComponent = () => {
                 return lang === "en" ? 'Notification Detail' : "Bildirim Detayı";
             case segment.includes('[projectId]'):
                 return lang === "en" ? 'Project Detail' : "Proje Detayı";
+            case segment.includes('[projectIdForTasks]'):
+                return lang === "en" ? 'Task Board' : "Görev Panosu ";
             default:
                 return segment.split('-')
                     .map(word => word.charAt(0).toUpperCase() + word.slice(1))

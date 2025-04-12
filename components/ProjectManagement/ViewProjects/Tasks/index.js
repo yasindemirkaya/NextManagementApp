@@ -2,12 +2,22 @@ import { useEffect, useState } from "react";
 import { Card, Button, Accordion, Spinner } from "react-bootstrap";
 import styles from './index.module.scss';
 import { getTasks } from "@/services/taskApi";
-
+import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/router';
 
 const Tasks = ({ project }) => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const router = useRouter();
+    const t = useTranslations();
+
+    // Handle view all
+    const handleViewAllClick = () => {
+        router.push(`/task-management/view-tasks/${project._id}`);
+    };
+
+    // Fetch tasks
     const fetchTasks = async () => {
         setLoading(true);
         const result = await getTasks({ project_id: project._id, limit: 5 });
@@ -27,7 +37,7 @@ const Tasks = ({ project }) => {
         <>
             <Card className={styles.projectCard}>
                 <Card.Body>
-                    <Card.Title>Latest Created Task for {project.title}</Card.Title>
+                    <Card.Title>{t('Recently Created Tasks')}</Card.Title>
 
                     {loading ? (
                         <div className="text-center py-4">
@@ -45,12 +55,24 @@ const Tasks = ({ project }) => {
                     )}
 
                     <div className="d-flex justify-content-end mt-3">
-                        <Button variant="primary">View All</Button>
+                        <Button variant="primary" onClick={handleViewAllClick}>{t('View All')}</Button>
                     </div>
                 </Card.Body>
             </Card>
         </>
     )
+}
+
+export async function getStaticProps(context) {
+    const commonMessages = await import(`../../../../public/locales/common/${context.locale}.json`);
+
+    return {
+        props: {
+            messages: {
+                ...commonMessages.default,
+            },
+        },
+    };
 }
 
 export default Tasks;
