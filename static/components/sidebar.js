@@ -229,9 +229,30 @@ const sidebarMenu = [
             },
         ]
     },
-    // SETTINGS
+    // TASKS
     {
         id: 7,
+        name: "Tasks",
+        link: "/task-management",
+        iconPrimary: "faChevronUp",
+        iconSecondary: "faChevronCircleUp",
+        permission: 0,
+        subMenus: [
+            // VIEW TASKS
+            {
+                id: 62,
+                name: "View Tasks",
+                link: "/task-management/view-tasks",
+                description: "You can update details about your tasks and create new tasks for your projects from here",
+                iconPrimary: "faListCheck",
+                iconSecondary: "",
+                permission: 1,
+            },
+        ]
+    },
+    // SETTINGS
+    {
+        id: 8,
         name: "Settings",
         link: "/settings",
         iconPrimary: "faChevronUp",
@@ -240,7 +261,7 @@ const sidebarMenu = [
         subMenus: [
             // USER SETTINGS
             {
-                id: 71,
+                id: 81,
                 name: "User Settings",
                 link: "/settings",
                 description: "From here you can edit the application's settings for your account",
@@ -250,7 +271,7 @@ const sidebarMenu = [
             },
             // SERVICE LOGS
             {
-                id: 72,
+                id: 82,
                 name: "Service Logs",
                 link: "/settings/service-logs",
                 description: "From here you can review the detailed logs, requests and responses of the web services",

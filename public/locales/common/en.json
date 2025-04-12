@@ -140,5 +140,7 @@
     "You can update details about your projects from here": "You can update details about your projects from here.",
     "An error occurred when fetching the requested project Please try again": "An error occurred when fetching the requested project Please try again",
     "Recently Created Tasks": "Recently Created Tasks",
-    "View All": "View All"
+    "View All": "View All",
+    "Tasks": "Tasks",
+    "View Tasks": "View Tasks"
 }

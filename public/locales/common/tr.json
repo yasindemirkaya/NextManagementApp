@@ -140,5 +140,7 @@
     "You can update details about your projects from here": "Projelerinizle ilgili detayları buradan güncelleyebilirsiniz.",
     "An error occurred when fetching the requested project Please try again": "Aranan proje getirilirken bir sorun oluştu. Lütfen tekrar deneyin.",
     "Recently Created Tasks": "Son Oluşturulan Görevler",
-    "View All": "Tümünü Görüntüle"
+    "View All": "Tümünü Görüntüle",
+    "Tasks": "Görevler",
+    "View Tasks": "Görevleri Görüntüle"
 }
