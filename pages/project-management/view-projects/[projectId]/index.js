@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 
 import ProjectCard from "@/components/ProjectManagement/ViewProjects/ProjectCard";
 import UserAndGroupManagement from "@/components/ProjectManagement/ViewProjects/UserAndGroupManagement";
+import Tasks from "@/components/ProjectManagement/ViewProjects/Tasks"
 
 const ProjectDetailPage = () => {
     const router = useRouter();
@@ -59,14 +60,9 @@ const ProjectDetailPage = () => {
                         <UserAndGroupManagement project={project} fetchProjectDetails={fetchProjectDetails} />
                     </Col>
 
-                    {/* Right Column - Task Creation (Placeholder) */}
+                    {/* Right Column - Lates Tasks */}
                     <Col md={4} className="mb-4">
-                        <Card>
-                            <Card.Body>
-                                <Card.Title>Create Task</Card.Title>
-                                {/* İçerik buraya gelecek */}
-                            </Card.Body>
-                        </Card>
+                        <Tasks project={project} />
                     </Col>
 
                     <ToastContainer />
