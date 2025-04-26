@@ -46,5 +46,6 @@
     "Select an Assignment Type": "Bir Atama Türü seçin.",
     "Assignment Type is required": "Atama Türü seçimi zorunludur.",
     "Project Lead is required": "Proje Yöneticisi seçimi zorunludur.",
-    "Select a Project Lead": "Bir Proje Yöneticisi seçin."
+    "Select a Project Lead": "Bir Proje Yöneticisi seçin.",
+    "Project is required": "Proje seçimi zorunludur."
 }

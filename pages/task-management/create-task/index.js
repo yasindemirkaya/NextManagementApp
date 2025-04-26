@@ -198,24 +198,32 @@ const CreateTask = () => {
                                         <Controller
                                             name="project"
                                             control={control}
-                                            render={({ field }) => (
-                                                <Select
-                                                    {...field}
-                                                    options={projects}
-                                                    isMulti
-                                                    isLoading={loadingProjects}
-                                                    theme={(theme) => ({
-                                                        ...theme,
-                                                        colors: {
-                                                            ...theme.colors,
-                                                            primary25: 'var(--primary-25)',
-                                                            primary: 'var(--primary)',
-                                                            neutral0: 'var(--neutral-0)',
-                                                            neutral80: 'var(--neutral-80)',
-                                                            neutral25: 'var(--neutral-25)',
-                                                        },
-                                                    })}
-                                                />
+                                            rules={{ required: t("Project is required") }}
+                                            render={({ field, fieldState }) => (
+                                                <>
+                                                    <Select
+                                                        {...field}
+                                                        options={projects}
+                                                        isMulti
+                                                        isLoading={loadingProjects}
+                                                        theme={(theme) => ({
+                                                            ...theme,
+                                                            colors: {
+                                                                ...theme.colors,
+                                                                primary25: 'var(--primary-25)',
+                                                                primary: 'var(--primary)',
+                                                                neutral0: 'var(--neutral-0)',
+                                                                neutral80: 'var(--neutral-80)',
+                                                                neutral25: 'var(--neutral-25)',
+                                                            },
+                                                        })}
+                                                    />
+                                                    {fieldState.error && (
+                                                        <Form.Text className="text-danger">
+                                                            {fieldState.error.message}
+                                                        </Form.Text>
+                                                    )}
+                                                </>
                                             )}
                                         />
                                     </Form.Group>

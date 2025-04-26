@@ -54,5 +54,6 @@
     "Deadline is required": "Deadline is required.",
     "Select a Label": "Select a Label",
     "Select a Priority": "Select a Priority",
-    "Select a Deadline": "Select a Deadline"
+    "Select a Deadline": "Select a Deadline",
+    "Project is required": "Project is required."
 }
