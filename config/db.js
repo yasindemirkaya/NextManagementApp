@@ -13,7 +13,7 @@ const connectToDatabase = async (req, res, next) => {
 
         // Veritabanı adı belirtmek iyi olabilir (Atlas'ta hangi db'yi kullanacağımızı belirleyebiliriz)
         await mongoose.connect(dbUri, {
-            dbName: process.env.MONGODB_DB_NAME || 'NextManagementApp', // Veritabanı adı ekledik
+            dbName: process.env.MONGODB_DB_NAME || 'ManagementApp', // Veritabanı adı ekledik
             useNewUrlParser: true, // Modern URL parser kullanmak
             useUnifiedTopology: true, // Topology management
         });
