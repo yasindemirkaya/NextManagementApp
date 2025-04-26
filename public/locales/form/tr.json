@@ -106,5 +106,11 @@
     "Assignee Groups": "Atanan Gruplar",
     "Select a Project Lead": "Bir Proje Lideri seçin",
     "Add or Remove Users": "Kullanıcı Ekle veya Çıkar",
-    "Add or Remove Groups": "Grup Ekle veya Çıkar"
+    "Add or Remove Groups": "Grup Ekle veya Çıkar",
+    "Create Task": "Görev Oluştur",
+    "Project": "Proje",
+    "Label": "Etiket",
+    "Priority": "Öncelik",
+    "Deadline": "Bitiş Tarihi",
+    "Creating Task": "Görev Oluşturuluyor..."
 }

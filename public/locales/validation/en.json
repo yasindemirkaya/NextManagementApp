@@ -47,5 +47,12 @@
     "Select an Assignment Type": "Select an Assignment Type",
     "Assignment Type is required": "Assignment Type is required.",
     "Project Lead is required": "Project Lead is required.",
-    "Select a Project Lead": "Select a Project Lead"
+    "Select a Project Lead": "Select a Project Lead",
+    "Enter a description for your task": "Enter a description for your task.",
+    "Label is required": "Label is required.",
+    "Priority is required": "Priority is required.",
+    "Deadline is required": "Deadline is required.",
+    "Select a Label": "Select a Label",
+    "Select a Priority": "Select a Priority",
+    "Select a Deadline": "Select a Deadline"
 }

@@ -142,5 +142,11 @@
     "Recently Created Tasks": "Son Oluşturulan Görevler",
     "View All": "Tümünü Görüntüle",
     "Tasks": "Görevler",
-    "View Tasks": "Görevleri Görüntüle"
+    "View Tasks": "Görevleri Görüntüle",
+    "Enter a description for your task": "Görev için bir açıklama girin.",
+    "Label is required": "Etiket gereklidir.",
+    "Priority is required": "Öncelik gereklidir.",
+    "Deadline is required": "Bitiş tarihi gereklidir.",
+    "Select a Label": "Bir etiket seçin.",
+    "Select a Priority": "Bir öncelik seçin."
 }

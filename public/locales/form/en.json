@@ -106,5 +106,11 @@
     "Assignee Groups": "Assignee Groups",
     "Select a Project Lead": "Select a Project Lead",
     "Add or Remove Users": "Add or Remove Users",
-    "Add or Remove Groups": "Add or Remove Groups"
+    "Add or Remove Groups": "Add or Remove Groups",
+    "Create Task": "Create Task",
+    "Project": "Project",
+    "Label": "Label",
+    "Priority": "Priority",
+    "Deadline": "Deadline",
+    "Creating Task": "Creating Task..."
 }
