@@ -72,19 +72,25 @@ const CreateUserGroup = () => {
 
     // Submit form
     const onSubmit = async (data) => {
+        let payload = {
+            groupName: data.groupName,
+            description: data.description,
+            type: data.type.label,
+            isActive: data.isActive,
+            groupLeader: data.groupLeader.value,
+            members: data.members,
+        }
         try {
-            const result = await createUserGroup(data);
+            const result = await createUserGroup(payload);
 
             if (result.success) {
                 reset({
                     groupName: '',
                     description: '',
-                    email: '',
-                    password: '',
-                    mobile: '',
-                    isActive: '1',
-                    isVerified: '1',
-                    role: '0',
+                    type: '',
+                    isActive: '',
+                    groupLeader: '',
+                    members: [],
                 });
                 toast('SUCCESS', result.message);
                 setTimeout(() => {
