@@ -238,9 +238,19 @@ const sidebarMenu = [
         iconSecondary: "faChevronCircleUp",
         permission: 0,
         subMenus: [
+            // CREATE TASK
+            {
+                id: 71,
+                name: "Create Task",
+                link: "/task-management/create-task",
+                description: "From here, you can create tasks for your projects and assign them to yourself, your staff or teams.",
+                iconPrimary: "faDiagramProject",
+                iconSecondary: "",
+                permission: 1,
+            },
             // VIEW TASKS
             {
-                id: 62,
+                id: 72,
                 name: "View Tasks",
                 link: "/task-management/view-tasks",
                 description: "You can update details about your tasks and create new tasks for your projects from here",
