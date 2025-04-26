@@ -112,5 +112,8 @@
     "Label": "Label",
     "Priority": "Priority",
     "Deadline": "Deadline",
-    "Creating Task": "Creating Task..."
+    "Creating Task": "Creating Task...",
+    "Task Details": "Task Details",
+    "This task is created by": "This task is created by",
+    "The last update for this task is made by": "The last update for this task is made by"
 }

@@ -112,5 +112,7 @@
     "Label": "Etiket",
     "Priority": "Öncelik",
     "Deadline": "Bitiş Tarihi",
-    "Creating Task": "Görev Oluşturuluyor..."
+    "Creating Task": "Görev Oluşturuluyor...",
+    "This task is created by": "Bu görev şu kullanıcı tarafından oluşturuldu: ",
+    "The last update for this task is made by": "Bu görev en son şu kullanıcı tarafından güncellendi: "
 }
