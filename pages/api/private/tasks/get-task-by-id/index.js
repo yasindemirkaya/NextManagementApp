@@ -10,7 +10,6 @@
 
 import Task from '@/models/Task';
 import User from '@/models/User';
-import UserGroup from '@/models/UserGroup';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index';
 import responseMessages from '@/static/responseMessages/messages';
@@ -32,7 +31,6 @@ const handler = async (req, res) => {
             return res.status(200).json({ message: responseMessages.common[lang].invalidToken, code: 0 });
         }
 
-        // Request params
         const { id } = req.query;
 
         if (!id) {
@@ -43,7 +41,6 @@ const handler = async (req, res) => {
         }
 
         try {
-            // Find task by ID
             const task = await Task.findById(id).lean();
 
             if (!task) {
@@ -55,16 +52,13 @@ const handler = async (req, res) => {
 
             let hasAccess = false;
 
-            // Eğer userRole 2 (Super Admin) ise, doğrudan erişim izni ver
             if (userRole === 2) {
                 hasAccess = true;
             } else {
-                // Eğer assignment_type 0 ise, assignee_user dolu, assignee_group boş olmalı
                 if (task.assignment_type === 0) {
                     if (task.assignee_user && task.assignee_user.length > 0 && !task.assignee_group) {
                         hasAccess = true;
                     }
-                    // Eğer assignment_type 1 ise, assignee_group dolu, assignee_user boş olmalı
                 } else if (task.assignment_type === 1) {
                     if (!task.assignee_user || task.assignee_user.length === 0 && task.assignee_group && task.assignee_group.length > 0) {
                         hasAccess = true;
@@ -72,7 +66,6 @@ const handler = async (req, res) => {
                 }
             }
 
-            // No access control
             if (!hasAccess) {
                 return res.status(200).json({
                     message: responseMessages.common[lang].noPermission,
@@ -80,55 +73,38 @@ const handler = async (req, res) => {
                 });
             }
 
-            let userIds = [];
+            let userIds = [task.created_by, task.updated_by].filter(Boolean);
             let groupIds = [];
 
-            // Eğer assignment_type 0 ise, assignee_user dolu olmalı ve assignee_group boş olmalı
             if (task.assignment_type === 0) {
                 if (task.assignee_user && task.assignee_user.length > 0 && !task.assignee_group) {
-                    userIds = [...new Set([task.created_by, task.updated_by, ...task.assignee_user || []])];
-                    groupIds = [];
+                    userIds = [...new Set([...userIds, ...(task.assignee_user || [])])];
                 }
-                // Eğer assignment_type 1 ise, assignee_group dolu olmalı ve assignee_user boş olmalı
             } else if (task.assignment_type === 1) {
-                if (!task.assignee_user || task.assignee_user.length === 0 && task.assignee_group && task.assignee_group.length > 0) {
-                    userIds = [...new Set([task.created_by, task.updated_by])]; // assignee_user boş, sadece userId'ler
-                    groupIds = [...new Set(task.assignee_group || [])]; // assignee_group dolu olmalı
+                if ((!task.assignee_user || task.assignee_user.length === 0) && task.assignee_group && task.assignee_group.length > 0) {
+                    groupIds = [...new Set([...groupIds, ...(task.assignee_group || [])])];
                 }
             }
 
             const users = await User.find({ _id: { $in: userIds } }, '_id first_name last_name');
-            const groups = await UserGroup.find({ _id: { $in: groupIds } }, '_id group_name');
 
-            // Map users
             const userMap = users.reduce((acc, user) => {
-                acc[user._id] = { id: user._id, name: `${user.first_name} ${user.last_name}` };
+                acc[user._id.toString()] = { id: user._id, name: `${user.first_name} ${user.last_name}` };
                 return acc;
             }, {});
 
-            // Map user groups
-            const groupMap = groups.reduce((acc, group) => {
-                acc[group._id] = { id: group._id, name: group.group_name };
-                return acc;
-            }, {});
-
-            // Format response task
             const formattedTask = {
                 ...task,
                 start_date: formatDate(task.start_date),
                 end_date: formatDate(task.end_date),
-                created_by: task.created_by ? userMap[task.created_by] : null,
-                updated_by: task.updated_by ? userMap[task.updated_by] : null,
-                // assignment_type'e göre assignee_user ve assignee_group kontrolü
+                created_by: task.created_by ? userMap[task.created_by.toString()] || { id: task.created_by, name: 'Unknown User' } : null,
+                updated_by: task.updated_by ? userMap[task.updated_by.toString()] || { id: task.updated_by, name: 'Unknown User' } : null,
                 assignee_user: task.assignment_type === 0
-                    ? (task.assignee_user || []).map(id => userMap[id] || { id, name: 'Unknown User' })
-                    : [], // assignment_type 1 ise assignee_user boş
-                assignee_group: task.assignment_type === 1
-                    ? (task.assignee_group || []).map(id => groupMap[id] || { id, name: 'Unknown Group' })
-                    : [], // assignment_type 0 ise assignee_group boş
+                    ? (task.assignee_user || []).map(id => userMap[id.toString()] || { id, name: 'Unknown User' })
+                    : [],
+                assignee_group: [],
             };
 
-            // Success response
             res.status(200).json({
                 code: 1,
                 message: responseMessages.tasks.getById[lang].success,
