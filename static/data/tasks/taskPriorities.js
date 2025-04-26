@@ -1,4 +1,4 @@
-const taskLabels = [
+const taskPriorities = [
     { id: 0, priorityName: 'Low' },
     { id: 1, priorityName: 'Minor' },
     { id: 2, priorityName: 'Medium' },
@@ -8,4 +8,4 @@ const taskLabels = [
     { id: 6, priorityName: 'Blocker' },
 ];
 
-export default taskLabels;
+export default taskPriorities;

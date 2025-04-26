@@ -4,8 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import styles from './index.module.scss';
 
-import { updateTask, deleteTask } from '@/services/taskApi';
-import taskLabels from '@/static/data/tasks/taskLabels';
+import { updateTask, deleteTask, getTaskLabels } from '@/services/taskApi';
 import taskPriorities from '@/static/data/tasks/taskPriorities';
 
 import toast from '@/utils/toastify';
@@ -21,6 +20,8 @@ const TaskCard = ({ task, fetchTaskDetails }) => {
 
     const [isEditable, setIsEditable] = useState(false);
     const [initialTaskData, setInitialTaskData] = useState(task);
+
+    const [taskLabels, setTaskLabels] = useState([]);
 
     const { control, handleSubmit, setValue, getValues } = useForm({
         defaultValues: {
@@ -72,9 +73,11 @@ const TaskCard = ({ task, fetchTaskDetails }) => {
             taskId: task._id,
             title: data.title,
             description: data.description,
-            type: data.taskLabel,
             deadline: data.deadline,
+            priority: data.priority,
+            label: data.label
         }
+
         const result = await updateTask(payload)
 
         if (result.success) {
@@ -87,7 +90,21 @@ const TaskCard = ({ task, fetchTaskDetails }) => {
         }
     };
 
+    // Get Task Labels
+    const fetchTaskLabels = async () => {
+        const response = await getTaskLabels();
+        if (response.success) {
+            const labelOptions = response.data.map(item => ({
+                value: item.label_name,
+                label: item.label_name
+            }));
+            setTaskLabels(labelOptions);
+        }
+    };
+
     useEffect(() => {
+        fetchTaskLabels();
+
         // Başlangıç verilerini ayarlıyoruz
         setInitialTaskData(task);
 
@@ -98,12 +115,6 @@ const TaskCard = ({ task, fetchTaskDetails }) => {
         setValue("priority", task.priority);
         setValue("deadline", task.deadline);
     }, [task, setValue]);
-
-    // Format task labels
-    const taskLabelOptions = taskLabels.map(item => ({
-        value: item.id,
-        label: item.labelName
-    }))
 
     // Format task priorities
     const taskPriorityOptions = taskPriorities.map(item => ({
@@ -192,7 +203,7 @@ const TaskCard = ({ task, fetchTaskDetails }) => {
                                 <>
                                     <Select
                                         {...field}
-                                        options={taskLabelOptions}
+                                        options={taskLabels}
                                         theme={(theme) => ({
                                             ...theme,
                                             colors: {
@@ -207,7 +218,7 @@ const TaskCard = ({ task, fetchTaskDetails }) => {
                                         isDisabled={!isEditable}
                                         placeholder={t('Select a Label')}
                                         onChange={selectedOption => setValue("label", selectedOption.value)}
-                                        value={taskLabelOptions.find(option => option.value === getValues("label"))}
+                                        value={taskLabels.find(option => option.value === getValues("label"))}
                                     />
                                     {fieldState.invalid && (
                                         <Form.Control.Feedback type="invalid">
@@ -244,8 +255,8 @@ const TaskCard = ({ task, fetchTaskDetails }) => {
                                         })}
                                         isDisabled={!isEditable}
                                         placeholder={t('Select a Priority')}
-                                        onChange={selectedOption => setValue("priority", selectedOption.value)}
-                                        value={taskPriorityOptions.find(option => option.value === getValues("priority"))}
+                                        onChange={selectedOption => setValue("priority", selectedOption.label)}
+                                        value={taskPriorityOptions.find(option => option.label === getValues("priority")) || null}
                                     />
                                     {fieldState.invalid && (
                                         <Form.Control.Feedback type="invalid">

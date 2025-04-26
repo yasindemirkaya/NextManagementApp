@@ -97,6 +97,7 @@ const handler = async (req, res) => {
                 ...task,
                 start_date: formatDate(task.start_date),
                 end_date: formatDate(task.end_date),
+                deadline: formatDate(task.deadline),
                 created_by: task.created_by ? userMap[task.created_by.toString()] || { id: task.created_by, name: 'Unknown User' } : null,
                 updated_by: task.updated_by ? userMap[task.updated_by.toString()] || { id: task.updated_by, name: 'Unknown User' } : null,
                 assignee_user: task.assignment_type === 0

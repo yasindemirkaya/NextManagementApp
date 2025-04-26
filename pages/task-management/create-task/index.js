@@ -8,11 +8,10 @@ import { useRouter } from "next/router";
 
 import { getUsers } from "@/services/userApi";
 import { getAllUserGroups } from '@/services/userGroupApi';
-import { createTask } from '@/services/taskApi';
+import { createTask, getTaskLabels } from '@/services/taskApi';
 import { getProjects } from '@/services/projectApi';
 
 import { capitalizeFirstLetter } from '@/helpers/capitalizeFirstLetter';
-import taskLabels from '@/static/data/tasks/taskLabels';
 import taskPriorities from '@/static/data/tasks/taskPriorities';
 import assignmentTypes from '@/static/data/projects/assignmentTypes';
 
@@ -33,12 +32,15 @@ const CreateTask = () => {
     const [projects, setProjects] = useState([]);
     const [loadingProjects, setLoadingProjects] = useState(false);
 
+    const [taskLabels, setTaskLabels] = useState([]);
+
     const assignmentType = watch("assignmentType");
 
     useEffect(() => {
         fetchUsers();
         fetchUserGroups();
         fetchProjects();
+        fetchTaskLabels();
     }, []);
 
     // Format assignment types
@@ -46,12 +48,6 @@ const CreateTask = () => {
         value: item.id,
         label: item.typeName
     }));
-
-    // Format task labels
-    const taskLabelOptions = taskLabels.map(item => ({
-        value: item.id,
-        label: item.labelName
-    }))
 
     // Format task priorities
     const taskPriorityOptions = taskPriorities.map(item => ({
@@ -105,6 +101,18 @@ const CreateTask = () => {
             console.error(response.error);
         }
         setLoadingProjects(false);
+    };
+
+    // Get Task Labels
+    const fetchTaskLabels = async () => {
+        const response = await getTaskLabels();
+        if (response.success) {
+            const labelOptions = response.data.map(item => ({
+                value: item.label_name,
+                label: item.label_name
+            }));
+            setTaskLabels(labelOptions);
+        }
     };
 
     // Submit project
@@ -241,7 +249,7 @@ const CreateTask = () => {
                                                 <>
                                                     <Select
                                                         {...field}
-                                                        options={taskLabelOptions}
+                                                        options={taskLabels}
                                                         theme={(theme) => ({
                                                             ...theme,
                                                             colors: {
