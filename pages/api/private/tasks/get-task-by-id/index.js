@@ -13,7 +13,6 @@ import User from '@/models/User';
 import { verify } from 'jsonwebtoken';
 import privateMiddleware from '@/middleware/private/index';
 import responseMessages from '@/static/responseMessages/messages';
-import mongoose from 'mongoose';
 
 const formatDate = (date) => (date ? new Date(date).toISOString().split('T')[0] : null);
 
@@ -56,11 +55,11 @@ const handler = async (req, res) => {
                 hasAccess = true;
             } else {
                 if (task.assignment_type === 0) {
-                    if (task.assignee_user && task.assignee_user.length > 0 && !task.assignee_group) {
+                    if (task.assignee_user) {
                         hasAccess = true;
                     }
                 } else if (task.assignment_type === 1) {
-                    if (!task.assignee_user || task.assignee_user.length === 0 && task.assignee_group && task.assignee_group.length > 0) {
+                    if (task.assignee_group) {
                         hasAccess = true;
                     }
                 }
@@ -74,16 +73,8 @@ const handler = async (req, res) => {
             }
 
             let userIds = [task.created_by, task.updated_by].filter(Boolean);
-            let groupIds = [];
-
-            if (task.assignment_type === 0) {
-                if (task.assignee_user && task.assignee_user.length > 0 && !task.assignee_group) {
-                    userIds = [...new Set([...userIds, ...(task.assignee_user || [])])];
-                }
-            } else if (task.assignment_type === 1) {
-                if ((!task.assignee_user || task.assignee_user.length === 0) && task.assignee_group && task.assignee_group.length > 0) {
-                    groupIds = [...new Set([...groupIds, ...(task.assignee_group || [])])];
-                }
+            if (task.assignment_type === 0 && task.assignee_user) {
+                userIds.push(task.assignee_user);
             }
 
             const users = await User.find({ _id: { $in: userIds } }, '_id first_name last_name');
@@ -100,10 +91,12 @@ const handler = async (req, res) => {
                 deadline: formatDate(task.deadline),
                 created_by: task.created_by ? userMap[task.created_by.toString()] || { id: task.created_by, name: 'Unknown User' } : null,
                 updated_by: task.updated_by ? userMap[task.updated_by.toString()] || { id: task.updated_by, name: 'Unknown User' } : null,
-                assignee_user: task.assignment_type === 0
-                    ? (task.assignee_user || []).map(id => userMap[id.toString()] || { id, name: 'Unknown User' })
-                    : [],
-                assignee_group: [],
+                assignee_user: Number(task.assignment_type) === 0 // String'e dönüşüm sağlanır
+                    ? (task.assignee_user ? [userMap[task.assignee_user.toString()] || { id: task.assignee_user, name: 'Unknown User' }] : null) // Tek kullanıcı
+                    : null,
+                assignee_group: Number(task.assignment_type) === 1 // String'e dönüşüm sağlanır
+                    ? (task.assignee_group && task.assignee_group.length > 0 ? task.assignee_group : null)
+                    : null,
             };
 
             res.status(200).json({
