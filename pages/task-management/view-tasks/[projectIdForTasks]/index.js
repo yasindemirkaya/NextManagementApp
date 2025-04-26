@@ -87,6 +87,24 @@ const TaskBoard = () => {
         boxShadow: isDragging ? '0px 4px 6px rgba(0, 0, 0, 0.1)' : 'none',
     });
 
+    const getPriorityColor = (priority) => {
+        switch (priority) {
+            case 'Low':
+            case 'Minor':
+                return '#B0E0E6'; // Light blue
+            case 'Medium':
+                return '#FFD700'; // Yellow
+            case 'High':
+            case 'Major':
+                return '#FFA500'; // Orange
+            case 'Critical':
+            case 'Blocker':
+                return '#FF0000'; // Red
+            default:
+                return '#FFFFFF'; // Default color (white)
+        }
+    };
+
     return (
         <>
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -139,6 +157,35 @@ const TaskBoard = () => {
                                                                 <Card.Body>
                                                                     <Card.Title>{task.title}</Card.Title>
                                                                     <Card.Text>{task.description}</Card.Text>
+
+                                                                    {/* Deadline */}
+                                                                    <Card.Text>
+                                                                        <strong>Deadline: </strong>{new Date(task.deadline).toISOString().split('T')[0]}
+                                                                    </Card.Text>
+
+                                                                    {/* Label and Priority */}
+                                                                    <Row>
+                                                                        <Col xs={6}>
+                                                                            <Card.Text>
+                                                                                {task.label}
+                                                                            </Card.Text>
+                                                                        </Col>
+                                                                        <Col xs={6}>
+                                                                            <Card.Text>
+                                                                                <span
+                                                                                    style={{
+                                                                                        display: 'inline-block',
+                                                                                        width: '10px',
+                                                                                        height: '10px',
+                                                                                        borderRadius: '50%',
+                                                                                        backgroundColor: getPriorityColor(task.priority),
+                                                                                        marginRight: '5px',
+                                                                                    }}
+                                                                                ></span>
+                                                                                {task.priority}
+                                                                            </Card.Text>
+                                                                        </Col>
+                                                                    </Row>
                                                                 </Card.Body>
                                                             </Card>
                                                         )}
