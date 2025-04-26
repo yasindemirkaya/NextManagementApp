@@ -25,6 +25,8 @@ const BreadcrumbComponent = () => {
                 return lang === "en" ? 'Notification Detail' : "Bildirim Detayı";
             case segment.includes('[projectId]'):
                 return lang === "en" ? 'Project Detail' : "Proje Detayı";
+            case segment.includes('[taskId]'):
+                return lang === "en" ? 'Task Detail' : "Görev Detayı";
             case segment.includes('[projectIdForTasks]'):
                 return lang === "en" ? 'Task Board' : "Görev Panosu ";
             default:

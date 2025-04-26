@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 const TaskBoard = () => {
     const router = useRouter();
 
-    const [projects, setTasks] = useState([]);
+    const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -40,24 +40,24 @@ const TaskBoard = () => {
             return;
         }
 
-        // Projeyi buluyoruz
-        const draggedProject = projects.find(project => project._id === draggableId);
+        // Taskı buluyoruz
+        const draggedTask = tasks.find(task => task._id === draggableId);
 
         // Yeni statüyü alıyoruz
         const newStatus = destination.droppableId;
 
-        // updateProject fonksiyonuna sadece id ve yeni status bilgisini gönderiyoruz
-        const response = await updateProject({
-            projectId: draggedProject._id,
+        // updateTask fonksiyonuna sadece id ve yeni status bilgisini gönderiyoruz
+        const response = await updateTask({
+            taskId: draggedTask._id,
             status: newStatus
         });
 
         if (response.success) {
             // Güncelleme başarılı ise projeyi yeni statüsüne göre güncelliyoruz
             toast('SUCCESS', response.message)
-            setTasks(prevProjects =>
-                prevProjects.map(project =>
-                    project._id === draggableId ? { ...project, status: newStatus } : project
+            setTasks(prevTasks =>
+                prevTasks.map(task =>
+                    task._id === draggableId ? { ...task, status: newStatus } : task
                 )
             );
         } else {
@@ -94,7 +94,7 @@ const TaskBoard = () => {
                     <Row className="d-flex justify-content-between g-3">
                         {/* Statuses */}
                         {filteredStatuses.map((status) => {
-                            const projectItems = projects.filter((project) => project.status === status.typeName);
+                            const taskItems = tasks.filter((task) => task.status === status.typeName);
 
                             return (
                                 <Col key={status.id} xs={12} sm={6} md={4} lg={2}>
@@ -124,21 +124,21 @@ const TaskBoard = () => {
                                                 {...provided.droppableProps}
                                                 className={styles.droppableContainer}
                                             >
-                                                {/* Project Items */}
-                                                {projectItems.map((project, index) => (
-                                                    <Draggable key={project._id} draggableId={project._id} index={index}>
+                                                {/* Task Items */}
+                                                {taskItems.map((task, index) => (
+                                                    <Draggable key={task._id} draggableId={task._id} index={index}>
                                                         {(provided) => (
                                                             <Card
                                                                 ref={provided.innerRef}
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
-                                                                className={styles.projectCard}
-                                                                onClick={() => router.push(`/project-management/view-projects/${project._id}`)}
+                                                                className={styles.taskCard}
+                                                                onClick={() => router.push(`/task-management/view-tasks/task-detail/${task._id}`)}
                                                                 style={{ cursor: 'pointer' }}
                                                             >
                                                                 <Card.Body>
-                                                                    <Card.Title>{project.title}</Card.Title>
-                                                                    <Card.Text>{project.description}</Card.Text>
+                                                                    <Card.Title>{task.title}</Card.Title>
+                                                                    <Card.Text>{task.description}</Card.Text>
                                                                 </Card.Body>
                                                             </Card>
                                                         )}
